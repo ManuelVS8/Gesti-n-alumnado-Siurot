@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Información del alumnado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a3a5f, #0d2340);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: white;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            color: #f0f0f0;
+            font-size: 1.1rem;
+        }
+        
+        .search-container {
+            background: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .search-icon {
+            color: #f59e42;
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1.1rem;
+            color: #333;
+            -webkit-appearance: none;
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            margin-top: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .search-result-item {
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .search-result-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            padding: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border-left: 5px solid #f59e42;
+            position: relative;
+            overflow: hidden;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #f59e42, #ffad5a);
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+        
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #f59e42;
+        }
+        
+        .card h3 {
+            color: #1a3a5f;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        
+        .card p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .back-btn, .home-btn {
+            background-color: #f59e42;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(245, 158, 66, 0.3);
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .home-btn {
+            background-color: #4181e0;
+            box-shadow: 0 4px 8px rgba(65, 129, 224, 0.3);
+        }
+        
+        .back-btn:hover, .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .back-btn:hover {
+            background-color: #e68a2e;
+        }
+        
+        .home-btn:hover {
+            background-color: #3a6fc7;
+        }
+        
+        .back-btn::before {
+            content: '←';
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .home-btn::before {
+            content: '🏠';
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .courses-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .course-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            color: #1a3a5f;
+            font-weight: 500;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .course-btn:hover {
+            border-color: #f59e42;
+            background-color: #fff9f5;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        
+        .students-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .students-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .students-header h2 {
+            color: #1a3a5f;
+            font-size: 1.8rem;
+        }
+        
+        .students-count {
+            background-color: #f59e42;
+            color: white;
+            border-radius: 30px;
+            padding: 5px 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .student-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .student-card {
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            padding: 18px;
+            border-left: 4px solid #4181e0;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+        
+        .student-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .student-name {
+            font-weight: bold;
+            color: #1a3a5f;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .student-info {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .student-info strong {
+            color: #2731F5;
+        }
+        
+        .allergies-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            padding: 25px;
+        }
+        
+        .allergies-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .allergies-header h2 {
+            color: #1a3a5f;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .allergies-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .allergy-card {
+            background-color: #fff9f5;
+            border-radius: 12px;
+            padding: 18px;
+            border-left: 4px solid #f59e42;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+        
+        .allergy-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .allergy-name {
+            font-weight: bold;
+            color: #1a3a5f;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .allergy-info {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .allergy-info .allergy-type {
+            background-color: #f59e42;
+            color: white;
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-right: 8px;
+            margin-bottom: 5px;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .profile-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #f59e42;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .profile-info h2 {
+            color: #1a3a5f;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .profile-info p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .profile-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .profile-section {
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #4181e0;
+        }
+        
+        .profile-section h3 {
+            color: #1a3a5f;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .profile-section h3 .icon {
+            margin-right: 10px;
+            color: #f59e42;
+        }
+        
+        .profile-section-content {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .profile-section-content p {
+            margin-bottom: 10px;
+        }
+        
+        .profile-section-content strong {
+            color: #2731F5;
+        }
+        
+        .profile-section .tag {
+            display: inline-block;
+            background-color: #e8f4fd;
+            color: #4181e0;
+            border-radius: 20px;
+            padding: 5px 12px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .profile-section .warning {
+            background-color: #fff4e5;
+            color: #f59e42;
+        }
+        
+        .profile-section .success {
+            background-color: #e8f8f0;
+            color: #4caf50;
+        }
+        
+        .profile-section .danger {
+            background-color: #ffebee;
+            color: #e91e63;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .courses-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .student-list, .allergies-list, .profile-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+            }
+            
+            .back-btn, .home-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @supports (-webkit-touch-callout: none) {
+            .card, .student-card, .allergy-card, .course-btn, .back-btn, .home-btn {
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+            
+            .search-results {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <audio id="tap-sound" preload="auto"></audio>
+        
+        <div id="home-screen" class="screen active">
+            <div class="header">
+                <h1>Información del alumnado</h1>
+                <p>Accede a la información organizada por categorías</p>
+            </div>
+            
+            <div class="search-container">
+                <div class="search-icon">🔍</div>
+                <input type="text" class="search-input" placeholder="Buscar por nombre de alumno..." id="global-search">
+                <div class="search-results" id="search-results"></div>
+            </div>
+            
+            <div class="cards-container">
+                <div class="card" data-document="imagenes">
+                    <div class="card-icon">📸</div>
+                    <h3>Autorizaciones de imagen</h3>
+                    <p>Consultar las autorizaciones para publicar imágenes de los alumnos</p>
+                </div>
+                
+                <div class="card" data-document="religion">
+                    <div class="card-icon">⛪</div>
+                    <h3>Clase de religión</h3>
+                    <p>Alumnos que no reciben clase de religión</p>
+                </div>
+                
+                <div class="card" data-document="separados">
+                    <div class="card-icon">👨‍👩‍👧‍👦</div>
+                    <h3>Padres separados</h3>
+                    <p>Información sobre alumnos con padres separados</p>
+                </div>
+                
+                <div class="card" data-document="alergias">
+                    <div class="card-icon">⚠️</div>
+                    <h3>Alergias y enfermedades</h3>
+                    <p>Información médica importante de los alumnos</p>
+                </div>
+                
+                <div class="card" data-document="matinal">
+                    <div class="card-icon">🌅</div>
+                    <h3>Aula matinal</h3>
+                    <p>Alumnos que asisten al aula matinal y teléfonos de contacto</p>
+                </div>
+                
+                <div class="card" data-document="comedor">
+                    <div class="card-icon">🍽️</div>
+                    <h3>Comedor</h3>
+                    <p>Alumnos que utilizan el servicio de comedor</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="course-screen" class="screen">
+            <div class="navigation-buttons">
+                <button class="home-btn">Inicio</button>
+                <button class="back-btn">Atrás</button>
+            </div>
+            <h2 style="color: white; margin-bottom: 25px; font-size: 1.8rem;">Selecciona un curso</h2>
+            <div id="courses-container" class="courses-container">
+            </div>
+        </div>
+        
+        <div id="details-screen" class="screen">
+            <div class="navigation-buttons">
+                <button class="home-btn">Inicio</button>
+                <button class="back-btn">Atrás</button>
+            </div>
+            <div class="students-container">
+                <div class="students-header">
+                    <h2 id="details-title">Alumnos</h2>
+                    <span id="students-count" class="students-count">0 alumnos</span>
+                </div>
+                <div id="student-list" class="student-list">
+                </div>
+            </div>
+        </div>
+        
+        <div id="allergies-course-screen" class="screen">
+            <div class="navigation-buttons">
+                <button class="home-btn">Inicio</button>
+                <button class="back-btn">Atrás</button>
+            </div>
+            <div class="students-container">
+                <div class="students-header">
+                    <h2 id="allergies-course-title">Alergias y enfermedades</h2>
+                    <span id="allergies-course-count" class="students-count">0 alumnos</span>
+                </div>
+                <div id="allergies-course-list" class="student-list">
+                </div>
+            </div>
+        </div>
+        
+        <div id="profile-screen" class="screen">
+            <div class="navigation-buttons">
+                <button class="home-btn">Inicio</button>
+                <button class="back-btn">Atrás</button>
+            </div>
+            <div class="profile-container">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profile-avatar">👤</div>
+                    <div class="profile-info">
+                        <h2 id="profile-name">Nombre del alumno</h2>
+                        <p id="profile-course">Curso</p>
+                    </div>
+                </div>
+                <div class="profile-sections" id="profile-sections">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        
+        const documentsData = {
+            imagenes: {
+                "INFANTIL 3 AÑOS A": [
+                    { nombre: "CRISTO PACHECO, AINHOA", autorizacion: "2" },
+                    { nombre: "GONZÁLEZ LEPE, THIAGO", autorizacion: "TODO NO" },
+                    { nombre: "MARTÍN MARTÍNEZ, GONZALO", autorizacion: "TODO NO" },
+                    { nombre: "PEÑA MARTÍN, PABLO", autorizacion: "NO" },
+                    { nombre: "VASILE, LEONOR MARÍA MELISSA", autorizacion: "TODO NO" },
+                    { nombre: "ZAIRI, HAFSA", autorizacion: "TODO NO" }
+                ],
+                "INFANTIL 3 AÑOS B": [],
+                "INFANTIL 4 AÑOS A": [],
+                "INFANTIL 4 AÑOS B": [
+                    { nombre: "BAHOU, FATIMA EZZAHRA", autorizacion: "2" },
+                    { nombre: "BELMAMOUN KADRI, NOOR", autorizacion: "2" },
+                    { nombre: "CRUCES RODRÍGUEZ, HUGO", autorizacion: "2" },
+                    { nombre: "MARTÍNEZ SUÁREZ, LOLA", autorizacion: "2" },
+                    { nombre: "CHIMA VARGAS, DANIELA", autorizacion: "NO" }
+                ],
+                "INFANTIL 5 AÑOS A": [
+                    { nombre: "GARCÍA ACUÑA, CAMILA ALESSANDRA", autorizacion: "2" },
+                    { nombre: "RODRÍGUEZ PÉREZ, CARMEN", autorizacion: "2" }
+                ],
+                "INFANTIL 5 AÑOS B": [
+                    { nombre: "GASSOUN, MOHAMED ALI", autorizacion: "2" },
+                    { nombre: "MIRANDA RUIZ, LUIS", autorizacion: "TODO NO" }
+                ],
+                "1º A": [
+                    { nombre: "EL BRYMY EL MOSADDAQ, MAJD", autorizacion: "2" },
+                    { nombre: "HAIDA, IMRAN", autorizacion: "2" },
+                    { nombre: "PAVON ARANCE, MARTINA", autorizacion: "2" }
+                ],
+                "1º B": [],
+                "2º A": [
+                    { nombre: "GIL RAMÍREZ, JUAN", autorizacion: "2" },
+                    { nombre: "LMADANI, ISRAE", autorizacion: "2" }
+                ],
+                "2º B": [
+                    { nombre: "SÁNCHEZ CARO, CLAUDIA", autorizacion: "2" },
+                    { nombre: "SÁNCHEZ PÉREZ, GERMÁN", autorizacion: "2" }
+                ],
+                "3º A": [
+                    { nombre: "LAGARES MORENO, JUAN", autorizacion: "2" },
+                    { nombre: "MARTÍNEZ MORENO, JAIRO", autorizacion: "2" },
+                    { nombre: "MIRANDA RUÍZ, ELENA", autorizacion: "TODO NO" },
+                    { nombre: "MORENO MEJIAS, ENZO", autorizacion: "2" },
+                    { nombre: "RADU RODRÍGUEZ, HUGO NICOLÁS", autorizacion: "2" },
+                    { nombre: "VILLATORO FIDALGO, LUCIA", autorizacion: "2" }
+                ],
+                "3º B": [
+                    { nombre: "DOMÍNGUEZ LAGARES, JOSE", autorizacion: "2" },
+                    { nombre: "DOMÍNGUEZ TRIAA, ASIHA", autorizacion: "2" },
+                    { nombre: "SAIZ BERNAL, ADAM", autorizacion: "2" },
+                    { nombre: "TEBA DÍAZ, PEDRO JESÚS", autorizacion: "2" }
+                ],
+                "4º A": [
+                    { nombre: "EL BOUAICHI, OUMAIMA", autorizacion: "2" },
+                    { nombre: "JORDÁN SUÁREZ, RUBÉN", autorizacion: "2" },
+                    { nombre: "VALENCIANO BELLERÍN, VERÓNICA", autorizacion: "2" }
+                ],
+                "4º B": [
+                    { nombre: "MÁRQUEZ CEPEDA, MARTA", autorizacion: "2" },
+                    { nombre: "MESBAHI, YOUSSEF", autorizacion: "2" },
+                    { nombre: "MILLÁN ÁLVAREZ, CAYETANO", autorizacion: "2" },
+                    { nombre: "PICHARDO LÓPEZ, NURIA", autorizacion: "2" }
+                ],
+                "5º A": [],
+                "5º B": [],
+                "6º A": [
+                    { nombre: "BELMAMOUN KADRI, IBTISSAM", autorizacion: "2" },
+                    { nombre: "DELGADO PAVON, DAVID", autorizacion: "2" },
+                    { nombre: "EL BOUAICHI, MOHAMED", autorizacion: "2" },
+                    { nombre: "VERDE LIMÓN, DAVID", autorizacion: "2" }
+                ],
+                "6º B": []
+            },
+            religion: {
+                "INFANTIL 3 AÑOS A": [
+                    { nombre: "DOMÍNGUEZ CUESTA, LAURA" },
+                    { nombre: "LAGARES MEDRANO, THIAGO" },
+                    { nombre: "PEÑA MARTÍN, PABLO" },
+                    { nombre: "RODRÍGUEZ LAGARES, MARTINA" },
+                    { nombre: "VASILE, LEONOR MARÍA MELISSA" },
+                    { nombre: "ZAIRI, HAFSA" }
+                ],
+                "INFANTIL 3 AÑOS B": [
+                    { nombre: "DÍAZ MARTÍNEZ, MANUEL" },
+                    { nombre: "DURAN VALQUI, MATHIAS GABRIEL" },
+                    { nombre: "VAS POCLUSAN, ROZA MARÍA" },
+                    { nombre: "YACTAYO CASABONA, LOGAN DEREK" }
+                ],
+                "INFANTIL 4 AÑOS A": [],
+                "INFANTIL 4 AÑOS B": [
+                    { nombre: "ADAM, SOFIA" },
+                    { nombre: "BAHOU, FATIMA EZZAHRA" },
+                    { nombre: "BRICHA, AMIR" },
+                    { nombre: "MESSBAHI, MOHAMMED ALI" }
+                ],
+                "INFANTIL 5 AÑOS A": [
+                    { nombre: "ARRAHMANI, MOHAMMED" },
+                    { nombre: "HALIFA UM DIEILLA, BAHIR" },
+                    { nombre: "LAMKADEM ZEHDALL, ISLAM" }
+                ],
+                "INFANTIL 5 AÑOS B": [
+                    { nombre: "BRICHA, NERMINE" },
+                    { nombre: "GASSOUN, MOHAMED ALI" },
+                    { nombre: "LHABASSI, ADIB" },
+                    { nombre: "MIRANDA RUIZ, LUIS" },
+                    { nombre: "RAMADAN, FARAH NICU" },
+                    { nombre: "RAMADAN RAMIRA" },
+                    { nombre: "TALIDI, BARAA" }
+                ],
+                "1º A": [
+                    { nombre: "EL AHMADI, MOHAMED AMIN" },
+                    { nombre: "EL BRYMY EL MOSADDAQ, MAJD" },
+                    { nombre: "HAIDA, IMRAN" }
+                ],
+                "1º B": [
+                    { nombre: "DOMÍNGUEZ, CUESTA, ANÍBAL" },
+                    { nombre: "EL GOUCHE, LOUAY" },
+                    { nombre: "LAHMIDI, SAMI" },
+                    { nombre: "LAMKADEM EL AZRAK, MARWA" }
+                ],
+                "2º A": [
+                    { nombre: "LMADANI, ISRAE" },
+                    { nombre: "ZAIRI, YASSINE" }
+                ],
+                "2º B": [
+                    { nombre: "CHOULKHA LAHDAOUI, HAMZA" },
+                    { nombre: "EL AHMADI, AMIRA" },
+                    { nombre: "HAYBOUL, KHADIJA" }
+                ],
+                "3º A": [
+                    { nombre: "BLAS CASCO, LUCA" },
+                    { nombre: "MIRANDA RUIZ, ELENA" },
+                    { nombre: "REBOLLO PRADES, LEO" },
+                    { nombre: "VILLATORO FIDALGO, LUCÍA" },
+                    { nombre: "ZAIRI, AYA" }
+                ],
+                "3º B": [],
+                "4º A": [
+                    { nombre: "BENATTI AIT-ZAHRIA, AKRAM" },
+                    { nombre: "DÍAZ MARTÍNEZ, ALEJANDRA" },
+                    { nombre: "DÍAZ RUÍZ, PATRICIA" },
+                    { nombre: "DUQUE SALAS, ALICIA" },
+                    { nombre: "EL BOUAICHI, OUMAIMA" },
+                    { nombre: "MESSBAHI, AWALEF" },
+                    { nombre: "MOLINA DÍAZ, LUCAS" },
+                    { nombre: "TAHIRI, ANASS" },
+                    { nombre: "VEGA SANCHEZ, LEO" }
+                ],
+                "4º B": [
+                    { nombre: "ADDIA, MOHAMMED RIDA" },
+                    { nombre: "DAYFOLLAH, DOUAE" },
+                    { nombre: "GHANMI MANSOUR, ALI" },
+                    { nombre: "GHANMI MANSOUR, YAHIA" },
+                    { nombre: "LAHMIDI, ISMAIL" },
+                    { nombre: "LAMKADEM ZEHDAL, NOUR" },
+                    { nombre: "LMADANI, FATNA" },
+                    { nombre: "MESBAHI, YOUSSEF" },
+                    { nombre: "TALIDI, NOUR" }
+                ],
+                "5º A": [
+                    { nombre: "ADDIA, KHADIJA" },
+                    { nombre: "EL GOUCHE, SOHAID" },
+                    { nombre: "GONZÁLEZ ALCARAZ, ULISES" },
+                    { nombre: "ORILLÁN GRANDE, ABRIL" }
+                ],
+                "5º B": [
+                    { nombre: "CHOULKHA LAHDAOUR, IMANE" },
+                    { nombre: "LAMKADEM EL AZRAK, ASMA" },
+                    { nombre: "PALOS CÁRDENAS, ANDRÉS" },
+                    { nombre: "ZAYADI BOUBKEUR, ABDULAH" }
+                ],
+                "6º A": [
+                    { nombre: "BEL MAMOUN, IBLISSAM" },
+                    { nombre: "EL BOUAICHI, MOHAMED" }
+                ],
+                "6º B": [
+                    { nombre: "ADAM, ISRAE" },
+                    { nombre: "BEHDAOUI, YASMINE" },
+                    { nombre: "MARTÍN HERNÁNDEZ, ÁLVARO" },
+                    { nombre: "REBOLLO PRADES, HUGO" },
+                    { nombre: "VEGA SÁNCHEZ, FABIOLA" }
+                ]
+            },
+            separados: {
+                "INFANTIL 3 AÑOS A": [
+                    { nombre: "VASILE, LEONOR MARÍA MELISSA", observacion: "FAMILIA MONOPARENTAL" }
+                ],
+                "INFANTIL 3 AÑOS B": [
+                    { nombre: "LEPE HUELVA, VALERIA", observacion: "SENTENCIA EN EXPEDIENTE" },
+                    { nombre: "MEDRANO CASCALES, MARINA", observacion: "SENTENCIA EN EXPEDIENTE" }
+                ],
+                "INFANTIL 4 AÑOS A": [
+                    { nombre: "CALVO BALDÁN, JIMENA", observacion: "??????" }
+                ],
+                "INFANTIL 4 AÑOS B": [
+                    { nombre: "GONZÁLEZ TORRES, IRENE", observacion: "SENTENCIA EN EXPEDIENTE" }
+                ],
+                "INFANTIL 5 AÑOS A": [
+                    { nombre: "GARCÍA ACUÑA, CAMILA ALESSANDRA", observacion: "FAMILIA MONOPARENTAL" }
+                ],
+                "INFANTIL 5 AÑOS B": [
+                    { nombre: "CALLE MELENDO, CLAUDIA", observacion: "??????" }
+                ],
+                "1º A": [
+                    { nombre: "CÓRDOBA ALCARRANZA, JORDAN", observacion: "FAMILIA MONOPARENTAL" },
+                    { nombre: "EL GOUCHE, LOUAY", observacion: "SENTENCIA EN EXPEDIENTE/ ORDEN ALEJAMIENTO" },
+                    { nombre: "FLORES COLLADO, TRIANA", observacion: "??????" },
+                    { nombre: "GIL GIL, NATALIA", observacion: "FAMILIA MONOPARENTAL" }
+                ],
+                "1º B": [
+                    { nombre: "DOMÍNGUEZ PÉREZ, MALENA", observacion: "SENTENCIA EN EXPEDIENTE" },
+                    { nombre: "CALVO BALDÁN, CAYETANO", observacion: "??????" },
+                    { nombre: "DOMÍNGUEZ SUÁREZ, NURIA", observacion: "SENTENCIA EN EXPEDIENTE" },
+                    { nombre: "TEBA DÍAZ, ALEJANDRO", observacion: "NO ENTREGA NADA" }
+                ],
+                "2º A": [
+                    { nombre: "GARCÍA INFANTE, JIMENA", observacion: "CONVENIO REGULADOR EN EXPEDIENTE" },
+                    { nombre: "GONZÁLEZ TORRES, CARMEN", observacion: "SENTENCIA EN EXPEDIENTE" },
+                    { nombre: "MILLÁN LAGARES, VALERIA", observacion: "NO ENTREGA NADA" }
+                ],
+                "2º B": [],
+                "3º A": [
+                    { nombre: "LAGARES ALANÍS, MARINA", observacion: "SENTENCIA EN EXPEDIENTE" },
+                    { nombre: "GARCÍA JIMÉNEZ, ROCÍO", observacion: "NO ENTREGA NADA" },
+                    { nombre: "GARCÍA JIMÉNEZ, SILVIA", observacion: "NO ENTREGA NADA" },
+                    { nombre: "MARAVER DÍAZ, FERNANDO", observacion: "NO ENTREGA NADA" }
+                ],
+                "3º B": [
+                    { nombre: "ARTEAGA MIRKOVIC, NICOLE ALYSON", observacion: "NO ENTREGA NADA" },
+                    { nombre: "CASADO GODOY, ROSA", observacion: "RESOLUCIÓN DE ACOGIMIENTO" },
+                    { nombre: "DOMÍNGUEZ LAGARES, JOSE", observacion: "NO ENTREGA NADA" }
+                ],
+                "4º A": [
+                    { nombre: "DÍAZ RUÍZ, PATRICIA", observacion: "FAMILIA MONOPARENTAL (CUSTODIA ABUELOS)" },
+                    { nombre: "JORDÁN SUÁREZ, RUBÉN", observacion: "??????" },
+                    { nombre: "VALENCIANO BELLERÍN, VERÓNICA", observacion: "SENTENCIA EN EXPEDIENTE" }
+                ],
+                "4º B": [
+                    { nombre: "DÍAZ AVILA, TRISTÁN", observacion: "SENTENCIA EN EXPEDIENTE" },
+                    { nombre: "DOMÍNGUEZ PÉREA, LEO", observacion: "SENTENCIA EN EXPEDIENTE" },
+                    { nombre: "PICHARDO LÓPEZ, NURIA", observacion: "SENTENCIA EN EXPEDIENTE" }
+                ],
+                "5º A": [
+                    { nombre: "EL GOUCHE, SOHAID", observacion: "SENENCI EN EXPEDIENTE/ORDEN ALEJAMIENTO" },
+                    { nombre: "GONZÁLEZ ALCARAZ, ULISES", observacion: "SENTENCIA EN EXPEDIENTE" },
+                    { nombre: "ORILLÁN GRANDE, ABRIL", observacion: "CONVENIO REGULADOR" },
+                    { nombre: "RAMOS PÉREZ, ABRAHAM", observacion: "NO ENTREGA NADA" }
+                ],
+                "5º B": [
+                    { nombre: "CÁRDENAS MACARRO, MARTA", observacion: "SENTENCIA EN EXPEDIENTE" },
+                    { nombre: "CASADO GODOY, NAZARET", observacion: "RESOLUCIÓN DE DESAMPARO" },
+                    { nombre: "DOMÍNGUEZ SUÁREZ, DANIEL", observacion: "SENTENCIA EN EXPEDIENTE" }
+                ],
+                "6º A": [
+                    { nombre: "CÁRDENAS MACARRO, FÉLIX", observacion: "SENTENCIA EN EXPEDIENTE HNA" },
+                    { nombre: "DELGADO PAVON, DAVID", observacion: "NO ENTREGA NADA" },
+                    { nombre: "FLORES COLLADO, VIOLETA", observacion: "??????" },
+                    { nombre: "GIL ROLDÁN, ÁNGEL", observacion: "SENTENCIA EN EXPEDIENTE" },
+                    { nombre: "JÉREZ HERNÁNDEZ, DAVID", observacion: "NO ENTREGA NADA" },
+                    { nombre: "TEBA DÍAZ, CARLA", observacion: "NO ENTREGA NADA" }
+                ],
+                "6º B": []
+            },
+            matinal: {
+                "INFANTIL 3 AÑOS A": [
+                    { nombre: "DOMÍNGUEZ CUESTA, LAURA", telefonos: "665817568//637375038" },
+                    { nombre: "LIMÓN MIRANDA, ALBERTO", telefonos: "664504367//603674748" },
+                    { nombre: "RODRÍGUEZ LAGARES, MARTINA", telefonos: "617552870" }
+                ],
+                "INFANTIL 3 AÑOS B": [
+                    { nombre: "DÍAZ MARTÍNEZ, MANUEL", telefonos: "647177753//661226755" },
+                    { nombre: "DURÁN VALQUI, MATHIAS GABRIEL", telefonos: "641028876//610241108" },
+                    { nombre: "JARILLO CORTÉS, MANUEL", telefonos: "722736370//639248122" },
+                    { nombre: "LEPE HUELVA, VALERIA", telefonos: "645637046//671934340" },
+                    { nombre: "LEPE VILLARÁN, NAZARET", telefonos: "620313846//600860026" },
+                    { nombre: "MEDRANO GARRIDO, MANUEL", telefonos: "620767232//619434078" }
+                ],
+                "INFANTIL 4 AÑOS A": [
+                    { nombre: "AVILA MORENO, ALEJANDRO", telefonos: "675723259//616422508" },
+                    { nombre: "DÍAZ RUIZ, ÁNGEL", telefonos: "628569387//636828596" },
+                    { nombre: "JARILLO CORTÉS, LOLA", telefonos: "722736370//639248122" },
+                    { nombre: "PAVON RUBIO, CANDELA", telefonos: "663380383//625914502" },
+                    { nombre: "TERREROS LAGARES, ÁNGEL", telefonos: "652993567//628001085" }
+                ],
+                "INFANTIL 4 AÑOS B": [],
+                "INFANTIL 5 AÑOS A": [],
+                "INFANTIL 5 AÑOS B": [
+                    { nombre: "MIRANDA RUIZ, LUIS", telefonos: "651664331//620444192" }
+                ],
+                "1º A": [
+                    { nombre: "DÍAZ SANTO, ALEJANDRO", telefonos: "627269835//618343512" },
+                    { nombre: "DOMÍNGUEZ CUESTA, ANIBAL", telefonos: "665817568//637375038" },
+                    { nombre: "GIL GIL, NATALIA", telefonos: "605248986" },
+                    { nombre: "GONZÁLEZ MORALES, CURRO", telefonos: "615635056//605817110" }
+                ],
+                "1º B": [
+                    { nombre: "BUENO FÉLIX, JUAN", telefonos: "680227965//606673073" },
+                    { nombre: "BUENO FÉLIX, MARÍA", telefonos: "680227965//606673073" },
+                    { nombre: "CORONEL DELGADO, LAURA", telefonos: "654125826//661249223" },
+                    { nombre: "DOMÍNGUEZ SUÁREZ, NURIA", telefonos: "679710310//661978227" },
+                    { nombre: "ROSALES VAN ESSCHES, LUCAS", telefonos: "659336587//676446527" }
+                ],
+                "2º A": [
+                    { nombre: "CORONEL DELGADO, LUCÍA", telefonos: "654125826//661249223" },
+                    { nombre: "SALAS RUBIO, CARMEN", telefonos: "635011003//686982370" }
+                ],
+                "2º B": [
+                    { nombre: "CALLE RODRÍGUEZ, DANIELA", telefonos: "695916104//675972763" },
+                    { nombre: "DOMÍNGUEZ SORIANO, ALBA", telefonos: "616886824//627170470" },
+                    { nombre: "GARRIDO RUBIO, FRANCISCO SAN JUAN", telefonos: "635407944//615426509" },
+                    { nombre: "SÁNCHEZ PÉREZ, GERMÁN", telefonos: "617416164//667647200" }
+                ],
+                "3º A": [
+                    { nombre: "BLAS CASCO, LUCA", telefonos: "617284635//615264923" },
+                    { nombre: "LAGARES ALANÍS, MARINA", telefonos: "696886212//639839029" },
+                    { nombre: "MIRANDA RUIZ, ELENA", telefonos: "651664331//620444192" },
+                    { nombre: "REBOLLO PRADES, LEO", telefonos: "658494701//617091490" }
+                ],
+                "3º B": [
+                    { nombre: "GÓMEZ DOMÍNGUEZ, LAURA", telefonos: "684010984//660424297" },
+                    { nombre: "CASADO GODOY, ROSA", telefonos: "685848351//656973302" },
+                    { nombre: "LEPE VILLARÁN, CARLOTA", telefonos: "620313846//600860026" },
+                    { nombre: "LOPEZ MORALES, ANTONIO JOSÉ", telefonos: "655767673//625168808" },
+                    { nombre: "LOPEZ MORALES, ISABEL", telefonos: "655767673//625168808" }
+                ],
+                "4º A": [
+                    { nombre: "DÍAZ MARTÍNEZ, ALEJANDRA", telefonos: "647177753//661226755" },
+                    { nombre: "DÍAZ RUIZ, PATRICIA", telefonos: "677993945//677993914" },
+                    { nombre: "DÍAZ RUÍZ, RUBÉN", telefonos: "628569387//636828596" },
+                    { nombre: "LOPEZ MORALES, ALBERTO", telefonos: "655767673//625168808" }
+                ],
+                "4º B": [],
+                "5º A": [
+                    { nombre: "BECERRA AVILA, NACHO", telefonos: "658694235//658694236" },
+                    { nombre: "LOPEZ MORALES, ISIDRO JOSÉ", telefonos: "655767673//625168808" },
+                    { nombre: "ORILLÁN GRANDE, ABRIL", telefonos: "677079591" }
+                ],
+                "5º B": [
+                    { nombre: "CALVO BARRERO, CARMEN", telefonos: "666683400//693013980" },
+                    { nombre: "CASADO GODOY, NAZARET", telefonos: "685848351//656973302" },
+                    { nombre: "DOMINGUEZ SUAREZ, DANIEL", telefonos: "679710310//661978227" }
+                ],
+                "6º A": [],
+                "6º B": [
+                    { nombre: "AVILA MORENO, ALBA", telefonos: "675723259//616422508" },
+                    { nombre: "REBOLLO PRADES, HUGO", telefonos: "658494701//617091490" }
+                ]
+            },
+            comedor: {
+                "INFANTIL 3 AÑOS A": [
+                    { nombre: "REYES GARCÍA, BRUNO", telefonos: "647035761//677808316" },
+                    { nombre: "RODRÍGUEZ LAGARES, MARTINA", telefonos: "617552870//610795961" }
+                ],
+                "INFANTIL 3 AÑOS B": [
+                    { nombre: "DÍAZ MARTÍNEZ, MANUEL", telefonos: "647177753//661226755" },
+                    { nombre: "DURÁN VALQUI, MATHIAS GABRIEL", telefonos: "641028876//610241108" },
+                    { nombre: "GONZÁLEZ BARROSO, JULIA", telefonos: "635272237//659356639" },
+                    { nombre: "JARILLO CORTÉS, MANUEL", telefonos: "722736370//639248122" },
+                    { nombre: "LEPE HUELVA, VALERIA", telefonos: "645637046//671934340" },
+                    { nombre: "LEPE VILLARÁN, NAZARET", telefonos: "620313846//600860026" },
+                    { nombre: "MEDRANO GARRIDO, MANUEL", telefonos: "620767232//619434078" },
+                    { nombre: "VAS POCLUSAN, ROZA MARÍA", telefonos: "642959308//642076728" }
+                ],
+                "INFANTIL 4 AÑOS A": [
+                    { nombre: "AVILA MORENO, ALEJANDRO", telefonos: "675723259//616422508" },
+                    { nombre: "DÍAZ RUIZ, ÁNGEL", telefonos: "628569387//636828596" },
+                    { nombre: "JARILLO CORTÉS, LOLA", telefonos: "722736370//639248122" },
+                    { nombre: "LEPE DELGADO, MARTA", telefonos: "672341437//635553074" },
+                    { nombre: "TERREROS LAGARES, ÁNGEL", telefonos: "652993567//628001085" }
+                ],
+                "INFANTIL 4 AÑOS B": [
+                    { nombre: "SOFIA ADAM", telefonos: "642287054//642039850" },
+                    { nombre: "FATIMA EZZAHRA BAHOU", telefonos: "632363294//642384784" },
+                    { nombre: "CARMEN BENJUMEA DOMÍNGUEZ", telefonos: "661249014" }
+                ],
+                "INFANTIL 5 AÑOS A": [
+                    { nombre: "INFANTE LÓPEZ, CLARA", telefonos: "676144162//635999038" }
+                ],
+                "INFANTIL 5 AÑOS B": [
+                    { nombre: "ALONSO HURTADO, MANUEL", telefonos: "608849381//653773246" },
+                    { nombre: "MIRANDA RUIZ, LUIS", telefonos: "651664331//620444192" }
+                ],
+                "1ºA": [
+                    { nombre: "PABLO DÍAZ", telefonos: "617286084" },
+                    { nombre: "MARTINA PAVON", telefonos: "600068787" }
+                ],
+                "1ºB": [
+                    { nombre: "JORDAN CÓRDOBA", telefonos: "624496636" },
+                    { nombre: "LOUAY EL GOUCHE", telefonos: "641420653" },
+                    { nombre: "NATALIA GIL", telefonos: "605248986" },
+                    { nombre: "CURRO GONZÁLEZ MORALES", telefonos: "615635056//605817110" },
+                    { nombre: "SAMI LAHMIDI", telefonos: "642964993" },
+                    { nombre: "ESTHER PÉREZ GARCÍA", telefonos: "661273933" }
+                ],
+                "2º A": [
+                    { nombre: "LUCÍA CORONEL DELGADO", telefonos: "654125826" },
+                    { nombre: "HUGO CORONEL LOBO", telefonos: "654866474" },
+                    { nombre: "DAMIAN DIAZ CARO", telefonos: "605955245" },
+                    { nombre: "GONZALO ESCUDERO CÁRDENAS", telefonos: "691542901" },
+                    { nombre: "JAVIER LEPE MARTÍNEZ", telefonos: "615990195" },
+                    { nombre: "ROCÍO MILLÁN ÁLVAREZ", telefonos: "685200698" }
+                ],
+                "2º B": [
+                    { nombre: "DANIELA CALLE RODRÍGUEZ", telefonos: "695916104//675972763" },
+                    { nombre: "FRANCISCO J. GARRIDO RUBIO", telefonos: "635407944" }
+                ],
+                "3º A": [
+                    { nombre: "RADU RODRÍGUEZ, HUGO NICOLÁS", telefonos: "643166608//642628053" },
+                    { nombre: "MIRANDA RUIZ, ELENA", telefonos: "651664331//620444192" },
+                    { nombre: "LAGARES ALANÍS, MARINA", telefonos: "696886212//639839029" },
+                    { nombre: "REBOLLO PRADES, LEO", telefonos: "658494701//617091490" }
+                ],
+                "3º B": [
+                    { nombre: "GÓMEZ DOMÍNGUEZ, LAURA", telefonos: "684010984//660424297" },
+                    { nombre: "CASADO GODOY, ROSA", telefonos: "685848351//656973302" },
+                    { nombre: "LEPE VILLARÁN, CARLOTA", telefonos: "620313846//600860026" },
+                    { nombre: "LOPEZ MORALES, ANTONIO", telefonos: "655767673//625168808" },
+                    { nombre: "LOPEZ MORALES, ISABEL", telefonos: "655767673//625168808" }
+                ],
+                "4º A": [
+                    { nombre: "DÍAZ MARTÍNEZ, ALEJANDRA", telefonos: "647177753//661226755" },
+                    { nombre: "DIAZ RUIZ, PATRICIA", telefonos: "747408651//959400189" },
+                    { nombre: "DIAZ RUÍZ, RUBÉN", telefonos: "628569387//636828596" },
+                    { nombre: "LOPEZ MORALES, ALBERTO", telefonos: "655767673//625168808" }
+                ],
+                "4º B": [
+                    { nombre: "MARCOS CÁRDENAS GÓMEZ", telefonos: "617841799" },
+                    { nombre: "ALI GHANMI MANSOUR", telefonos: "641969683" },
+                    { nombre: "ISMAIL LAHMIDI", telefonos: "642964993" },
+                    { nombre: "CAYETANO MILLÁN ÁLVAREZ", telefonos: "685200698" }
+                ],
+                "5º A": [
+                    { nombre: "ABRAHAM RAMOS", telefonos: "663885933" }
+                ],
+                "5º B": [
+                    { nombre: "ANTONIO MÁRQUEZ CEPEDA", telefonos: "609927149" },
+                    { nombre: "ABRIL MEDINA LEPE", telefonos: "651833603" },
+                    { nombre: "CLAUDIA RAMOS ALANÍS", telefonos: "627536639" },
+                    { nombre: "ENZO GANDULO PALACIO", telefonos: "619966390" }
+                ],
+                "6º A": [
+                    { nombre: "DAVID JEREZ HERNÁNDEZ", telefonos: "652105292" },
+                    { nombre: "SERGIO RAMÍREZ PINTO", telefonos: "647719477" },
+                    { nombre: "DAVID VERDE LIMÓN", telefonos: "641455738" }
+                ],
+                "6º B": [
+                    { nombre: "ADRIANA DÍAZ RUÍZ", telefonos: "605622002" },
+                    { nombre: "ÁLVARO MARTÍN HERNÁNDEZ", telefonos: "656468571" },
+                    { nombre: "FRANCISCO J MILLAN ÁLVAREZ", telefonos: "685200698" },
+                    { nombre: "NOA RODRIGUEZ MILLÁN", telefonos: "600700353" }
+                ]
+            },
+            alergias: {
+                "INFANTIL 3 AÑOS A": [
+                    { nombre: "CRISTO PACHECO, AINHOA", tipo: "Alergia", detalle: "Al huevo, rebozados, bizcochos…", telefono: "687-570111" },
+                    { nombre: "CARMEN DELGADO MORENO", tipo: "Alergia", detalle: "Antibiótico: azitromicina", telefono: "668-562523" },
+                    { nombre: "GONZALO MARTÍN MARTÍNEZ", tipo: "Alergia", detalle: "Alergia a la proteina de la leche de vaca", telefono: "691-493518" },
+                    { nombre: "RODRÍGUEZ LAGARES, MARTINA", tipo: "Alergia", detalle: "Alergia al brocoli", telefono: "617-552870" },
+                    { nombre: "ALICIA ROJAS MÉNDEZ", tipo: "Enfermedad", detalle: "soplo corazón(revisiones)", telefono: "645-211248" }
+                ],
+                "INFANTIL 3 AÑOS B": [
+                    { nombre: "JARILLO CORTÉS, MANUEL", tipo: "Alergia", detalle: "Alergia y Asma (singulair y ventolín)", telefono: "722-736370" }
+                ],
+                "INFANTIL 4 AÑOS A": [
+                    { nombre: "CRISTO ORIHUELA, IRIA", tipo: "Alergia", detalle: "verduras hojas verdes, brocoli, espinacas", telefono: "685-849532" },
+                    { nombre: "DÍAZ RUÍZ, ÁNGEL", tipo: "Enfermedad", detalle: "Encefalopatía hipoxico-Isquémica moderada(recibe terapia fisioterapeuta)", telefono: "628-569387" },
+                    { nombre: "JARILLO CORTÉS, LOLA", tipo: "Alergia", detalle: "Alérgica(tratamiento para alergia) y Asmática (Ventolin cuando es necesario y pastilla diaria)", telefono: "722-736370" },
+                    { nombre: "LAGARES MORENO, MIGUEL", tipo: "Alergia", detalle: "Lactosa", telefono: "657-740324" },
+                    { nombre: "LEPE PINEDA, VALENTINA", tipo: "Enfermedad", detalle: "Operación en craneo/Utiliza en ocasiones casco de protección, prueba de control cada 6 meses", telefono: "611-004229" }
+                ],
+                "INFANTIL 4 AÑOS B": [
+                    { nombre: "ADAM, SOFIA", tipo: "Alergia", detalle: "Lactosa (sensibilidad leche)", telefono: "642-287054" },
+                    { nombre: "BAHOU, FATIMA EZZAHRA", tipo: "Alergia", detalle: "Alimentos ultraprocesados (galletas, dulces…)", telefono: "632-363294" },
+                    { nombre: "BENJUMEA DOMÍNGUEZ, CARMEN", tipo: "Enfermedad", detalle: "Luxación de la cabeza de radio", telefono: "661-249014" }
+                ],
+                "INFANTIL 5 AÑOS A": [
+                    { nombre: "DÍAZ BECERRIL, JAVIER", tipo: "Alergia", detalle: "ibuprofeno", telefono: "663-585521" }
+                ],
+                "INFANTIL 5 AÑOS B": [
+                    { nombre: "DOMINGUEZ MORENO, LUIS CARLOS", tipo: "Enfermedad", detalle: "Hipotireidismo congénito (EUTIROX )", telefono: "618-269180" },
+                    { nombre: "RODRÍGUEZ CARO, CANDELA", tipo: "Enfermedad", detalle: "PFAPA", telefono: "695-631166" }
+                ],
+                "1º A": [
+                    { nombre: "CÓRDOBA, JORDAN", tipo: "Enfermedad", detalle: "Ipospadia/ Hernia", telefono: "624-496636" },
+                    { nombre: "EL GOUCHE, LOUAY", tipo: "Enfermedad", detalle: "Corazón", telefono: "641-420653" },
+                    { nombre: "GIL, NATALIA", tipo: "Alergia", detalle: "Alergia al gluten", telefono: "605-248986" },
+                    { nombre: "GONZÁLEZ MORALES, CURRO", tipo: "Alergia", detalle: "Alergias Melocotón y a la piel de cualquier fruta, acaros, olivo, graminia, perro (vacuna)", telefono: "615-635056" },
+                    { nombre: "LAHMIDI, SAMI", tipo: "Alergia", detalle: "Alérgico al huevo y la leche", telefono: "642-964993" },
+                    { nombre: "PÉREZ GARCÍA, ESTHER", tipo: "Alergia", detalle: "Intolerancia a la Lactosa", telefono: "661-273933" }
+                ],
+                "1º B": [
+                    { nombre: "DÍAZ, PABLO", tipo: "Alergia", detalle: "Melocotón/frutos secos Proteina PLH", telefono: "617-286084" },
+                    { nombre: "PAVON, MARTINA", tipo: "Enfermedad", detalle: "Retraso Lenguaje", telefono: "600-068787" }
+                ],
+                "2º A": [
+                    { nombre: "CORONEL DELGADO, LUCÍA", tipo: "Alergia", detalle: "Amoxicilina", telefono: "654-125826" },
+                    { nombre: "CORONEL LOBO, HUGO", tipo: "Alergia", detalle: "Amoxicilina", telefono: "654-866474" },
+                    { nombre: "DIAZ CARO, DAMIAN", tipo: "Alergia", detalle: "Alergia inespecífica (Inhaladores y cremas piel)", telefono: "605-955245" },
+                    { nombre: "ESCUDERO CÁRDENAS, GONZALO", tipo: "Alergia", detalle: "Alergía (vacuna)", telefono: "691-542901" },
+                    { nombre: "LEPE MARTÍNEZ, JAVIER", tipo: "Enfermedad", detalle: "ENFERMEDAD NEUROMUSCULAR. DISTROFIA MUSCULAR ALFADISTROGLICANOPATIA", telefono: "615-990195" },
+                    { nombre: "MILLÁN ÁLVAREZ, ROCÍO", tipo: "Alergia", detalle: "Amoxicilina/ Operada trato más inmaduro ovárico, seguimiento periódico", telefono: "685-200698" }
+                ],
+                "2º B": [
+                    { nombre: "CALLE RODRÍGUEZ, DANIELA", tipo: "Alergia", detalle: "Alergia ácaros en almacenamiento", telefono: "695-916104" },
+                    { nombre: "GARRIDO RUBIO, FRANCISCO J.", tipo: "Alergia", detalle: "Alergia ácaros", telefono: "635-407944" }
+                ],
+                "3º A": [
+                    { nombre: "MARTÍNEZ ALINDADO, ELISA", tipo: "Alergia", detalle: "Le están haciendo pruebas de intolerancias", telefono: "695-698873" },
+                    { nombre: "MARTÍNEZ MORENO, JAIRO", tipo: "Alergia", detalle: "Amoxicilina", telefono: "660-728024" },
+                    { nombre: "MORENO AVILA, MANUEL", tipo: "Enfermedad", detalle: "Alopecia areata (protopic)", telefono: "674-336292" },
+                    { nombre: "MORENO, ÁNGELA", tipo: "Enfermedad", detalle: "Fritos, Azúcares, Grasas, Alimentos integrales, verduras hoja larga Y Crohn (Azatioprina y mesalazina)", telefono: "637-2111393" },
+                    { nombre: "DÍAZ MENDOZA, ANTONIO J", tipo: "Enfermedad", detalle: "Monteluca para la bronquitis", telefono: "654-721620" },
+                    { nombre: "RAMOS RUBIO, MANUEL", tipo: "Alergia", detalle: "Celiaco crónico. A todos los slimentos contengan gluten", telefono: "615-438018" },
+                    { nombre: "VILLATOROS, LUCÍA", tipo: "Alergia", detalle: "Frutos Secos (Nueces y Cacahuetes)", telefono: "649-284475" }
+                ],
+                "3º B": [
+                    { nombre: "CRISTO, ABRIL", tipo: "Alergia", detalle: "Piel atópica y delicada (Las toallitas de bebés en la carita le producen alergia)", telefono: "687-570111" },
+                    { nombre: "LEPE, MARÍA", tipo: "Enfermedad", detalle: "Distrofia Muscular", telefono: "615-990195" },
+                    { nombre: "MORENO CAMACHO, LUIS", tipo: "Alergia", detalle: "Alergia (ácaros) vacuna alergia mensual", telefono: "615-103408" },
+                    { nombre: "PÉREZ DORADO, ALBA", tipo: "Enfermedad", detalle: "Fenilcetonuria (Dieta específicay suplementos)", telefono: "629-276536" }
+                ],
+                "4º A": [
+                    { nombre: "MACIAS FLORES, ANA", tipo: "Enfermedad", detalle: "Olivo y piel melocotón/ Tiene una válvula bicúspide que anualmente hay que revisar y por ahora no reviste gravedad (Antiestamínicos)", telefono: "655-765012" },
+                    { nombre: "DÍAZ RUIZ, RUBÉN", tipo: "Alergia", detalle: "Olivo (Tratamiento para la alergia)", telefono: "628-569387" }
+                ],
+                "4º B": [
+                    { nombre: "CÁRDENAS GÓMEZ, MARCOS", tipo: "Alergia", detalle: "Alergia al polen (Vacuna alergia y pastillas alergia) y Asma", telefono: "617-841799" },
+                    { nombre: "GHANMI MANSOUR, ALI", tipo: "Alergia", detalle: "Alergia al polen", telefono: "641-969683" },
+                    { nombre: "LAHMIDI, ISMAIL", tipo: "Alergia", detalle: "Asma", telefono: "642-964993" },
+                    { nombre: "MILLÁN ÁLVAREZ, CAYETANO", tipo: "Enfermedad", detalle: "TEA grado 1, crisis de ausencia (Depakine)", telefono: "685-200698" }
+                ],
+                "5º A": [
+                    { nombre: "RAMOS, ABRAHAM", tipo: "Alergia", detalle: "Intolerancia a la Lactosa", telefono: "663-885933" }
+                ],
+                "5º B": [
+                    { nombre: "MÁRQUEZ CEPEDA, ANTONIO", tipo: "Alergia", detalle: "Alergia(Ebastel y en ocasiones ventolin) Flumil y Fluidasa", telefono: "609-927149" },
+                    { nombre: "MEDINA LEPE, ABRIL", tipo: "Enfermedad", detalle: "Hormonas para crecimiento", telefono: "651-833603" },
+                    { nombre: "RAMOS ALANÍS, CLAUDIA", tipo: "Alergia", detalle: "Amoxicilina", telefono: "627-536639" },
+                    { nombre: "GANDULO PALACIO, ENZO", tipo: "Alergia", detalle: "Alergia Abispas y Abejas (Tratamiento Adrenalina)", telefono: "619-966390" }
+                ],
+                "6º A": [
+                    { nombre: "JEREZ HERNÁNDEZ, DAVID", tipo: "Enfermedad", detalle: "Síndrome de Tourette(Terapias específicas)", telefono: "652-105292" },
+                    { nombre: "RAMÍREZ PINTO, SERGIO", tipo: "Alergia", detalle: "Clara de Huevo", telefono: "647-719477" },
+                    { nombre: "VERDE LIMÓN, DAVID", tipo: "Alergia", detalle: "Intolerancia a la lactosa", telefono: "641-455738" }
+                ],
+                "6º B": [
+                    { nombre: "DÍAZ RUÍZ, ADRIANA", tipo: "Enfermedad", detalle: "Hormonas del crecimiento", telefono: "605-622002" },
+                    { nombre: "MARTÍN HERNÁNDEZ, ÁLVARO", tipo: "Alergia", detalle: "Alergia al olivo Y Fotofobia y tralación metamérica espalda", telefono: "656-468571" },
+                    { nombre: "MILLAN ÁLVAREZ, FRANCISCO J", tipo: "Alergia", detalle: "Intolerante a la lactosa, cacahuetes, anisakis, clara huevo, Amoxicilina Penicil y Asma (Aerosol, montelukasy vacunamensual)", telefono: "685-200698" },
+                    { nombre: "RODRIGUEZ MILLÁN, NOA", tipo: "Alergia", detalle: "Alergia y Asma (Aerosoles)", telefono: "600-700353" }
+                ]
+            }
+        };
+        
+        let currentDocument = null;
+        let currentCourse = null;
+        let allStudents = [];
+        let navigationHistory = [];
+        let audioContext = null;
+        let audioBuffer = null;
+        let userInteracted = false;
+        
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+        
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                fetch('https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/37b3eb2da9c15c04dfb71dfe1be60f088ea3cdfc/Tap.mp3')
+                    .then(response => response.arrayBuffer())
+                    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+                    .then(buffer => {
+                        audioBuffer = buffer;
+                    })
+                    .catch(e => console.log("Error al cargar el audio:", e));
+            }
+        }
+        
+        function playTapSound() {
+            if (!userInteracted) return;
+            
+            if (audioContext && audioBuffer) {
+                const source = audioContext.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(audioContext.destination);
+                source.start(0);
+            } else if (!isIOS) {
+                const tapSound = document.getElementById('tap-sound');
+                tapSound.currentTime = 0;
+                tapSound.play().catch(e => console.log("Error al reproducir el sonido:", e));
+            }
+        }
+        
+        function loadAllStudents() {
+            allStudents = [];
+            Object.keys(documentsData).forEach(docType => {
+                if (docType !== 'alergias') {
+                    Object.keys(documentsData[docType]).forEach(course => {
+                        documentsData[docType][course].forEach(student => {
+                            const studentData = {
+                                nombre: student.nombre,
+                                curso: course,
+                                documentos: {}
+                            };
+                            studentData.documentos[docType] = student;
+                            
+                            const existingStudentIndex = allStudents.findIndex(s => s.nombre === student.nombre);
+                            if (existingStudentIndex !== -1) {
+                                allStudents[existingStudentIndex].documentos[docType] = student;
+                            } else {
+                                allStudents.push(studentData);
+                            }
+                        });
+                    });
+                }
+            });
+            
+            Object.keys(documentsData.alergias).forEach(course => {
+                documentsData.alergias[course].forEach(allergy => {
+                    const studentIndex = allStudents.findIndex(s => s.nombre === allergy.nombre);
+                    
+                    if (studentIndex !== -1) {
+                        if (!allStudents[studentIndex].documentos.alergias) {
+                            allStudents[studentIndex].documentos.alergias = [];
+                        }
+                        allStudents[studentIndex].documentos.alergias.push({
+                            ...allergy,
+                            curso: course
+                        });
+                    } else {
+                        allStudents.push({
+                            nombre: allergy.nombre,
+                            curso: course,
+                            documentos: {
+                                alergias: [{
+                                    ...allergy,
+                                    curso: course
+                                }]
+                            }
+                        });
+                    }
+                });
+            });
+        }
+        
+        function loadCourses(documentType) {
+            const coursesContainer = document.getElementById('courses-container');
+            coursesContainer.innerHTML = '';
+            currentDocument = documentType;
+            
+            const courses = Object.keys(documentsData[documentType]);
+            
+            if (courses.length === 0) {
+                coursesContainer.innerHTML = '<div class="no-data">No hay cursos disponibles para este documento</div>';
+                return;
+            }
+            
+            courses.forEach(course => {
+                const button = document.createElement('button');
+                button.className = 'course-btn';
+                button.textContent = course;
+                button.addEventListener('click', () => {
+                    playTapSound();
+                    currentCourse = course;
+                    if (documentType === 'alergias') {
+                        loadAllergiesCourse(course);
+                    } else {
+                        loadStudents(documentType, course);
+                    }
+                });
+                coursesContainer.appendChild(button);
+            });
+            
+            navigationHistory.push('home-screen');
+            showScreen('course-screen');
+        }
+        
+        function loadStudents(documentType, course) {
+            const studentsList = document.getElementById('student-list');
+            studentsList.innerHTML = '';
+            
+            const students = documentsData[documentType][course] || [];
+            
+            document.getElementById('details-title').textContent = `${course} - ${getDocumentTitle(documentType)}`;
+            document.getElementById('students-count').textContent = `${students.length} alumnos`;
+            
+            if (students.length === 0) {
+                studentsList.innerHTML = '<div class="no-data">No hay información disponible para este curso</div>';
+                navigationHistory.push('course-screen');
+                showScreen('details-screen');
+                return;
+            }
+            
+            students.forEach(student => {
+                const studentCard = document.createElement('div');
+                studentCard.className = 'student-card';
+                
+                let studentInfo = `<div class="student-name">${student.nombre}</div>`;
+                
+                if (documentType === 'imagenes') {
+                    let autorizacionText = '';
+                    switch(student.autorizacion) {
+                        case '1': autorizacionText = 'Difusión total'; break;
+                        case '2': autorizacionText = 'Difusión solo comunidad educativa'; break;
+                        case 'TODO NO': autorizacionText = 'No autoriza'; break;
+                        default: autorizacionText = student.autorizacion;
+                    }
+                    studentInfo += `<div class="student-info"><strong>Autorización:</strong> ${autorizacionText}</div>`;
+                } else if (documentType === 'religion') {
+                    studentInfo += `<div class="student-info"><strong>Estado:</strong> No recibe clase de religión</div>`;
+                } else if (documentType === 'separados') {
+                    studentInfo += `<div class="student-info"><strong>Observación:</strong> ${student.observacion}</div>`;
+                } else if (documentType === 'matinal' || documentType === 'comedor') {
+                    studentInfo += `<div class="student-info"><strong>Teléfonos:</strong> ${student.telefonos}</div>`;
+                }
+                
+                studentCard.innerHTML = studentInfo;
+                
+                studentCard.addEventListener('click', () => {
+                    playTapSound();
+                    showStudentProfile(student.nombre);
+                });
+                
+                studentsList.appendChild(studentCard);
+            });
+            
+            navigationHistory.push('course-screen');
+            showScreen('details-screen');
+        }
+        
+        function loadAllergiesCourse(course) {
+            const allergiesList = document.getElementById('allergies-course-list');
+            allergiesList.innerHTML = '';
+            
+            const allergies = documentsData.alergias[course] || [];
+            
+            document.getElementById('allergies-course-title').textContent = `${course} - Alergias y enfermedades`;
+            document.getElementById('allergies-course-count').textContent = `${allergies.length} alumnos`;
+            
+            if (allergies.length === 0) {
+                allergiesList.innerHTML = '<div class="no-data">No hay información de alergias disponible para este curso</div>';
+                navigationHistory.push('course-screen');
+                showScreen('allergies-course-screen');
+                return;
+            }
+            
+            allergies.forEach(allergy => {
+                const allergyCard = document.createElement('div');
+                allergyCard.className = 'student-card';
+                
+                let allergyInfo = `
+                    <div class="student-name">${allergy.nombre}</div>
+                    <div class="student-info"><strong>Tipo:</strong> ${allergy.tipo}</div>
+                    <div class="student-info"><strong>Detalle:</strong> ${allergy.detalle}</div>
+                `;
+                
+                if (allergy.telefono) {
+                    allergyInfo += `<div class="student-info"><strong>Teléfono:</strong> ${allergy.telefono}</div>`;
+                }
+                
+                allergyCard.innerHTML = allergyInfo;
+                
+                allergyCard.addEventListener('click', () => {
+                    playTapSound();
+                    showStudentProfile(allergy.nombre);
+                });
+                
+                allergiesList.appendChild(allergyCard);
+            });
+            
+            navigationHistory.push('course-screen');
+            showScreen('allergies-course-screen');
+        }
+        
+        function showStudentProfile(studentName) {
+            const student = allStudents.find(s => s.nombre === studentName);
+            
+            if (!student) {
+                alert('No se encontró información del estudiante');
+                return;
+            }
+            
+            document.getElementById('profile-name').textContent = student.nombre;
+            document.getElementById('profile-course').textContent = student.curso || 'No especificado';
+            
+            const firstLetter = student.nombre.charAt(0);
+            document.getElementById('profile-avatar').textContent = firstLetter;
+            
+            const profileSections = document.getElementById('profile-sections');
+            profileSections.innerHTML = '';
+            
+            const personalSection = document.createElement('div');
+            personalSection.className = 'profile-section';
+            personalSection.innerHTML = `
+                <h3><span class="icon">👤</span> Datos personales</h3>
+                <div class="profile-section-content">
+                    <p><strong>Nombre:</strong> ${student.nombre}</p>
+                    <p><strong>Curso:</strong> ${student.curso || 'No especificado'}</p>
+                </div>
+            `;
+            profileSections.appendChild(personalSection);
+            
+            if (student.documentos.imagenes) {
+                const imagenesSection = document.createElement('div');
+                imagenesSection.className = 'profile-section';
+                
+                let autorizacionText = '';
+                switch(student.documentos.imagenes.autorizacion) {
+                    case '1': autorizacionText = 'Difusión total'; break;
+                    case '2': autorizacionText = 'Difusión solo comunidad educativa'; break;
+                    case 'TODO NO': autorizacionText = 'No autoriza'; break;
+                    default: autorizacionText = student.documentos.imagenes.autorizacion;
+                }
+                
+                imagenesSection.innerHTML = `
+                    <h3><span class="icon">📸</span> Autorizaciones de imagen</h3>
+                    <div class="profile-section-content">
+                        <p><span class="tag">${autorizacionText}</span></p>
+                    </div>
+                `;
+                profileSections.appendChild(imagenesSection);
+            }
+            
+            if (student.documentos.religion) {
+                const religionSection = document.createElement('div');
+                religionSection.className = 'profile-section';
+                religionSection.innerHTML = `
+                    <h3><span class="icon">⛪</span> Clase de religión</h3>
+                    <div class="profile-section-content">
+                        <p><span class="tag warning">No recibe clase de religión</span></p>
+                    </div>
+                `;
+                profileSections.appendChild(religionSection);
+            }
+            
+            if (student.documentos.separados) {
+                const separadosSection = document.createElement('div');
+                separadosSection.className = 'profile-section';
+                separadosSection.innerHTML = `
+                    <h3><span class="icon">👨‍👩‍👧‍👦</span> Situación familiar</h3>
+                    <div class="profile-section-content">
+                        <p><strong>Observación:</strong> ${student.documentos.separados.observacion}</p>
+                    </div>
+                `;
+                profileSections.appendChild(separadosSection);
+            }
+            
+            if (student.documentos.alergias && student.documentos.alergias.length > 0) {
+                const alergiasSection = document.createElement('div');
+                alergiasSection.className = 'profile-section';
+                
+                let alergiasContent = '<h3><span class="icon">⚠️</span> Alergias y enfermedades</h3><div class="profile-section-content">';
+                
+                student.documentos.alergias.forEach(alergia => {
+                    alergiasContent += `
+                        <p><span class="tag danger">${alergia.tipo}</span> ${alergia.detalle}</p>
+                        ${alergia.telefono ? `<p><strong>Teléfono:</strong> ${alergia.telefono}</p>` : ''}
+                        ${alergia.curso && alergia.curso !== student.curso ? `<p><small>Registrado en: ${alergia.curso}</small></p>` : ''}
+                    `;
+                });
+                
+                alergiasContent += '</div>';
+                alergiasSection.innerHTML = alergiasContent;
+                profileSections.appendChild(alergiasSection);
+            }
+            
+            if (student.documentos.matinal) {
+                const matinalSection = document.createElement('div');
+                matinalSection.className = 'profile-section';
+                matinalSection.innerHTML = `
+                    <h3><span class="icon">🌅</span> Aula matinal</h3>
+                    <div class="profile-section-content">
+                        <p><span class="tag success">Asiste al aula matinal</span></p>
+                        <p><strong>Teléfonos de contacto:</strong> ${student.documentos.matinal.telefonos}</p>
+                    </div>
+                `;
+                profileSections.appendChild(matinalSection);
+            }
+            
+            if (student.documentos.comedor) {
+                const comedorSection = document.createElement('div');
+                comedorSection.className = 'profile-section';
+                comedorSection.innerHTML = `
+                    <h3><span class="icon">🍽️</span> Comedor</h3>
+                    <div class="profile-section-content">
+                        <p><span class="tag success">Utiliza el servicio de comedor</span></p>
+                        <p><strong>Teléfonos de contacto:</strong> ${student.documentos.comedor.telefonos}</p>
+                    </div>
+                `;
+                profileSections.appendChild(comedorSection);
+            }
+            
+            const currentScreen = document.querySelector('.screen.active').id;
+            navigationHistory.push(currentScreen);
+            showScreen('profile-screen');
+        }
+        
+        function getDocumentTitle(documentType) {
+            const titles = {
+                'imagenes': 'Autorizaciones de imagen',
+                'religion': 'Clase de religión',
+                'separados': 'Padres separados',
+                'matinal': 'Aula matinal',
+                'comedor': 'Comedor'
+            };
+            return titles[documentType] || documentType;
+        }
+        
+        function setupGlobalSearch() {
+            const searchInput = document.getElementById('global-search');
+            const searchResults = document.getElementById('search-results');
+            
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                
+                if (query.length < 2) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
+                
+                const filteredStudents = allStudents.filter(student => 
+                    student.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(query.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
+                );
+                
+                searchResults.innerHTML = '';
+                
+                if (filteredStudents.length === 0) {
+                    searchResults.innerHTML = '<div class="search-result-item">No se encontraron resultados</div>';
+                } else {
+                    filteredStudents.forEach(student => {
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'search-result-item';
+                        resultItem.textContent = student.nombre;
+                        resultItem.addEventListener('click', () => {
+                            playTapSound();
+                            showStudentProfile(student.nombre);
+                            searchResults.style.display = 'none';
+                            searchInput.value = '';
+                        });
+                        searchResults.appendChild(resultItem);
+                    });
+                }
+                
+                searchResults.style.display = 'block';
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.style.display = 'none';
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAllStudents();
+            initAudio();
+            setupGlobalSearch();
+            
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('click', () => {
+                    playTapSound();
+                    const documentType = card.getAttribute('data-document');
+                    loadCourses(documentType);
+                });
+            });
+            
+            document.querySelectorAll('.back-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    playTapSound();
+                    if (navigationHistory.length > 0) {
+                        const previousScreen = navigationHistory.pop();
+                        showScreen(previousScreen);
+                    } else {
+                        showScreen('home-screen');
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.home-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    playTapSound();
+                    navigationHistory = [];
+                    showScreen('home-screen');
+                });
+            });
+            
+            const enableAudio = () => {
+                if (!userInteracted) {
+                    userInteracted = true;
+                    initAudio();
+                }
+            };
+            
+            document.addEventListener('touchstart', enableAudio, { once: true });
+            document.addEventListener('click', enableAudio, { once: true });
+        });
+    </script>
+</body>
+</html>
