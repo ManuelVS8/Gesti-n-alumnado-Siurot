@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Información Alumnado">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1e40af">
+    
+    <!-- Iconos para iOS -->
+    <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    
+    <!-- Iconos para Android y navegadores modernos -->
+    <link rel="icon" type="image/png" sizes="192x192" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
+    
+    <!-- Icono para navegadores de escritorio (favicon) -->
+    <link rel="shortcut icon" type="image/x-icon" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.ico">
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.ico">
+    
     <title>Información del alumnado</title>
     <style>
         * {
@@ -19,7 +45,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a3a5f, #0d2340);
+            background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
             min-height: 100vh;
             color: #333;
             padding: 20px;
@@ -61,7 +87,7 @@
         }
         
         .search-icon {
-            color: #f59e42;
+            color: #3B82F6;
             font-size: 1.5rem;
             margin-right: 15px;
         }
@@ -120,7 +146,7 @@
             padding: 25px;
             transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
-            border-left: 5px solid #f59e42;
+            border-left: 5px solid #3B82F6;
             position: relative;
             overflow: hidden;
             -webkit-transform: translateZ(0);
@@ -134,28 +160,28 @@
             left: 0;
             width: 100%;
             height: 5px;
-            background: linear-gradient(to right, #f59e42, #ffad5a);
+            background: linear-gradient(to right, #3B82F6, #60A5FA);
         }
         
         .card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.3);
         }
         
         .card-icon {
             font-size: 2.5rem;
             margin-bottom: 15px;
-            color: #f59e42;
+            color: #3B82F6;
         }
         
         .card h3 {
-            color: #1a3a5f;
+            color: #1E40AF;
             font-size: 1.4rem;
             margin-bottom: 10px;
         }
         
         .card p {
-            color: #666;
+            color: #9CA3AF;
             font-size: 0.95rem;
             line-height: 1.5;
         }
@@ -175,7 +201,7 @@
         }
         
         .back-btn, .home-btn {
-            background-color: #f59e42;
+            background-color: #3B82F6;
             color: white;
             border: none;
             border-radius: 30px;
@@ -185,27 +211,27 @@
             display: inline-flex;
             align-items: center;
             transition: all 0.3s;
-            box-shadow: 0 4px 8px rgba(245, 158, 66, 0.3);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
             -webkit-appearance: none;
             -webkit-tap-highlight-color: transparent;
         }
         
         .home-btn {
-            background-color: #4181e0;
-            box-shadow: 0 4px 8px rgba(65, 129, 224, 0.3);
+            background-color: #1E40AF;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.4);
         }
         
         .back-btn:hover, .home-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
         }
         
         .back-btn:hover {
-            background-color: #e68a2e;
+            background-color: #2563eb;
         }
         
         .home-btn:hover {
-            background-color: #3a6fc7;
+            background-color: #1e3a8a;
         }
         
         .back-btn::before {
@@ -229,14 +255,14 @@
         
         .course-btn {
             background: white;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #D1D5DB;
             border-radius: 12px;
             padding: 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
             font-size: 1.1rem;
-            color: #1a3a5f;
+            color: #1E40AF;
             font-weight: 500;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             -webkit-appearance: none;
@@ -244,10 +270,10 @@
         }
         
         .course-btn:hover {
-            border-color: #f59e42;
-            background-color: #fff9f5;
+            border-color: #3B82F6;
+            background-color: #EFF6FF;
             transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
         }
         
         .students-container {
@@ -268,12 +294,12 @@
         }
         
         .students-header h2 {
-            color: #1a3a5f;
+            color: #1E40AF;
             font-size: 1.8rem;
         }
         
         .students-count {
-            background-color: #f59e42;
+            background-color: #3B82F6;
             color: white;
             border-radius: 30px;
             padding: 5px 15px;
@@ -288,10 +314,10 @@
         }
         
         .student-card {
-            background-color: #f9f9f9;
+            background-color: #F9FAFB;
             border-radius: 12px;
             padding: 18px;
-            border-left: 4px solid #4181e0;
+            border-left: 4px solid #60A5FA;
             transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
             -webkit-transform: translateZ(0);
@@ -300,24 +326,24 @@
         
         .student-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 20px rgba(96, 165, 250, 0.2);
         }
         
         .student-name {
             font-weight: bold;
-            color: #1a3a5f;
+            color: #1E40AF;
             margin-bottom: 8px;
             font-size: 1.1rem;
         }
         
         .student-info {
-            color: #555;
+            color: #9CA3AF;
             font-size: 0.95rem;
             line-height: 1.5;
         }
         
         .student-info strong {
-            color: #2731F5;
+            color: #1E40AF;
         }
         
         .allergies-container {
@@ -334,7 +360,7 @@
         }
         
         .allergies-header h2 {
-            color: #1a3a5f;
+            color: #1E40AF;
             font-size: 1.8rem;
             margin-bottom: 10px;
         }
@@ -346,10 +372,10 @@
         }
         
         .allergy-card {
-            background-color: #fff9f5;
+            background-color: #FEF2F2;
             border-radius: 12px;
             padding: 18px;
-            border-left: 4px solid #f59e42;
+            border-left: 4px solid #EF4444;
             transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
             -webkit-transform: translateZ(0);
@@ -358,24 +384,24 @@
         
         .allergy-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 20px rgba(239, 68, 68, 0.2);
         }
         
         .allergy-name {
             font-weight: bold;
-            color: #1a3a5f;
+            color: #1E40AF;
             margin-bottom: 10px;
             font-size: 1.1rem;
         }
         
         .allergy-info {
-            color: #555;
+            color: #9CA3AF;
             font-size: 0.95rem;
             line-height: 1.5;
         }
         
         .allergy-info .allergy-type {
-            background-color: #f59e42;
+            background-color: #EF4444;
             color: white;
             border-radius: 20px;
             padding: 3px 10px;
@@ -388,7 +414,7 @@
         .no-data {
             text-align: center;
             padding: 40px;
-            color: #666;
+            color: #9CA3AF;
             font-style: italic;
         }
         
@@ -412,7 +438,7 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background-color: #f59e42;
+            background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
             color: white;
             display: flex;
             justify-content: center;
@@ -420,16 +446,17 @@
             font-size: 2rem;
             margin-right: 20px;
             flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
         
         .profile-info h2 {
-            color: #1a3a5f;
+            color: #1E40AF;
             font-size: 1.8rem;
             margin-bottom: 5px;
         }
         
         .profile-info p {
-            color: #666;
+            color: #9CA3AF;
             font-size: 1.1rem;
         }
         
@@ -440,14 +467,14 @@
         }
         
         .profile-section {
-            background-color: #f9f9f9;
+            background-color: #F9FAFB;
             border-radius: 12px;
             padding: 20px;
-            border-left: 4px solid #4181e0;
+            border-left: 4px solid #60A5FA;
         }
         
         .profile-section h3 {
-            color: #1a3a5f;
+            color: #1E40AF;
             font-size: 1.3rem;
             margin-bottom: 15px;
             display: flex;
@@ -456,11 +483,11 @@
         
         .profile-section h3 .icon {
             margin-right: 10px;
-            color: #f59e42;
+            color: #3B82F6;
         }
         
         .profile-section-content {
-            color: #555;
+            color: #9CA3AF;
             line-height: 1.6;
         }
         
@@ -469,13 +496,13 @@
         }
         
         .profile-section-content strong {
-            color: #2731F5;
+            color: #1E40AF;
         }
         
         .profile-section .tag {
             display: inline-block;
-            background-color: #e8f4fd;
-            color: #4181e0;
+            background-color: #DBEAFE;
+            color: #1E40AF;
             border-radius: 20px;
             padding: 5px 12px;
             margin-right: 8px;
@@ -484,18 +511,18 @@
         }
         
         .profile-section .warning {
-            background-color: #fff4e5;
-            color: #f59e42;
+            background-color: #FEF3C7;
+            color: #D97706;
         }
         
         .profile-section .success {
-            background-color: #e8f8f0;
-            color: #4caf50;
+            background-color: #D1FAE5;
+            color: #059669;
         }
         
         .profile-section .danger {
-            background-color: #ffebee;
-            color: #e91e63;
+            background-color: #FEE2E2;
+            color: #DC2626;
         }
         
         @media (max-width: 768px) {
@@ -860,7 +887,7 @@
                     { nombre: "MEDRANO CASCALES, MARINA", observacion: "SENTENCIA EN EXPEDIENTE" }
                 ],
                 "INFANTIL 4 AÑOS A": [
-                    { nombre: "CALVO BALDÍN, JIMENA", observacion: "??????" }
+                    { nombre: "CALVO BALDÍN, JIMENA", observacion: "Sin información" }
                 ],
                 "INFANTIL 4 AÑOS B": [
                     { nombre: "GONZÁLEZ TORRES, IRENE", observacion: "SENTENCIA EN EXPEDIENTE" }
@@ -869,17 +896,17 @@
                     { nombre: "GARCÍA ACUÑA, CAMILA ALESSANDRA", observacion: "FAMILIA MONOPARENTAL" }
                 ],
                 "INFANTIL 5 AÑOS B": [
-                    { nombre: "CALLE MELENDO, CLAUDIA", observacion: "??????" }
+                    { nombre: "CALLE MELENDO, CLAUDIA", observacion: "Sin información" }
                 ],
                 "1º A": [
                     { nombre: "CÓRDOBA ALCARRANZA, JORDAN", observacion: "FAMILIA MONOPARENTAL" },
                     { nombre: "EL GOUCHE, LOUAY", observacion: "SENTENCIA EN EXPEDIENTE/ ORDEN ALEJAMIENTO" },
-                    { nombre: "FLORES COLLADO, TRIANA", observacion: "??????" },
+                    { nombre: "FLORES COLLADO, TRIANA", observacion: "Sin información" },
                     { nombre: "GIL GIL, NATALIA", observacion: "FAMILIA MONOPARENTAL" }
                 ],
                 "1º B": [
                     { nombre: "DOMÍNGUEZ PÉREZ, MALENA", observacion: "SENTENCIA EN EXPEDIENTE" },
-                    { nombre: "CALVO BALDÍN, CAYETANO", observacion: "??????" },
+                    { nombre: "CALVO BALDÍN, CAYETANO", observacion: "Sin información" },
                     { nombre: "DOMÍNGUEZ SUÁREZ, NURIA", observacion: "SENTENCIA EN EXPEDIENTE" },
                     { nombre: "TEBA DÍAZ, ALEJANDRO", observacion: "NO ENTREGA NADA" }
                 ],
@@ -902,7 +929,7 @@
                 ],
                 "4º A": [
                     { nombre: "DÍAZ RUÍZ, PATRICIA", observacion: "FAMILIA MONOPARENTAL (CUSTODIA ABUELOS)" },
-                    { nombre: "JORDÁN SUÁREZ, RUBÉN", observacion: "??????" },
+                    { nombre: "JORDÁN SUÁREZ, RUBÉN", observacion: "Sin información" },
                     { nombre: "VALENCIANO BELLERÍN, VERÓNICA", observacion: "SENTENCIA EN EXPEDIENTE" }
                 ],
                 "4º B": [
@@ -911,7 +938,7 @@
                     { nombre: "PICHARDO LÓPEZ, NURIA", observacion: "SENTENCIA EN EXPEDIENTE" }
                 ],
                 "5º A": [
-                    { nombre: "EL GOUCHE, SOHAID", observacion: "SENENCI EN EXPEDIENTE/ORDEN ALEJAMIENTO" },
+                    { nombre: "EL GOUCHE, SOHAID", observacion: "SENTENCIA EN EXPEDIENTE/ORDEN ALEJAMIENTO" },
                     { nombre: "GONZÁLEZ ALCARAZ, ULISES", observacion: "SENTENCIA EN EXPEDIENTE" },
                     { nombre: "ORILLÓN GRANDE, ABRIL", observacion: "CONVENIO REGULADOR" },
                     { nombre: "RAMOS PÉREZ, ABRAHAM", observacion: "NO ENTREGA NADA" }
@@ -924,7 +951,7 @@
                 "6º A": [
                     { nombre: "CÁRDENAS MACARRO, FÉLIX", observacion: "SENTENCIA EN EXPEDIENTE HNA" },
                     { nombre: "DELGADO PAVON, DAVID", observacion: "NO ENTREGA NADA" },
-                    { nombre: "FLORES COLLADO, VIOLETA", observacion: "??????" },
+                    { nombre: "FLORES COLLADO, VIOLETA", observacion: "Sin información" },
                     { nombre: "GIL ROLDÁN, ÁNGEL", observacion: "SENTENCIA EN EXPEDIENTE" },
                     { nombre: "JÉREZ HERNÁNDEZ, DAVID", observacion: "NO ENTREGA NADA" },
                     { nombre: "TEBA DÍAZ, CARLA", observacion: "NO ENTREGA NADA" }
@@ -1350,6 +1377,18 @@
             });
         }
         
+        function formatPhoneLinks(phoneString) {
+            if (!phoneString) return '';
+            
+            const phones = phoneString.split('//');
+            const links = phones.map(phone => {
+                const cleanPhone = phone.replace(/\s+/g, '').replace(/-/g, '');
+                return `<a href="tel:${cleanPhone}" style="color: #3B82F6; text-decoration: none; font-weight: 500;">${phone}</a>`;
+            });
+            
+            return links.join(' / ');
+        }
+        
         function loadCourses(documentType, addToHistory = true) {
             const coursesContainer = document.getElementById('courses-container');
             coursesContainer.innerHTML = '';
@@ -1418,7 +1457,7 @@
                 } else if (documentType === 'separados') {
                     studentInfo += `<div class="student-info"><strong>Observación:</strong> ${student.observacion}</div>`;
                 } else if (documentType === 'matinal' || documentType === 'comedor') {
-                    studentInfo += `<div class="student-info"><strong>Teléfonos:</strong> ${student.telefonos}</div>`;
+                    studentInfo += `<div class="student-info"><strong>Teléfonos:</strong> ${formatPhoneLinks(student.telefonos)}</div>`;
                 }
                 
                 studentCard.innerHTML = studentInfo;
@@ -1462,7 +1501,7 @@
                 `;
                 
                 if (allergy.telefono) {
-                    allergyInfo += `<div class="student-info"><strong>Teléfono:</strong> ${allergy.telefono}</div>`;
+                    allergyInfo += `<div class="student-info"><strong>Teléfono:</strong> ${formatPhoneLinks(allergy.telefono)}</div>`;
                 }
                 
                 allergyCard.innerHTML = allergyInfo;
@@ -1561,7 +1600,7 @@
                 student.documentos.alergias.forEach(alergia => {
                     alergiasContent += `
                         <p><span class="tag danger">${alergia.tipo}</span> ${alergia.detalle}</p>
-                        ${alergia.telefono ? `<p><strong>Teléfono:</strong> ${alergia.telefono}</p>` : ''}
+                        ${alergia.telefono ? `<p><strong>Teléfono:</strong> ${formatPhoneLinks(alergia.telefono)}</p>` : ''}
                         ${alergia.curso && alergia.curso !== student.curso ? `<p><small>Registrado en: ${alergia.curso}</small></p>` : ''}
                     `;
                 });
@@ -1578,7 +1617,7 @@
                     <h3><span class="icon">🌅</span> Aula matinal</h3>
                     <div class="profile-section-content">
                         <p><span class="tag success">Asiste al aula matinal</span></p>
-                        <p><strong>Teléfonos de contacto:</strong> ${student.documentos.matinal.telefonos}</p>
+                        <p><strong>Teléfonos de contacto:</strong> ${formatPhoneLinks(student.documentos.matinal.telefonos)}</p>
                     </div>
                 `;
                 profileSections.appendChild(matinalSection);
@@ -1591,7 +1630,7 @@
                     <h3><span class="icon">🍽️</span> Comedor</h3>
                     <div class="profile-section-content">
                         <p><span class="tag success">Utiliza el servicio de comedor</span></p>
-                        <p><strong>Teléfonos de contacto:</strong> ${student.documentos.comedor.telefonos}</p>
+                        <p><strong>Teléfonos de contacto:</strong> ${formatPhoneLinks(student.documentos.comedor.telefonos)}</p>
                     </div>
                 `;
                 profileSections.appendChild(comedorSection);
