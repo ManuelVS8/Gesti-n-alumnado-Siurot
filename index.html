@@ -831,7 +831,7 @@
                     { nombre: "ADDIA, KHADIJA" },
                     { nombre: "EL GOUCHE, SOHAID" },
                     { nombre: "GONZÁLEZ ALCARAZ, ULISES" },
-                    { nombre: "ORILLÁN GRANDE, ABRIL" }
+                    { nombre: "ORILLÓN GRANDE, ABRIL" }
                 ],
                 "5º B": [
                     { nombre: "CHOULKHA LAHDAOUR, IMANE" },
@@ -860,7 +860,7 @@
                     { nombre: "MEDRANO CASCALES, MARINA", observacion: "SENTENCIA EN EXPEDIENTE" }
                 ],
                 "INFANTIL 4 AÑOS A": [
-                    { nombre: "CALVO BALDÁN, JIMENA", observacion: "??????" }
+                    { nombre: "CALVO BALDÍN, JIMENA", observacion: "??????" }
                 ],
                 "INFANTIL 4 AÑOS B": [
                     { nombre: "GONZÁLEZ TORRES, IRENE", observacion: "SENTENCIA EN EXPEDIENTE" }
@@ -879,7 +879,7 @@
                 ],
                 "1º B": [
                     { nombre: "DOMÍNGUEZ PÉREZ, MALENA", observacion: "SENTENCIA EN EXPEDIENTE" },
-                    { nombre: "CALVO BALDÁN, CAYETANO", observacion: "??????" },
+                    { nombre: "CALVO BALDÍN, CAYETANO", observacion: "??????" },
                     { nombre: "DOMÍNGUEZ SUÁREZ, NURIA", observacion: "SENTENCIA EN EXPEDIENTE" },
                     { nombre: "TEBA DÍAZ, ALEJANDRO", observacion: "NO ENTREGA NADA" }
                 ],
@@ -913,7 +913,7 @@
                 "5º A": [
                     { nombre: "EL GOUCHE, SOHAID", observacion: "SENENCI EN EXPEDIENTE/ORDEN ALEJAMIENTO" },
                     { nombre: "GONZÁLEZ ALCARAZ, ULISES", observacion: "SENTENCIA EN EXPEDIENTE" },
-                    { nombre: "ORILLÁN GRANDE, ABRIL", observacion: "CONVENIO REGULADOR" },
+                    { nombre: "ORILLÓN GRANDE, ABRIL", observacion: "CONVENIO REGULADOR" },
                     { nombre: "RAMOS PÉREZ, ABRAHAM", observacion: "NO ENTREGA NADA" }
                 ],
                 "5º B": [
@@ -1003,7 +1003,7 @@
                 "5º A": [
                     { nombre: "BECERRA AVILA, NACHO", telefonos: "658694235//658694236" },
                     { nombre: "LOPEZ MORALES, ISIDRO JOSÉ", telefonos: "655767673//625168808" },
-                    { nombre: "ORILLÁN GRANDE, ABRIL", telefonos: "677079591" }
+                    { nombre: "ORILLÓN GRANDE, ABRIL", telefonos: "677079591" }
                 ],
                 "5º B": [
                     { nombre: "CALVO BARRERO, CARMEN", telefonos: "666683400//693013980" },
@@ -1229,12 +1229,45 @@
         let audioContext = null;
         let audioBuffer = null;
         let userInteracted = false;
+        let isNavigatingBack = false;
         
-        function showScreen(screenId) {
+        function showScreen(screenId, addToHistory = true) {
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
             document.getElementById(screenId).classList.add('active');
+            
+            if (addToHistory && !isNavigatingBack) {
+                const state = {
+                    screen: screenId,
+                    document: currentDocument,
+                    course: currentCourse
+                };
+                history.pushState(state, '', `#${screenId}`);
+            }
+        }
+        
+        function restoreState(state) {
+            isNavigatingBack = true;
+            
+            if (!state || state.screen === 'home-screen') {
+                showScreen('home-screen', false);
+            } else if (state.screen === 'course-screen') {
+                currentDocument = state.document;
+                loadCourses(currentDocument, false);
+            } else if (state.screen === 'details-screen') {
+                currentDocument = state.document;
+                currentCourse = state.course;
+                loadStudents(currentDocument, currentCourse, false);
+            } else if (state.screen === 'allergies-course-screen') {
+                currentDocument = state.document;
+                currentCourse = state.course;
+                loadAllergiesCourse(currentCourse, false);
+            } else if (state.screen === 'profile-screen') {
+                showScreen('profile-screen', false);
+            }
+            
+            isNavigatingBack = false;
         }
         
         function initAudio() {
@@ -1317,7 +1350,7 @@
             });
         }
         
-        function loadCourses(documentType) {
+        function loadCourses(documentType, addToHistory = true) {
             const coursesContainer = document.getElementById('courses-container');
             coursesContainer.innerHTML = '';
             currentDocument = documentType;
@@ -1346,10 +1379,10 @@
             });
             
             navigationHistory.push('home-screen');
-            showScreen('course-screen');
+            showScreen('course-screen', addToHistory);
         }
         
-        function loadStudents(documentType, course) {
+        function loadStudents(documentType, course, addToHistory = true) {
             const studentsList = document.getElementById('student-list');
             studentsList.innerHTML = '';
             
@@ -1361,7 +1394,7 @@
             if (students.length === 0) {
                 studentsList.innerHTML = '<div class="no-data">No hay información disponible para este curso</div>';
                 navigationHistory.push('course-screen');
-                showScreen('details-screen');
+                showScreen('details-screen', addToHistory);
                 return;
             }
             
@@ -1381,7 +1414,7 @@
                     }
                     studentInfo += `<div class="student-info"><strong>Autorización:</strong> ${autorizacionText}</div>`;
                 } else if (documentType === 'religion') {
-                    studentInfo += `<div class="student-info"><strong>Religión:</strong> No recibe clase</div>`;
+                    studentInfo += `<div class="student-info"><strong>Estado:</strong> No recibe clase de religión</div>`;
                 } else if (documentType === 'separados') {
                     studentInfo += `<div class="student-info"><strong>Observación:</strong> ${student.observacion}</div>`;
                 } else if (documentType === 'matinal' || documentType === 'comedor') {
@@ -1399,10 +1432,10 @@
             });
             
             navigationHistory.push('course-screen');
-            showScreen('details-screen');
+            showScreen('details-screen', addToHistory);
         }
         
-        function loadAllergiesCourse(course) {
+        function loadAllergiesCourse(course, addToHistory = true) {
             const allergiesList = document.getElementById('allergies-course-list');
             allergiesList.innerHTML = '';
             
@@ -1414,7 +1447,7 @@
             if (allergies.length === 0) {
                 allergiesList.innerHTML = '<div class="no-data">No hay información de alergias disponible para este curso</div>';
                 navigationHistory.push('course-screen');
-                showScreen('allergies-course-screen');
+                showScreen('allergies-course-screen', addToHistory);
                 return;
             }
             
@@ -1443,7 +1476,7 @@
             });
             
             navigationHistory.push('course-screen');
-            showScreen('allergies-course-screen');
+            showScreen('allergies-course-screen', addToHistory);
         }
         
         function showStudentProfile(studentName) {
@@ -1511,7 +1544,7 @@
                 const separadosSection = document.createElement('div');
                 separadosSection.className = 'profile-section';
                 separadosSection.innerHTML = `
-                    <h3><span class="icon">👨‍👩‍👧‍👦</span> Padres separados</h3>
+                    <h3><span class="icon">👨‍👩‍👧‍👦</span> Situación familiar</h3>
                     <div class="profile-section-content">
                         <p><strong>Observación:</strong> ${student.documentos.separados.observacion}</p>
                     </div>
@@ -1630,6 +1663,22 @@
             initAudio();
             setupGlobalSearch();
             
+            const initialState = {
+                screen: 'home-screen',
+                document: null,
+                course: null
+            };
+            history.replaceState(initialState, '', '#home-screen');
+            
+            window.addEventListener('popstate', (event) => {
+                playTapSound();
+                if (event.state) {
+                    restoreState(event.state);
+                } else {
+                    showScreen('home-screen', false);
+                }
+            });
+            
             document.querySelectorAll('.card').forEach(card => {
                 card.addEventListener('click', () => {
                     playTapSound();
@@ -1641,12 +1690,7 @@
             document.querySelectorAll('.back-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     playTapSound();
-                    if (navigationHistory.length > 0) {
-                        const previousScreen = navigationHistory.pop();
-                        showScreen(previousScreen);
-                    } else {
-                        showScreen('home-screen');
-                    }
+                    history.back();
                 });
             });
             
@@ -1654,6 +1698,8 @@
                 btn.addEventListener('click', () => {
                     playTapSound();
                     navigationHistory = [];
+                    currentDocument = null;
+                    currentCourse = null;
                     showScreen('home-screen');
                 });
             });
@@ -1668,61 +1714,6 @@
             document.addEventListener('touchstart', enableAudio, { once: true });
             document.addEventListener('click', enableAudio, { once: true });
         });
-
-        /* ------------------------------
-           BLOQUE AÑADIDO: sincronización con
-           el historial del navegador (solicitud)
-           ------------------------------ */
-        (function() {
-            // Guardamos la referencia original de showScreen
-            const originalShowScreen = showScreen;
-
-            // Sustituimos showScreen por una versión que también actualiza history.state
-            showScreen = function(screenId) {
-                originalShowScreen(screenId);
-                try {
-                    // Si el estado actual no coincide con la pantalla mostrada, añadimos entrada en el historial del navegador.
-                    // NOTA: no tocamos navigationHistory aquí (tu código ya lo gestiona en los puntos de navegación)
-                    const currentState = history.state && history.state.screen;
-                    if (currentState !== screenId) {
-                        history.pushState({ screen: screenId }, '', '#' + screenId);
-                    }
-                } catch (e) {
-                    // En caso de error, no interrumpimos la app
-                    console.warn('history pushState falló:', e);
-                }
-            };
-
-            // Cuando el usuario pulsa el botón 'atrás' del navegador
-            window.addEventListener('popstate', (event) => {
-                // Si tenemos historial interno, retrocedemos en él
-                if (navigationHistory && navigationHistory.length > 1) {
-                    navigationHistory.pop(); // actual
-                    const previousScreen = navigationHistory[navigationHistory.length - 1];
-                    // Mostramos la pantalla anterior sin añadir nueva entrada al history (usamos originalShowScreen)
-                    originalShowScreen(previousScreen);
-                } else {
-                    // Si no hay historial interno (estamos en la pantalla inicial), evitamos salir de la app
-                    // Reemplazamos el estado para quedarnos en la home
-                    history.pushState({ screen: 'home-screen' }, '', '#home-screen');
-                    originalShowScreen('home-screen');
-                }
-            });
-
-            // Al cargar la página fijamos el estado inicial y el historial interno
-            window.addEventListener('load', () => {
-                try {
-                    history.replaceState({ screen: 'home-screen' }, '', '#home-screen');
-                } catch (e) {
-                    console.warn('history replaceState falló:', e);
-                }
-                // Aseguramos que navigationHistory comience con home-screen
-                if (!navigationHistory || navigationHistory.length === 0) {
-                    navigationHistory = ['home-screen'];
-                }
-            });
-        })();
-        /* ------------------------------ fin del bloque añadido ------------------------------ */
     </script>
 </body>
 </html>
