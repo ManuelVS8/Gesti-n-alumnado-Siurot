@@ -1375,7 +1375,7 @@
                     let autorizacionText = '';
                     switch(student.autorizacion) {
                         case '1': autorizacionText = 'Difusión total'; break;
-                        case '2': autorizacionText = 'Difusión solo comunidad educativa'; break;
+                        case '2': autorizacionText = 'No difusión comunidad educativa'; break;
                         case 'TODO NO': autorizacionText = 'No autoriza'; break;
                         default: autorizacionText = student.autorizacion;
                     }
@@ -1481,7 +1481,7 @@
                 let autorizacionText = '';
                 switch(student.documentos.imagenes.autorizacion) {
                     case '1': autorizacionText = 'Difusión total'; break;
-                    case '2': autorizacionText = 'Difusión solo comunidad educativa'; break;
+                    case '2': autorizacionText = 'No difusión comunidad educativa'; break;
                     case 'TODO NO': autorizacionText = 'No autoriza'; break;
                     default: autorizacionText = student.documentos.imagenes.autorizacion;
                 }
