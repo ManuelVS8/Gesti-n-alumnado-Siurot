@@ -1381,7 +1381,7 @@
                     }
                     studentInfo += `<div class="student-info"><strong>Autorización:</strong> ${autorizacionText}</div>`;
                 } else if (documentType === 'religion') {
-                    studentInfo += `<div class="student-info"><strong>Estado:</strong> No recibe clase de religión</div>`;
+                    studentInfo += `<div class="student-info"><strong>Religión:</strong> No recibe clase</div>`;
                 } else if (documentType === 'separados') {
                     studentInfo += `<div class="student-info"><strong>Observación:</strong> ${student.observacion}</div>`;
                 } else if (documentType === 'matinal' || documentType === 'comedor') {
@@ -1511,7 +1511,7 @@
                 const separadosSection = document.createElement('div');
                 separadosSection.className = 'profile-section';
                 separadosSection.innerHTML = `
-                    <h3><span class="icon">👨‍👩‍👧‍👦</span> Situación familiar</h3>
+                    <h3><span class="icon">👨‍👩‍👧‍👦</span> Padres separados</h3>
                     <div class="profile-section-content">
                         <p><strong>Observación:</strong> ${student.documentos.separados.observacion}</p>
                     </div>
@@ -1668,6 +1668,61 @@
             document.addEventListener('touchstart', enableAudio, { once: true });
             document.addEventListener('click', enableAudio, { once: true });
         });
+
+        /* ------------------------------
+           BLOQUE AÑADIDO: sincronización con
+           el historial del navegador (solicitud)
+           ------------------------------ */
+        (function() {
+            // Guardamos la referencia original de showScreen
+            const originalShowScreen = showScreen;
+
+            // Sustituimos showScreen por una versión que también actualiza history.state
+            showScreen = function(screenId) {
+                originalShowScreen(screenId);
+                try {
+                    // Si el estado actual no coincide con la pantalla mostrada, añadimos entrada en el historial del navegador.
+                    // NOTA: no tocamos navigationHistory aquí (tu código ya lo gestiona en los puntos de navegación)
+                    const currentState = history.state && history.state.screen;
+                    if (currentState !== screenId) {
+                        history.pushState({ screen: screenId }, '', '#' + screenId);
+                    }
+                } catch (e) {
+                    // En caso de error, no interrumpimos la app
+                    console.warn('history pushState falló:', e);
+                }
+            };
+
+            // Cuando el usuario pulsa el botón 'atrás' del navegador
+            window.addEventListener('popstate', (event) => {
+                // Si tenemos historial interno, retrocedemos en él
+                if (navigationHistory && navigationHistory.length > 1) {
+                    navigationHistory.pop(); // actual
+                    const previousScreen = navigationHistory[navigationHistory.length - 1];
+                    // Mostramos la pantalla anterior sin añadir nueva entrada al history (usamos originalShowScreen)
+                    originalShowScreen(previousScreen);
+                } else {
+                    // Si no hay historial interno (estamos en la pantalla inicial), evitamos salir de la app
+                    // Reemplazamos el estado para quedarnos en la home
+                    history.pushState({ screen: 'home-screen' }, '', '#home-screen');
+                    originalShowScreen('home-screen');
+                }
+            });
+
+            // Al cargar la página fijamos el estado inicial y el historial interno
+            window.addEventListener('load', () => {
+                try {
+                    history.replaceState({ screen: 'home-screen' }, '', '#home-screen');
+                } catch (e) {
+                    console.warn('history replaceState falló:', e);
+                }
+                // Aseguramos que navigationHistory comience con home-screen
+                if (!navigationHistory || navigationHistory.length === 0) {
+                    navigationHistory = ['home-screen'];
+                }
+            });
+        })();
+        /* ------------------------------ fin del bloque añadido ------------------------------ */
     </script>
 </body>
 </html>
