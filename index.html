@@ -8,7 +8,6 @@
     <meta name="apple-mobile-web-app-title" content="Información Alumnado">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#1e40af">
-    
     <!-- Iconos para iOS -->
     <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
     <link rel="apple-touch-icon" sizes="152x152" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
@@ -20,19 +19,51 @@
     <link rel="apple-touch-icon" sizes="60x60" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
     <link rel="apple-touch-icon" sizes="57x57" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
-    
     <!-- Iconos para Android y navegadores modernos -->
     <link rel="icon" type="image/png" sizes="192x192" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
     <link rel="icon" type="image/png" sizes="96x96" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
     <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.png">
-    
     <!-- Icono para navegadores de escritorio (favicon) -->
     <link rel="shortcut icon" type="image/x-icon" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.ico">
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.ico">
-    
     <title>Información del alumnado</title>
     <style>
+        :root {
+            --primary-color: #1E40AF;
+            --primary-light: #3B82F6;
+            --primary-lighter: #60A5FA;
+            --bg-gradient-start: #1E40AF;
+            --bg-gradient-middle: #3B82F6;
+            --bg-gradient-end: #60A5FA;
+            --text-primary: #333;
+            --text-secondary: #9CA3AF;
+            --bg-card: white;
+            --bg-section: #F9FAFB;
+            --border-color: #D1D5DB;
+            --shadow-color: rgba(0,0,0,0.15);
+            --shadow-hover-color: rgba(59, 130, 246, 0.3);
+            --header-text: white;
+            --header-subtext: #f0f0f0;
+            --font-size-base: 16px;
+        }
+        [data-theme="dark"] {
+            --primary-color: #3B82F6;
+            --primary-light: #60A5FA;
+            --primary-lighter: #93C5FD;
+            --bg-gradient-start: #1E293B;
+            --bg-gradient-middle: #334155;
+            --bg-gradient-end: #475569;
+            --text-primary: #F1F5F9;
+            --text-secondary: #CBD5E1;
+            --bg-card: #1E293B;
+            --bg-section: #334155;
+            --border-color: #475569;
+            --shadow-color: rgba(0,0,0,0.3);
+            --shadow-hover-color: rgba(59, 130, 246, 0.4);
+            --header-text: #F1F5F9;
+            --header-subtext: #CBD5E1;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -43,72 +74,341 @@
             -webkit-user-select: none;
             user-select: none;
         }
-        
         body {
-            background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-middle) 50%, var(--bg-gradient-end) 100%);
             min-height: 100vh;
-            color: #333;
+            color: var(--text-primary);
             padding: 20px;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            font-size: var(--font-size-base);
         }
-        
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        
+        .container.unlocked {
+            opacity: 1;
+        }
         .header {
             text-align: center;
             margin-bottom: 40px;
         }
-        
         .header h1 {
-            color: white;
+            color: var(--header-text);
             font-size: 2.8rem;
             margin-bottom: 10px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-        
         .header p {
-            color: #f0f0f0;
+            color: var(--header-subtext);
             font-size: 1.1rem;
         }
-        
+        /* Configuración y controles */
+        .settings-bar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        .settings-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            color: var(--header-text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        /* Panel de configuración */
+        .settings-panel {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            z-index: 999;
+            min-width: 250px;
+            display: none;
+        }
+        .settings-panel.active {
+            display: block;
+        }
+        .settings-panel h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        .setting-item {
+            margin-bottom: 15px;
+        }
+        .setting-item label {
+            display: block;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary-light);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .font-size-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .font-size-control button {
+            background: var(--primary-light);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .font-size-control span {
+            color: var(--text-secondary);
+            min-width: 30px;
+            text-align: center;
+        }
+        .version-info {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        /* Pantalla de bloqueo */
+        .lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-middle) 100%);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lock-screen.hidden {
+            display: none;
+        }
+        .lock-container {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px var(--shadow-color);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .lock-container h2 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+        .lock-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--primary-light);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .password-input {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            background: var(--bg-section);
+            color: var(--text-primary);
+            text-align: center;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        .password-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+        }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            user-select: none;
+        }
+        .unlock-btn {
+            background: var(--primary-light);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .unlock-btn:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        .unlock-btn:active {
+            transform: translateY(0);
+        }
+        .error-message {
+            color: #EF4444;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            min-height: 20px;
+        }
+        .app-info {
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .school-logo {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .school-logo img {
+            max-width: 150px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        .inactivity-timer {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .inactivity-timer.warning {
+            display: block;
+            background: rgba(239, 68, 68, 0.8);
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.7; }
+        }
         .search-container {
-            background: white;
+            background: var(--bg-card);
             border-radius: 50px;
             padding: 15px 25px;
             margin-bottom: 30px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 20px var(--shadow-color);
             display: flex;
             align-items: center;
             position: relative;
         }
-        
         .search-icon {
-            color: #3B82F6;
+            color: var(--primary-light);
             font-size: 1.5rem;
             margin-right: 15px;
         }
-        
         .search-input {
             flex: 1;
             border: none;
             outline: none;
             font-size: 1.1rem;
-            color: #333;
+            color: var(--text-primary);
+            background: transparent;
             -webkit-appearance: none;
         }
-        
         .search-results {
             position: absolute;
             top: 100%;
             left: 0;
             right: 0;
-            background: white;
+            background: var(--bg-card);
             border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 20px var(--shadow-color);
             max-height: 300px;
             overflow-y: auto;
             z-index: 100;
@@ -116,43 +416,37 @@
             margin-top: 10px;
             -webkit-overflow-scrolling: touch;
         }
-        
         .search-result-item {
             padding: 12px 25px;
             cursor: pointer;
             transition: background-color 0.2s;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
         }
-        
         .search-result-item:hover {
-            background-color: #f9f9f9;
+            background-color: var(--bg-section);
         }
-        
         .search-result-item:last-child {
             border-bottom: none;
         }
-        
         .cards-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
-            margin-bottom: 40px;
         }
-        
         .card {
-            background: white;
+            background: var(--bg-card);
             border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 20px var(--shadow-color);
             padding: 25px;
             transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
-            border-left: 5px solid #3B82F6;
+            border-left: 5px solid var(--primary-light);
             position: relative;
             overflow: hidden;
             -webkit-transform: translateZ(0);
             transform: translateZ(0);
         }
-        
         .card::before {
             content: '';
             position: absolute;
@@ -160,48 +454,40 @@
             left: 0;
             width: 100%;
             height: 5px;
-            background: linear-gradient(to right, #3B82F6, #60A5FA);
+            background: linear-gradient(to right, var(--primary-light), var(--primary-lighter));
         }
-        
         .card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 12px 30px var(--shadow-hover-color);
         }
-        
         .card-icon {
             font-size: 2.5rem;
             margin-bottom: 15px;
-            color: #3B82F6;
+            color: var(--primary-light);
         }
-        
         .card h3 {
-            color: #1E40AF;
+            color: var(--primary-color);
             font-size: 1.4rem;
             margin-bottom: 10px;
         }
-        
         .card p {
-            color: #9CA3AF;
+            color: var(--text-secondary);
             font-size: 0.95rem;
             line-height: 1.5;
         }
-        
         .screen {
             display: none;
         }
-        
         .screen.active {
             display: block;
         }
-        
         .navigation-buttons {
             display: flex;
             gap: 10px;
             margin-bottom: 25px;
         }
-        
         .back-btn, .home-btn {
-            background-color: #3B82F6;
+            background-color: var(--primary-light);
             color: white;
             border: none;
             border-radius: 30px;
@@ -215,162 +501,138 @@
             -webkit-appearance: none;
             -webkit-tap-highlight-color: transparent;
         }
-        
         .home-btn {
-            background-color: #1E40AF;
+            background-color: var(--primary-color);
             box-shadow: 0 4px 12px rgba(30, 64, 175, 0.4);
         }
-        
         .back-btn:hover, .home-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
         }
-        
         .back-btn:hover {
             background-color: #2563eb;
         }
-        
         .home-btn:hover {
             background-color: #1e3a8a;
         }
-        
         .back-btn::before {
             content: '←';
             margin-right: 8px;
             font-size: 1.2rem;
         }
-        
         .home-btn::before {
             content: '🏠';
             margin-right: 8px;
             font-size: 1.2rem;
         }
-        
         .courses-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
-        
         .course-btn {
-            background: white;
-            border: 2px solid #D1D5DB;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
             border-radius: 12px;
             padding: 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
             font-size: 1.1rem;
-            color: #1E40AF;
+            color: var(--primary-color);
             font-weight: 500;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             -webkit-appearance: none;
             -webkit-tap-highlight-color: transparent;
         }
-        
         .course-btn:hover {
-            border-color: #3B82F6;
-            background-color: #EFF6FF;
+            border-color: var(--primary-light);
+            background-color: var(--bg-section);
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
         }
-        
         .students-container {
-            background: white;
+            background: var(--bg-card);
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             padding: 25px;
             margin-bottom: 30px;
         }
-        
         .students-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid var(--border-color);
         }
-        
         .students-header h2 {
-            color: #1E40AF;
+            color: var(--primary-color);
             font-size: 1.8rem;
         }
-        
         .students-count {
-            background-color: #3B82F6;
+            background-color: var(--primary-light);
             color: white;
             border-radius: 30px;
             padding: 5px 15px;
             font-size: 0.9rem;
             font-weight: bold;
         }
-        
         .student-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
         }
-        
         .student-card {
-            background-color: #F9FAFB;
+            background-color: var(--bg-section);
             border-radius: 12px;
             padding: 18px;
-            border-left: 4px solid #60A5FA;
+            border-left: 4px solid var(--primary-lighter);
             transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
             -webkit-transform: translateZ(0);
             transform: translateZ(0);
         }
-        
         .student-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 20px rgba(96, 165, 250, 0.2);
         }
-        
         .student-name {
             font-weight: bold;
-            color: #1E40AF;
+            color: var(--primary-color);
             margin-bottom: 8px;
             font-size: 1.1rem;
         }
-        
         .student-info {
-            color: #9CA3AF;
+            color: var(--text-secondary);
             font-size: 0.95rem;
             line-height: 1.5;
         }
-        
         .student-info strong {
-            color: #1E40AF;
+            color: var(--primary-color);
         }
-        
         .allergies-container {
-            background: white;
+            background: var(--bg-card);
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             padding: 25px;
         }
-        
         .allergies-header {
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid var(--border-color);
         }
-        
         .allergies-header h2 {
-            color: #1E40AF;
+            color: var(--primary-color);
             font-size: 1.8rem;
             margin-bottom: 10px;
         }
-        
         .allergies-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
         }
-        
         .allergy-card {
             background-color: #FEF2F2;
             border-radius: 12px;
@@ -381,25 +643,21 @@
             -webkit-transform: translateZ(0);
             transform: translateZ(0);
         }
-        
         .allergy-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 20px rgba(239, 68, 68, 0.2);
         }
-        
         .allergy-name {
             font-weight: bold;
-            color: #1E40AF;
+            color: var(--primary-color);
             margin-bottom: 10px;
             font-size: 1.1rem;
         }
-        
         .allergy-info {
-            color: #9CA3AF;
+            color: var(--text-secondary);
             font-size: 0.95rem;
             line-height: 1.5;
         }
-        
         .allergy-info .allergy-type {
             background-color: #EF4444;
             color: white;
@@ -410,35 +668,31 @@
             margin-right: 8px;
             margin-bottom: 5px;
         }
-        
         .no-data {
             text-align: center;
             padding: 40px;
-            color: #9CA3AF;
+            color: var(--text-secondary);
             font-style: italic;
         }
-        
         .profile-container {
-            background: white;
+            background: var(--bg-card);
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             padding: 30px;
             margin-bottom: 30px;
         }
-        
         .profile-header {
             display: flex;
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid var(--border-color);
         }
-        
         .profile-avatar {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-lighter) 100%);
             color: white;
             display: flex;
             justify-content: center;
@@ -448,126 +702,149 @@
             flex-shrink: 0;
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
-        
         .profile-info h2 {
-            color: #1E40AF;
+            color: var(--primary-color);
             font-size: 1.8rem;
             margin-bottom: 5px;
         }
-        
         .profile-info p {
-            color: #9CA3AF;
+            color: var(--text-secondary);
             font-size: 1.1rem;
         }
-        
         .profile-sections {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
         }
-        
         .profile-section {
-            background-color: #F9FAFB;
+            background-color: var(--bg-section);
             border-radius: 12px;
             padding: 20px;
-            border-left: 4px solid #60A5FA;
+            border-left: 4px solid var(--primary-lighter);
         }
-        
         .profile-section h3 {
-            color: #1E40AF;
+            color: var(--primary-color);
             font-size: 1.3rem;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
         }
-        
         .profile-section h3 .icon {
             margin-right: 10px;
-            color: #3B82F6;
+            color: var(--primary-light);
         }
-        
         .profile-section-content {
-            color: #9CA3AF;
+            color: var(--text-secondary);
             line-height: 1.6;
         }
-        
         .profile-section-content p {
             margin-bottom: 10px;
         }
-        
         .profile-section-content strong {
-            color: #1E40AF;
+            color: var(--primary-color);
         }
-        
         .profile-section .tag {
             display: inline-block;
             background-color: #DBEAFE;
-            color: #1E40AF;
+            color: var(--primary-color);
             border-radius: 20px;
             padding: 5px 12px;
             margin-right: 8px;
             margin-bottom: 8px;
             font-size: 0.9rem;
         }
-        
         .profile-section .warning {
             background-color: #FEF3C7;
             color: #D97706;
         }
-        
         .profile-section .success {
             background-color: #D1FAE5;
             color: #059669;
         }
-        
         .profile-section .danger {
             background-color: #FEE2E2;
             color: #DC2626;
         }
-        
+        .restriction-item {
+            background-color: #FEF2F2;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #EF4444;
+        }
+        .restriction-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        .restriction-students {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .restriction-students span {
+            display: inline-block;
+            background-color: #FEE2E2;
+            color: #DC2626;
+            border-radius: 15px;
+            padding: 3px 8px;
+            margin: 2px;
+            font-size: 0.85rem;
+        }
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2.2rem;
             }
-            
             .cards-container {
                 grid-template-columns: 1fr;
             }
-            
             .courses-container {
                 grid-template-columns: 1fr;
             }
-            
             .student-list, .allergies-list, .profile-sections {
                 grid-template-columns: 1fr;
             }
-            
             .profile-header {
                 flex-direction: column;
                 text-align: center;
             }
-            
             .profile-avatar {
                 margin-right: 0;
                 margin-bottom: 15px;
             }
-            
             .navigation-buttons {
                 flex-direction: column;
             }
-            
             .back-btn, .home-btn {
                 width: 100%;
                 justify-content: center;
             }
+            .settings-bar {
+                top: 10px;
+                right: 10px;
+            }
+            .settings-panel {
+                right: 10px;
+                top: 60px;
+                min-width: 200px;
+                padding: 15px;
+            }
+            .lock-container {
+                padding: 30px 20px;
+            }
+            .lock-container h2 {
+                font-size: 1.5rem;
+            }
+            .lock-icon {
+                font-size: 3rem;
+            }
         }
-        
         @supports (-webkit-touch-callout: none) {
             .card, .student-card, .allergy-card, .course-btn, .back-btn, .home-btn {
                 -webkit-transform: translateZ(0);
                 transform: translateZ(0);
             }
-            
             .search-results {
                 -webkit-overflow-scrolling: touch;
             }
@@ -575,70 +852,138 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Pantalla de bloqueo inicial -->
+    <div class="lock-screen" id="initial-lock-screen">
+        <div class="lock-container">
+            <div class="lock-icon">🔒</div>
+            <h2>Acceso Seguro</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">Introduce la contraseña para acceder a la información del alumnado</p>
+            <div class="password-wrapper">
+                <input type="password" class="password-input" id="initial-password-input" placeholder="Contraseña" autocomplete="off">
+                <span class="toggle-password" id="toggle-password-initial">👁️</span>
+            </div>
+            <button class="unlock-btn" id="initial-unlock-btn">Acceder</button>
+            <div class="error-message" id="initial-error-message"></div>
+            <div class="app-info">
+                App de gestión de información del alumnado.<br>
+                CEIP Manuel Siurot
+            </div>
+            <div class="school-logo">
+                <img src="https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/1e2a36cdd1f8bedcb578a30f5ec5cc8f21c287fe/Siurot.png" alt="Logo del Colegio Siurot">
+            </div>
+        </div>
+    </div>
+    <!-- Pantalla de bloqueo por inactividad -->
+    <div class="lock-screen hidden" id="inactivity-lock-screen">
+        <div class="lock-container">
+            <div class="lock-icon">🔒</div>
+            <h2>Desbloquear aplicación</h2>
+            <input type="password" class="password-input" id="inactivity-password-input" placeholder="Introduce la contraseña">
+            <button class="unlock-btn" id="inactivity-unlock-btn">Desbloquear</button>
+            <div class="error-message" id="inactivity-error-message"></div>
+        </div>
+    </div>
+    <div class="container" id="main-container">
         <audio id="tap-sound" preload="auto"></audio>
-        
+        <!-- Barra de configuración -->
+        <div class="settings-bar">
+            <button class="settings-btn" id="settings-toggle" title="Configuración">⚙️</button>
+        </div>
+        <!-- Panel de configuración -->
+        <div class="settings-panel" id="settings-panel">
+            <h3>Configuración</h3>
+            <div class="setting-item">
+                <label>Modo oscuro</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="dark-mode-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <label>Activar sonido</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="sound-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <label>Tamaño de fuente</label>
+                <div class="font-size-control">
+                    <button id="font-decrease">A-</button>
+                    <span id="font-size-value">100%</span>
+                    <button id="font-increase">A+</button>
+                </div>
+            </div>
+            <div class="version-info">
+                Versión 10.11.2025
+            </div>
+        </div>
+        <!-- Temporizador de inactividad -->
+        <div class="inactivity-timer" id="inactivity-timer">
+            La aplicación se bloqueará en <span id="countdown">5:00</span>
+        </div>
         <div id="home-screen" class="screen active">
             <div class="header">
                 <h1>Información del alumnado</h1>
                 <p>Accede a la información organizada por categorías</p>
             </div>
-            
             <div class="search-container">
                 <div class="search-icon">🔍</div>
                 <input type="text" class="search-input" placeholder="Buscar por nombre de alumno..." id="global-search">
                 <div class="search-results" id="search-results"></div>
             </div>
-            
             <div class="cards-container">
                 <div class="card" data-document="imagenes">
                     <div class="card-icon">📸</div>
                     <h3>Autorizaciones de imagen</h3>
                     <p>Consultar las autorizaciones para publicar imágenes de los alumnos</p>
                 </div>
-                
                 <div class="card" data-document="religion">
                     <div class="card-icon">⛪</div>
                     <h3>Clase de religión</h3>
                     <p>Alumnos que no reciben clase de religión</p>
                 </div>
-                
                 <div class="card" data-document="separados">
                     <div class="card-icon">👨‍👩‍👧‍👦</div>
                     <h3>Padres separados</h3>
                     <p>Información sobre alumnos con padres separados</p>
                 </div>
-                
                 <div class="card" data-document="alergias">
                     <div class="card-icon">⚠️</div>
                     <h3>Alergias y enfermedades</h3>
                     <p>Información médica importante de los alumnos</p>
                 </div>
-                
                 <div class="card" data-document="matinal">
                     <div class="card-icon">🌅</div>
                     <h3>Aula matinal</h3>
                     <p>Alumnos que asisten al aula matinal y teléfonos de contacto</p>
                 </div>
-                
                 <div class="card" data-document="comedor">
                     <div class="card-icon">🍽️</div>
                     <h3>Comedor</h3>
                     <p>Alumnos que utilizan el servicio de comedor</p>
                 </div>
+                <div class="card" data-document="extraescolares">
+                    <div class="card-icon">🎨</div>
+                    <h3>Extraescolares</h3>
+                    <p>Alumnos apuntados a actividades extraescolares</p>
+                </div>
+                <div class="card" data-document="noAutorizados">
+                    <div class="card-icon">🚫</div>
+                    <h3>No autorizados</h3>
+                    <p>Alumnos con restricciones de autorización</p>
+                </div>
             </div>
         </div>
-        
         <div id="course-screen" class="screen">
             <div class="navigation-buttons">
                 <button class="home-btn">Inicio</button>
                 <button class="back-btn">Atrás</button>
             </div>
-            <h2 style="color: white; margin-bottom: 25px; font-size: 1.8rem;">Selecciona un curso</h2>
+            <h2 style="color: var(--header-text); margin-bottom: 25px; font-size: 1.8rem;">Selecciona una opción</h2>
             <div id="courses-container" class="courses-container">
             </div>
         </div>
-        
         <div id="details-screen" class="screen">
             <div class="navigation-buttons">
                 <button class="home-btn">Inicio</button>
@@ -653,7 +998,6 @@
                 </div>
             </div>
         </div>
-        
         <div id="allergies-course-screen" class="screen">
             <div class="navigation-buttons">
                 <button class="home-btn">Inicio</button>
@@ -668,7 +1012,20 @@
                 </div>
             </div>
         </div>
-        
+        <div id="no-autorizados-screen" class="screen">
+            <div class="navigation-buttons">
+                <button class="home-btn">Inicio</button>
+                <button class="back-btn">Atrás</button>
+            </div>
+            <div class="students-container">
+                <div class="students-header">
+                    <h2>Alumnos no autorizados</h2>
+                    <span id="no-autorizados-count" class="students-count">0 restricciones</span>
+                </div>
+                <div id="no-autorizados-list">
+                </div>
+            </div>
+        </div>
         <div id="profile-screen" class="screen">
             <div class="navigation-buttons">
                 <button class="home-btn">Inicio</button>
@@ -687,11 +1044,10 @@
             </div>
         </div>
     </div>
-    
     <script>
+        // Variables globales
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        
         const documentsData = {
             imagenes: {
                 "INFANTIL 3 AÑOS A": [
@@ -873,7 +1229,7 @@
                 "6º B": [
                     { nombre: "ADAM, ISRAE" },
                     { nombre: "BEHDAOUI, YASMINE" },
-                    { nombre: "MARTÍN HERNÁNDEZ, ÁLVARO" },
+                    { nombre: "MARTÍN HERNÁDEZ, ÁLVARO" },
                     { nombre: "REBOLLO PRADES, HUGO" },
                     { nombre: "VEGA SÁNCHEZ, FABIOLA" }
                 ]
@@ -953,7 +1309,7 @@
                     { nombre: "DELGADO PAVON, DAVID", observacion: "NO ENTREGA NADA" },
                     { nombre: "FLORES COLLADO, VIOLETA", observacion: "Sin información" },
                     { nombre: "GIL ROLDÁN, ÁNGEL", observacion: "SENTENCIA EN EXPEDIENTE" },
-                    { nombre: "JÉREZ HERNÁNDEZ, DAVID", observacion: "NO ENTREGA NADA" },
+                    { nombre: "JÉREZ HERNÁDEZ, DAVID", observacion: "NO ENTREGA NADA" },
                     { nombre: "TEBA DÍAZ, CARLA", observacion: "NO ENTREGA NADA" }
                 ],
                 "6º B": []
@@ -1023,7 +1379,7 @@
                 "4º A": [
                     { nombre: "DÍAZ MARTÍNEZ, ALEJANDRA", telefonos: "647177753//661226755" },
                     { nombre: "DÍAZ RUIZ, PATRICIA", telefonos: "677993945//677993914" },
-                    { nombre: "DÍAZ RUÍZ, RUBÉN", telefonos: "628569387//636828596" },
+                    { nombre: "DÍAZ RUIZ, RUBÉN", telefonos: "628569387//636828596" },
                     { nombre: "LOPEZ MORALES, ALBERTO", telefonos: "655767673//625168808" }
                 ],
                 "4º B": [],
@@ -1142,7 +1498,7 @@
                 ],
                 "6º B": [
                     { nombre: "ADRIANA DÍAZ RUÍZ", telefonos: "605622002" },
-                    { nombre: "ÁLVARO MARTÍN HERNÁNDEZ", telefonos: "656468571" },
+                    { nombre: "ÁLVARO MARTÍN HERNÁDEZ", telefonos: "656468571" },
                     { nombre: "FRANCISCO J MILLAN ÁLVAREZ", telefonos: "685200698" },
                     { nombre: "NOA RODRIGUEZ MILLÁN", telefonos: "600700353" }
                 ]
@@ -1193,7 +1549,7 @@
                     { nombre: "CORONEL DELGADO, LUCÍA", tipo: "Alergia", detalle: "Amoxicilina", telefono: "654-125826" },
                     { nombre: "CORONEL LOBO, HUGO", tipo: "Alergia", detalle: "Amoxicilina", telefono: "654-866474" },
                     { nombre: "DIAZ CARO, DAMIAN", tipo: "Alergia", detalle: "Alergia inespecífica (Inhaladores y cremas piel)", telefono: "605-955245" },
-                    { nombre: "ESCUDERO CÁRDENAS, GONZALO", tipo: "Alergia", detalle: "Alergía (vacuna)", telefono: "691-542901" },
+                    { nombre: "ESCUDERO CÁRDENAS, GONZALO", tipo: "Alergia", detalle: "Alergia (vacuna)", telefono: "691-542901" },
                     { nombre: "LEPE MARTÍNEZ, JAVIER", tipo: "Enfermedad", detalle: "ENFERMEDAD NEUROMUSCULAR. DISTROFIA MUSCULAR ALFADISTROGLICANOPATIA", telefono: "615-990195" },
                     { nombre: "MILLÁN ÁLVAREZ, ROCÍO", tipo: "Alergia", detalle: "Amoxicilina/ Operada trato más inmaduro ovárico, seguimiento periódico", telefono: "685-200698" }
                 ],
@@ -1236,19 +1592,256 @@
                     { nombre: "GANDULO PALACIO, ENZO", tipo: "Alergia", detalle: "Alergia Abispas y Abejas (Tratamiento Adrenalina)", telefono: "619-966390" }
                 ],
                 "6º A": [
-                    { nombre: "JEREZ HERNÁNDEZ, DAVID", tipo: "Enfermedad", detalle: "Síndrome de Tourette(Terapias específicas)", telefono: "652-105292" },
+                    { nombre: "JEREZ HERNÁDEZ, DAVID", tipo: "Enfermedad", detalle: "Síndrome de Tourette(Terapias específicas)", telefono: "652-105292" },
                     { nombre: "RAMÍREZ PINTO, SERGIO", tipo: "Alergia", detalle: "Clara de Huevo", telefono: "647-719477" },
                     { nombre: "VERDE LIMÓN, DAVID", tipo: "Alergia", detalle: "Intolerancia a la lactosa", telefono: "641-455738" }
                 ],
                 "6º B": [
                     { nombre: "DÍAZ RUÍZ, ADRIANA", tipo: "Enfermedad", detalle: "Hormonas del crecimiento", telefono: "605-622002" },
-                    { nombre: "MARTÍN HERNÁNDEZ, ÁLVARO", tipo: "Alergia", detalle: "Alergia al olivo Y Fotofobia y tralación metamérica espalda", telefono: "656-468571" },
+                    { nombre: "MARTÍN HERNÁDEZ, ÁLVARO", tipo: "Alergia", detalle: "Alergia al olivo Y Fotofobia y tralación metamérica espalda", telefono: "656-468571" },
                     { nombre: "MILLAN ÁLVAREZ, FRANCISCO J", tipo: "Alergia", detalle: "Intolerante a la lactosa, cacahuetes, anisakis, clara huevo, Amoxicilina Penicil y Asma (Aerosol, montelukasy vacunamensual)", telefono: "685-200698" },
                     { nombre: "RODRIGUEZ MILLÁN, NOA", tipo: "Alergia", detalle: "Alergia y Asma (Aerosoles)", telefono: "600-700353" }
                 ]
+            },
+            extraescolares: {
+                "PSICOMOTRICIDAD": [
+                    { nombre: "Bahou, Fatima Ezzahra", curso: "Inf. 4 años B", telefonos: "632363294//642384784" },
+                    { nombre: "Díaz del Toro, Mateo", curso: "Inf. 4 años A", telefonos: "655260083//685147838" },
+                    { nombre: "Domínguez Ramírez, Sofía", curso: "Inf. 4 años", telefonos: "9162//605129162" },
+                    { nombre: "Durán Valqui, Mathias Gabriel", curso: "Inf. 3 años B", telefonos: "641028876//610241108" },
+                    { nombre: "Lepe Pineda, Valentina", curso: "Inf. 4 años A", telefonos: "611004229//663940809" },
+                    { nombre: "Limón Miranda, Alberto", curso: "Inf. 3 años A", telefonos: "664504367//603674748" },
+                    { nombre: "Rodríguez Suárez, Jesús", curso: "Inf. 4 años B", telefonos: "685166118//658369150" },
+                    { nombre: "Soriano Suárez, Alberto", curso: "Inf. 3 años A", telefonos: "653266033//652280169" },
+                    { nombre: "Yactayo Casabona, Logan Derek", curso: "Inf. 3 años A", telefonos: "614171335//647808746" },
+                    { nombre: "García Acuña, Camila", curso: "infantil 5 años", telefonos: "643108373" },
+                    { nombre: "Cobzariu, Eric", curso: "infantil 5 años", telefonos: "642796659" },
+                    { nombre: "Cobzariu, Anais", curso: "infantil 4 años", telefonos: "642796659" },
+                    { nombre: "Delgado Moreno, Carmen", curso: "infantil 3 años", telefonos: "668562523" },
+                    { nombre: "Lagares Medrano, Thiago", curso: "Infantil 3 años", telefonos: "651721178" },
+                    { nombre: "Rasgado Montes, Ángela", curso: "infnatil 3 años", telefonos: "662457736" },
+                    { nombre: "Pichardo Ruíz, Julia", curso: "Inf. 3 años A", telefonos: "670302786//661710459" },
+                    { nombre: "Cruces Rodríguez, Hugo", curso: "Inf. 4 años B", telefonos: "643496590//624868519" },
+                    { nombre: "Delgado Pichardo, Julia", curso: "Inf. 3 años B", telefonos: "693655616//608613110" },
+                    { nombre: "Díaz Espina, Daniel", curso: "Inf. 3 años B", telefonos: "617286084//662009507" },
+                    { nombre: "González Barroso, Julia", curso: "Inf. 3 años B", telefonos: "635272237//659356639" },
+                    { nombre: "Jarillo Cortés, Manuel", curso: "Inf. 3 años A", telefonos: "722736370//639248122" },
+                    { nombre: "Lepe Huelva, Valeria", curso: "Inf. 3 años B", telefonos: "645637046//671934340" },
+                    { nombre: "Medrano Garrido, Manuel", curso: "Inf. 3 años B", telefonos: "620767232//619434078" },
+                    { nombre: "Moreno Garrido, Isabel", curso: "Inf. 3 años B", telefonos: "622701922//626291794" },
+                    { nombre: "Pavón Vicente, Héctor", curso: "Inf. 5 años A", telefonos: "649750124//690952361" },
+                    { nombre: "Reyes García, Bruno", curso: "Inf. 3 años A", telefonos: "647035761//677808316" },
+                    { nombre: "Rodríguez Lagares, Martina", curso: "Inf. 3 años A", telefonos: "617552870//610795961" },
+                    { nombre: "Roldán Cárdenas, Manuel", curso: "Inf. 3 años B", telefonos: "610999684//618438016" },
+                    { nombre: "Álvarez Domínguez, Pablo", curso: "Inf. 4 años B", telefonos: "695596456//656559611" },
+                    { nombre: "Calvo Baldán, Jimena", curso: "Inf. 4 años A", telefonos: "636455139//603832998" },
+                    { nombre: "González Torres, Irene", curso: "Inf. 4 años B", telefonos: "699236834//625809388" },
+                    { nombre: "Lepe Delgado, Marta", curso: "Inf. 4 años A", telefonos: "672341437//635553074" },
+                    { nombre: "Martínez Ramírez, Jorge", curso: "Inf. 5 años B", telefonos: "675356589//692947065" },
+                    { nombre: "Martínez Suárez, Lola", curso: "Inf. 4 años B", telefonos: "699821500//663418246" },
+                    { nombre: "Medrano Garrido, Manuel", curso: "Inf. 3 años B", telefonos: "620767232//619434078" },
+                    { nombre: "Moreno Garrido, Blanca", curso: "Inf. 5 años A", telefonos: "622701922//626291794" },
+                    { nombre: "Moreno Garrido, Isabel", curso: "Inf. 3 años B", telefonos: "622701922//626291794" },
+                    { nombre: "Yactayo Casabona, Logan Derek", curso: "Inf. 3 años A", telefonos: "614171335//647808746" },
+                    { nombre: "García Acuña, Camila", curso: "infantil 5 años", telefonos: "643108373" },
+                    { nombre: "Verano Quiñones, Martín", curso: "infantil 4 años", telefonos: "618170726" },
+                    { nombre: "Cobzariu, Anais-Nerea", curso: "Inf. 4 años A", telefonos: "642796659//642739386" },
+                    { nombre: "Cobzariu, Eric", curso: "Inf. 5 años A", telefonos: "642796659//642739386" },
+                    { nombre: "González Barroso, Julia", curso: "Inf. 3 años B", telefonos: "635272237//659356639" },
+                    { nombre: "González Barroso, Lucas", curso: "Inf. 5 años B", telefonos: "635272237//659356639" },
+                    { nombre: "Delgado Pichardo, Julia", curso: "Inf. 3 años B", telefonos: "693655616//608613110" },
+                    { nombre: "Medrano Cascales, Marina", curso: "infantil 3 años", telefonos: "605216647" },
+                    { nombre: "Ávila Moreno, Alejandro", curso: "Inf. 4 años A", telefonos: "675723259//616422508" },
+                    { nombre: "Soriano Suárez, Alberto", curso: "Inf. 3 años A", telefonos: "653266033//652280169" },
+                    { nombre: "Rodríguez Lagares, Martina", curso: "Inf. 3 años A", telefonos: "617552870//610795961" },
+                    { nombre: "Durán Valqui, Mathias Gabriel", curso: "Inf. 3 años B", telefonos: "641028876//610241108" }
+                ],
+                "MANUALIDADES": [
+                    { nombre: "Álvarez Domínguez, Pablo", curso: "Inf. 4 años B", telefonos: "695596456//656559611" },
+                    { nombre: "Bahou, Fatima Ezzahra", curso: "Inf. 4 años B", telefonos: "632363294//642384784" },
+                    { nombre: "Calvo Baldán, Jimena", curso: "Inf. 4 años A", telefonos: "636455139//603832998" },
+                    { nombre: "Díaz Espina, Daniel", curso: "Inf. 3 años B", telefonos: "617286084//662009507" },
+                    { nombre: "Domínguez Ramírez, Sofía", curso: "Inf. 4 años B", telefonos: "605129162//605129162" },
+                    { nombre: "González Torres, Irene", curso: "Inf. 4 años B", telefonos: "699236834//625809388" },
+                    { nombre: "Lepe Delgado, Marta", curso: "Inf. 4 años A", telefonos: "672341437//635553074" },
+                    { nombre: "Martínez Ramírez, Jorge", curso: "Inf. 5 años B", telefonos: "675356589//692947065" },
+                    { nombre: "Martínez Suárez, Lola", curso: "Inf. 4 años B", telefonos: "699821500//663418246" },
+                    { nombre: "Medrano Garrido, Manuel", curso: "Inf. 3 años B", telefonos: "620767232//619434078" },
+                    { nombre: "Moreno Garrido, Blanca", curso: "Inf. 5 años A", telefonos: "622701922//626291794" },
+                    { nombre: "Moreno Garrido, Isabel", curso: "Inf. 3 años B", telefonos: "622701922//626291794" },
+                    { nombre: "Yactayo Casabona, Logan Derek", curso: "Inf. 3 años A", telefonos: "614171335//647808746" },
+                    { nombre: "García Acuña, Camila", curso: "infantil 5 años", telefonos: "643108373" },
+                    { nombre: "Verano Quiñones, Martín", curso: "infantil 4 años", telefonos: "618170726" },
+                    { nombre: "Cobzariu, Anais-Nerea", curso: "Inf. 4 años A", telefonos: "642796659//642739386" },
+                    { nombre: "Cobzariu, Eric", curso: "Inf. 5 años A", telefonos: "642796659//642739386" },
+                    { nombre: "González Barroso, Julia", curso: "Inf. 3 años B", telefonos: "635272237//659356639" },
+                    { nombre: "González Barroso, Lucas", curso: "Inf. 5 años B", telefonos: "635272237//659356639" },
+                    { nombre: "Delgado Pichardo, Julia", curso: "Inf. 3 años B", telefonos: "693655616//608613110" },
+                    { nombre: "Medrano Cascales, Marina", curso: "infantil 3 años", telefonos: "605216647" },
+                    { nombre: "Ávila Moreno, Alejandro", curso: "Inf. 4 años A", telefonos: "675723259//616422508" },
+                    { nombre: "Soriano Suárez, Alberto", curso: "Inf. 3 años A", telefonos: "653266033//652280169" },
+                    { nombre: "Rodríguez Lagares, Martina", curso: "Inf. 3 años A", telefonos: "617552870//610795961" },
+                    { nombre: "Durán Valqui, Mathias Gabriel", curso: "Inf. 3 años B", telefonos: "641028876//610241108" }
+                ],
+                "ARTES PLÁSTICAS": [
+                    { nombre: "Gil Gil, Natalia", curso: "1ºA", telefonos: "605248986" },
+                    { nombre: "Limón Infante, Alicia", curso: "6ºA", telefonos: "628596280//660118650" },
+                    { nombre: "Sánchez Caro, Claudia", curso: "2ºB", telefonos: "635805887//657985655" },
+                    { nombre: "Pavon Arance, Martina", curso: "1ºB", telefonos: "600068787//653066917" },
+                    { nombre: "Coronel Lobo, Hugo", curso: "2ºB", telefonos: "654866474" },
+                    { nombre: "Millan Álvarez, Cayetano", curso: "4º B", telefonos: "627936028" },
+                    { nombre: "Cobzariu, Stefanía María", curso: "4ºA", telefonos: "642796659//642739386" },
+                    { nombre: "García Verdugo, Mateo", curso: "1ºA", telefonos: "675626011//616478826" }
+                ],
+                "TENIS": [
+                    { nombre: "Arteaga Mirkovic, Nicole Alison", curso: "3ºB", telefonos: "611396073" },
+                    { nombre: "Díaz Ávila, Tristán", curso: "4ºB", telefonos: "687270866" },
+                    { nombre: "Jerez Hernández, David", curso: "6ºA", telefonos: "652105292//615173869" },
+                    { nombre: "Jordan Suárez, Rubén", curso: "4ºA", telefonos: "680375050//655777187" },
+                    { nombre: "Radu Rodríguez, Hugo Nicolás", curso: "3ºA", telefonos: "643166608//642628053" },
+                    { nombre: "Verde Limón, David", curso: "6ºA", telefonos: "641455738" },
+                    { nombre: "Zayadi Boubkeur, Abdulah", curso: "5ºB", telefonos: "671861497" },
+                    { nombre: "García Acuña, Adrián", curso: "4ºA", telefonos: "643108373" },
+                    { nombre: "Nazaret Casado", curso: "", telefonos: "" },
+                    { nombre: "Enzo Gandullo", curso: "", telefonos: "" }
+                ],
+                "INGLÉS (1º-2º-3ºprimaria)": [
+                    { nombre: "Alonso Hurtado, Alexander", curso: "2ºB", telefonos: "608849381//653773246" },
+                    { nombre: "Coronel Delgado, Laura", curso: "1ºB", telefonos: "654125826//661249223" },
+                    { nombre: "Coronel Delgado, Lucía", curso: "2ºA", telefonos: "654125826//661249223" },
+                    { nombre: "Domínguez Soriano, Alba", curso: "2ºB", telefonos: "616886824//627170470" },
+                    { nombre: "El Gouche, Louay", curso: "1ºA", telefonos: "641420653" },
+                    { nombre: "García Verdugo, Mateo", curso: "1ºA", telefonos: "675626011//616478826" },
+                    { nombre: "Leal Delgado, Julia", curso: "1ºB", telefonos: "654518886//607839501" },
+                    { nombre: "Pérez Dorado, Alba del Rocío", curso: "3ºB", telefonos: "629276536//652106552" },
+                    { nombre: "Pérez Dorado, Elsa María", curso: "1ºA", telefonos: "629276536//652106552" },
+                    { nombre: "Rosales Van Essche, Lucas", curso: "1ºB", telefonos: "659336587//676446527" },
+                    { nombre: "El Gouche, Shoaid", curso: "5ºA", telefonos: "641420653" },
+                    { nombre: "García Acuña, Adrián", curso: "4ºA", telefonos: "643108373" }
+                ],
+                "INGLÉS (4º-5º-6ºprimaria)": [
+                    { nombre: "Díaz Ruíz, Patricia", curso: "4ºA", telefonos: "648715818//74740" },
+                    { nombre: "Zayadi Boubkeur, Abdulah", curso: "5ºB", telefonos: "6718614" },
+                    { nombre: "López Morales, Isidro José", curso: "5ºA", telefonos: "625168808//65576" },
+                    { nombre: "Domínguez Suárez, Daniel", curso: "5ºB", telefonos: "679-710310//661-" },
+                    { nombre: "Becerra Ávila, Nacho", curso: "5ºA", telefonos: "658694235//65869" },
+                    { nombre: "Adam, Israe", curso: "6ºB", telefonos: "642287054//64203" },
+                    { nombre: "Cobzariu, Stefanía María", curso: "4ºA", telefonos: "642796659//64273" },
+                    { nombre: "García Verdugo, Lucía", curso: "", telefonos: "675626011//616478826" },
+                    { nombre: "Lepe Martínez, Salvador", curso: "", telefonos: "615-990195//615-990192" }
+                ],
+                "INFORMÁTICA (1º-2º-3ºprimaria)": [
+                    { nombre: "López Morales, Isabel", curso: "3ºB", telefonos: "625168808//65576" },
+                    { nombre: "infante López, Martín", curso: "2ºB", telefonos: "676144162//63599" },
+                    { nombre: "Calvo Baldán, Cayetano", curso: "1ºB", telefonos: "636455139//60383" },
+                    { nombre: "Moreno Camacho, Luís", curso: "3ºB", telefonos: "615103408//65788" },
+                    { nombre: "Pérez Dorado, Elsa María", curso: "1ºA", telefonos: "629276536//65210" },
+                    { nombre: "Sánchez Caro, Claudia", curso: "2ºB", telefonos: "5887//657985655" }
+                ],
+                "INFORMÁTICA (4º-5º-6ºprimaria)": [
+                    { nombre: "Cobzariu, Stefania María", curso: "4ºA", telefonos: "642796659//642739386" },
+                    { nombre: "Gil Roldán, Ángel", curso: "6ºA", telefonos: "688709540//959097532" },
+                    { nombre: "Jerez Hernández, David", curso: "6ºA", telefonos: "652105292//615173869" },
+                    { nombre: "Jordan Suárez, Rubén", curso: "4ºA", telefonos: "680375050//655777187" },
+                    { nombre: "Lepe Martínez, Salvador", curso: "4ºA", telefonos: "615990195//615990192" },
+                    { nombre: "Molina Díaz, Lucas", curso: "4º", telefonos: "617416742" },
+                    { nombre: "Cardenas Macarro, Marta", curso: "5º", telefonos: "661249231" },
+                    { nombre: "Cárdenas Macarro, Félix", curso: "6º", telefonos: "661249231" },
+                    { nombre: "Millan Álvarez, Francisco José", curso: "6º", telefonos: "627936028" },
+                    { nombre: "Pérez Dorado, Alba del Rocío", curso: "3ºB", telefonos: "629276536//652106552" },
+                    { nombre: "Israe", curso: "", telefonos: "" }
+                ],
+                "FAME DANCE": [
+                    { nombre: "Cobzariu, Stefanía María", curso: "4ºA", telefonos: "642796659//642739386" },
+                    { nombre: "Correa Verdugo, Carlota", curso: "1ºB", telefonos: "693758795//666779588" },
+                    { nombre: "Domínguez Pérez, Malena", curso: "1ºB", telefonos: "617241091//651755916" },
+                    { nombre: "Gil Gil, Natalia", curso: "1ºA", telefonos: "605248986" },
+                    { nombre: "Lepe Martínez, María", curso: "3ºB", telefonos: "615-990195//615-990192" },
+                    { nombre: "Moreno Garrido, María", curso: "1ºA", telefonos: "622701922//626291794" },
+                    { nombre: "Pavón Arance, Martina", curso: "1ºB", telefonos: "600068787//653066917" },
+                    { nombre: "Paula Díaz", curso: "", telefonos: "" },
+                    { nombre: "Adriana Díaz", curso: "", telefonos: "" },
+                    { nombre: "Rosa Casado", curso: "", telefonos: "" }
+                ],
+                "PATINAJE (primaria) AMPA": [
+                    { nombre: "Alcántara Ramos, Paula", curso: "5ºA", telefonos: "620-242034//666-461903" },
+                    { nombre: "Alfaro Suárez, Greta", curso: "2ºB", telefonos: "651-330278//630-815594" },
+                    { nombre: "Ávila Moreno, Alba", curso: "5ºB", telefonos: "675-723259//616-422508" },
+                    { nombre: "Becerra Ávila, Nacho", curso: "4ºB", telefonos: "658-694235//658-694236" },
+                    { nombre: "Calvo Medrano, Belén", curso: "4ºB", telefonos: "678-282781//616-719629" },
+                    { nombre: "Casado Godoy, Nazaret", curso: "2ºB", telefonos: "685-848351//656-973302" },
+                    { nombre: "Casado Godoy, Rosa", curso: "4ºB", telefonos: "685-848351//656-973303" },
+                    { nombre: "Cristo Pacheco, Abril", curso: "2ºB", telefonos: "687-570111//639-980518" },
+                    { nombre: "Díaz Díaz, Gloria", curso: "4ºA", telefonos: "625-858052//676-844267" },
+                    { nombre: "Díaz Ruíz, Adriana", curso: "5ºB", telefonos: "605-622002//654-153711" },
+                    { nombre: "Díaz Ruíz, Paula", curso: "1ºB", telefonos: "605-622002//654-153711" },
+                    { nombre: "Gómez Domínguez, Laura", curso: "2ºB", telefonos: "684-010984//660-424297" },
+                    { nombre: "González Torres, Carmen", curso: "1ºA", telefonos: "699-236834//625-809388" },
+                    { nombre: "Guirado Medrano, Alicia", curso: "6ºA", telefonos: "667-499363//677-491978" },
+                    { nombre: "Lepe Villarán, Carlota", curso: "2ºB", telefonos: "620-313846//600-860026" },
+                    { nombre: "Limón Infante, Alicia", curso: "5ºA", telefonos: "628-596280//660-118650" },
+                    { nombre: "López Barroso, Sara", curso: "6ºA", telefonos: "646-104125//653-267457" },
+                    { nombre: "Medina Lepe, Abril", curso: "4ºB", telefonos: "651-833603//635-819025" },
+                    { nombre: "Millán Álvarez, Rocío", curso: "2ºB", telefonos: "685-200698//627-936028" },
+                    { nombre: "Millán García, Marina", curso: "5ºA", telefonos: "645-389742//627-956556" },
+                    { nombre: "Moreno López, Ángela", curso: "2ºA", telefonos: "637-211939//627-269461" },
+                    { nombre: "Orillán Grande, Abril", curso: "4ºB", telefonos: "677-079591//667-825356" },
+                    { nombre: "Pichardo López, Nuria", curso: "3ºB", telefonos: "653-137718" },
+                    { nombre: "Ramos Rubio, Manuel", curso: "2ºA", telefonos: "615-438018//673-204915" },
+                    { nombre: "Rivera Jiménez-Verdier, Martín", curso: "2ºB", telefonos: "664-663535//627-604659" },
+                    { nombre: "Rodríguez Caro, Lola", curso: "1ºA", telefonos: "695-631166//662-909675" },
+                    { nombre: "Salas Rubio, Carmen", curso: "1ºA", telefonos: "635-011003//686-982370" },
+                    { nombre: "Sánchez Caro, Claudia", curso: "1ºB", telefonos: "635-805887//657-985655" },
+                    { nombre: "Vega Sánchez, Fabiola", curso: "5ºB", telefonos: "627-464297//625-721945" },
+                    { nombre: "Vega Sánchez, Leo", curso: "3ºA", telefonos: "627-464297//625721945" }
+                ]
+            },
+            noAutorizados: {
+                "irseSolo": {
+                    "4º A": ["COBZARIU, STEFANÍA Mª", "DÍAZ RUIZ, PATRICIA", "DÍAZ RUIZ, RUBÉN", "DUQUE SALAS, ALICIA", "JORDAN SUÁREZ, RUBÉN", "MESBAHI, AWATEF", "MOLINA DÍAZ, LUCAS", "ROSADO CASTIZO, ALBA", "TAHIRI, ANASS", "VALENCIANO BELLERÍN, VERÓNICA"],
+                    "4º B": ["BENJUMEA DOMÍNGUEZ, LUCÍA", "DE LA ROSA CEPEDA, ÁLVARO", "DÍAZ MARTÍNEZ, IZAN", "FLORES DELGADO, PABLO", "MILLÁN ÁLVAREZ, CAYETANO", "RODRÍGUEZ RAMOS, DAVID", "TALIDI, NOUR"],
+                    "5º A": ["DÍAZ PARRA, ÁNGELA", "LARIOS SUERO, PABLO", "ORILLÁN GRANDE, ABRIL", "RÍOS MARTÍN, MATEO"],
+                    "5º B": ["CALVO BARRERO, CARMEN", "CASADO GODOY, NAZARET", "CHOULKHA, IMANE", "DE LARA LÓPEZ, FRANCISCO", "DOMÍNGUEZ SUÁREZ, DANIEL", "LÓPEZ GARCÍA, RUBÉN", "RODRÍGUEZ PÉREZ, LUCIA"],
+                    "6º A": ["DE LARA LÓPEZ, ÁNGEL", "DÍAZ RUIZ, ADRIANA", "ESCOBAR BAENA, GUILLERMO", "HERNÁNDEZ GALVÁN, LOGAN", "MARTÍN HERNÁNDEZ, ÁLVARO", "MILLÁN ÁLVAREZ, FCO JOSÉ", "RODRÍGUEZ ALBARRÁN, AINHOA"],
+                    "6º B": []
+                },
+                "cuentaGSuite": {
+                    "4º A": ["TAHIRI, ANASS"],
+                    "4º B": ["CHOULKHA, IMANE"]
+                },
+                "salidasLocalidad": {
+                    "4 AÑOS B": ["BRICHA, AMIR"],
+                    "5 AÑOS A": ["BRICHA, NERMINE", "CHOULKHA, HAMZA"],
+                    "2º B": ["CHOULKHA, HAMZA", "HAYBOUL, KHADIJA"],
+                    "4º A": ["TAHIRI, ANASS"],
+                    "5º B": ["CHOULKHA, IMANE"]
+                },
+                "tomaTemperatura": {
+                    "4 AÑOS B": ["BRICHA, AMIR"],
+                    "5 AÑOS A": ["BRICHA, NERMINE", "ROLDÁN SVETOSLAVOVA, ALEJANDRO"],
+                    "1º B": ["EL GOUCHE, LOUAY"],
+                    "2º A": ["ROLDÁN SVETOSLAVOVA, VERÓNICA"],
+                    "2º B": ["CHOULKHA, HAMZA", "HAYBOUL, KHADIJA"],
+                    "3º B": ["DÍAZ MARTÍNEZ, MAURO"],
+                    "4º A": ["TAHIRI, ANASS"],
+                    "4ºB": ["DÍAZ MARTÍNEZ, IZAN"],
+                    "5º B": ["CHOULKHA, IMANE"],
+                    "6º A": ["DAVID JEREZ HERNÁNDEZ"],
+                    "6º B": ["VAZ LAGARES, DANIELA"]
+                },
+                "trabajosConcursos": {
+                    "4 AÑOS B": ["BRICHA, AMIR"],
+                    "5 AÑOS A": ["BRICHA, NERMINE", "CHOULKHA, HAMZA"],
+                    "1º B": ["EL GOUCHE, LOUAY"],
+                    "2º B": ["CHOULKHA, HAMZA", "HAYBOUL, KHADIJA"],
+                    "3º B": ["DÍAZ MARTÍNEZ, MAURO"],
+                    "4º A": ["TAHIRI, ANASS"],
+                    "4ºB": ["DÍAZ MARTÍNEZ, IZAN"],
+                    "5º B": ["CHOULKHA, IMANE"]
+                }
             }
         };
-        
+        // Variables de estado
         let currentDocument = null;
         let currentCourse = null;
         let allStudents = [];
@@ -1257,13 +1850,206 @@
         let audioBuffer = null;
         let userInteracted = false;
         let isNavigatingBack = false;
-        
+        let inactivityTimer = null;
+        let countdownTimer = null;
+        let timeRemaining = 300; // 5 minutos en segundos
+        let isInitiallyLocked = true;
+        let isInactivityLocked = false;
+        let autoLockEnabled = true;
+        let soundEnabled = true;
+        // Configuración de tema
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const soundToggle = document.getElementById('sound-toggle');
+        const fontDecreaseBtn = document.getElementById('font-decrease');
+        const fontIncreaseBtn = document.getElementById('font-increase');
+        const fontSizeValue = document.getElementById('font-size-value');
+        const settingsToggle = document.getElementById('settings-toggle');
+        const settingsPanel = document.getElementById('settings-panel');
+        // Pantallas de bloqueo
+        const initialLockScreen = document.getElementById('initial-lock-screen');
+        const inactivityLockScreen = document.getElementById('inactivity-lock-screen');
+        const mainContainer = document.getElementById('main-container');
+        // Inputs de bloqueo
+        const initialPasswordInput = document.getElementById('initial-password-input');
+        const initialUnlockBtn = document.getElementById('initial-unlock-btn');
+        const initialErrorMessage = document.getElementById('initial-error-message');
+        const togglePasswordInitial = document.getElementById('toggle-password-initial');
+        const inactivityPasswordInput = document.getElementById('inactivity-password-input');
+        const inactivityUnlockBtn = document.getElementById('inactivity-unlock-btn');
+        const inactivityErrorMessage = document.getElementById('inactivity-error-message');
+        const inactivityTimerDisplay = document.getElementById('inactivity-timer');
+        const countdownDisplay = document.getElementById('countdown');
+        // Cargar configuración guardada
+        function loadSettings() {
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            const savedFontSize = localStorage.getItem('fontSize') || '100';
+            const savedSound = localStorage.getItem('soundEnabled') !== 'false';
+            darkModeToggle.checked = savedDarkMode;
+            document.documentElement.setAttribute('data-theme', savedDarkMode ? 'dark' : 'light');
+            document.documentElement.style.fontSize = `${savedFontSize}%`;
+            fontSizeValue.textContent = `${savedFontSize}%`;
+            soundToggle.checked = savedSound;
+            soundEnabled = savedSound;
+        }
+        // Guardar configuración
+        function saveSettings() {
+            localStorage.setItem('darkMode', darkModeToggle.checked);
+            localStorage.setItem('fontSize', fontSizeValue.textContent.replace('%', ''));
+            localStorage.setItem('soundEnabled', soundToggle.checked);
+        }
+        // Sistema de bloqueo inicial
+        function initialUnlock() {
+            const password = initialPasswordInput.value;
+            if (password === 'siurot112') {
+                isInitiallyLocked = false;
+                initialLockScreen.classList.add('hidden');
+                mainContainer.classList.add('unlocked');
+                initialPasswordInput.value = '';
+                initialErrorMessage.textContent = '';
+                // Inicializar la aplicación después del desbloqueo
+                initializeApp();
+                // Iniciar temporizador de inactividad si está habilitado
+                if (autoLockEnabled) {
+                    resetInactivityTimer();
+                }
+            } else {
+                initialErrorMessage.textContent = 'Contraseña incorrecta';
+                initialPasswordInput.value = '';
+                initialPasswordInput.focus();
+                // Añadir vibración si está disponible
+                if (navigator.vibrate) {
+                    navigator.vibrate(200);
+                }
+            }
+        }
+        // Sistema de bloqueo por inactividad
+        function lockByInactivity() {
+            if (!autoLockEnabled || isInitiallyLocked || isInactivityLocked) return;
+            isInactivityLocked = true;
+            inactivityLockScreen.classList.remove('hidden');
+            inactivityPasswordInput.value = '';
+            inactivityErrorMessage.textContent = '';
+            clearInterval(inactivityTimer);
+            clearInterval(countdownTimer);
+        }
+        function unlockFromInactivity() {
+            const password = inactivityPasswordInput.value;
+            if (password === 'siurot112') {
+                isInactivityLocked = false;
+                inactivityLockScreen.classList.add('hidden');
+                resetInactivityTimer();
+                inactivityErrorMessage.textContent = '';
+            } else {
+                inactivityErrorMessage.textContent = 'Contraseña incorrecta';
+                inactivityPasswordInput.value = '';
+                inactivityPasswordInput.focus();
+                // Añadir vibración si está disponible
+                if (navigator.vibrate) {
+                    navigator.vibrate(200);
+                }
+            }
+        }
+        // Temporizador de inactividad
+        function resetInactivityTimer() {
+            if (!autoLockEnabled || isInitiallyLocked || isInactivityLocked) return;
+            clearInterval(inactivityTimer);
+            clearInterval(countdownTimer);
+            timeRemaining = 300;
+            inactivityTimerDisplay.classList.remove('warning');
+            inactivityTimer = setInterval(() => {
+                timeRemaining -= 30;
+                if (timeRemaining <= 60) {
+                    inactivityTimerDisplay.classList.add('warning');
+                    startCountdown();
+                }
+                if (timeRemaining <= 0) {
+                    lockByInactivity();
+                }
+            }, 30000); // 30 segundos
+        }
+        function startCountdown() {
+            countdownTimer = setInterval(() => {
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                countdownDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                timeRemaining--;
+                if (timeRemaining < 0) {
+                    clearInterval(countdownTimer);
+                }
+            }, 1000);
+        }
+        // Event listeners para configuración
+        darkModeToggle.addEventListener('change', () => {
+            document.documentElement.setAttribute('data-theme', darkModeToggle.checked ? 'dark' : 'light');
+            saveSettings();
+        });
+        soundToggle.addEventListener('change', () => {
+            soundEnabled = soundToggle.checked;
+            saveSettings();
+        });
+        fontDecreaseBtn.addEventListener('click', () => {
+            const currentSize = parseInt(fontSizeValue.textContent);
+            if (currentSize > 80) {
+                const newSize = currentSize - 10;
+                document.documentElement.style.fontSize = `${newSize}%`;
+                fontSizeValue.textContent = `${newSize}%`;
+                saveSettings();
+            }
+        });
+        fontIncreaseBtn.addEventListener('click', () => {
+            const currentSize = parseInt(fontSizeValue.textContent);
+            if (currentSize < 150) {
+                const newSize = currentSize + 10;
+                document.documentElement.style.fontSize = `${newSize}%`;
+                fontSizeValue.textContent = `${newSize}%`;
+                saveSettings();
+            }
+        });
+        settingsToggle.addEventListener('click', () => {
+            settingsPanel.classList.toggle('active');
+        });
+        // Cerrar panel de configuración al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!settingsToggle.contains(e.target) && !settingsPanel.contains(e.target)) {
+                settingsPanel.classList.remove('active');
+            }
+        });
+        // Event listeners para bloqueo inicial
+        initialUnlockBtn.addEventListener('click', initialUnlock);
+        initialPasswordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                initialUnlock();
+            }
+        });
+        // Event listener para mostrar/ocultar contraseña inicial
+        togglePasswordInitial.addEventListener('click', () => {
+            const type = initialPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            initialPasswordInput.setAttribute('type', type);
+            togglePasswordInitial.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+        // Event listeners para bloqueo por inactividad
+        inactivityUnlockBtn.addEventListener('click', unlockFromInactivity);
+        inactivityPasswordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                unlockFromInactivity();
+            }
+        });
+        // Monitorear actividad del usuario
+        const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+        activityEvents.forEach(event => {
+            document.addEventListener(event, () => {
+                if (!isInitiallyLocked && !isInactivityLocked) {
+                    resetInactivityTimer();
+                }
+            });
+        });
+        // Funciones principales
         function showScreen(screenId, addToHistory = true) {
+            if (isInitiallyLocked || isInactivityLocked) return;
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
             document.getElementById(screenId).classList.add('active');
-            
             if (addToHistory && !isNavigatingBack) {
                 const state = {
                     screen: screenId,
@@ -1273,10 +2059,8 @@
                 history.pushState(state, '', `#${screenId}`);
             }
         }
-        
         function restoreState(state) {
             isNavigatingBack = true;
-            
             if (!state || state.screen === 'home-screen') {
                 showScreen('home-screen', false);
             } else if (state.screen === 'course-screen') {
@@ -1290,15 +2074,15 @@
                 currentDocument = state.document;
                 currentCourse = state.course;
                 loadAllergiesCourse(currentCourse, false);
+            } else if (state.screen === 'no-autorizados-screen') {
+                showScreen('no-autorizados-screen', false);
             } else if (state.screen === 'profile-screen') {
                 showScreen('profile-screen', false);
             }
-            
             isNavigatingBack = false;
         }
-        
         function initAudio() {
-            if (!audioContext) {
+            if (!audioContext && soundEnabled) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 fetch('https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/37b3eb2da9c15c04dfb71dfe1be60f088ea3cdfc/Tap.mp3')
                     .then(response => response.arrayBuffer())
@@ -1309,10 +2093,8 @@
                     .catch(e => console.log("Error al cargar el audio:", e));
             }
         }
-        
         function playTapSound() {
-            if (!userInteracted) return;
-            
+            if (!userInteracted || !soundEnabled) return;
             if (audioContext && audioBuffer) {
                 const source = audioContext.createBufferSource();
                 source.buffer = audioBuffer;
@@ -1324,35 +2106,86 @@
                 tapSound.play().catch(e => console.log("Error al reproducir el sonido:", e));
             }
         }
-        
         function loadAllStudents() {
             allStudents = [];
             Object.keys(documentsData).forEach(docType => {
-                if (docType !== 'alergias') {
-                    Object.keys(documentsData[docType]).forEach(course => {
-                        documentsData[docType][course].forEach(student => {
-                            const studentData = {
-                                nombre: student.nombre,
-                                curso: course,
-                                documentos: {}
-                            };
-                            studentData.documentos[docType] = student;
-                            
-                            const existingStudentIndex = allStudents.findIndex(s => s.nombre === student.nombre);
-                            if (existingStudentIndex !== -1) {
-                                allStudents[existingStudentIndex].documentos[docType] = student;
-                            } else {
-                                allStudents.push(studentData);
-                            }
+                if (docType !== 'alergias' && docType !== 'noAutorizados') {
+                    if (docType === 'extraescolares') {
+                        // Procesar extraescolares de forma especial
+                        Object.keys(documentsData[docType]).forEach(activity => {
+                            documentsData[docType][activity].forEach(student => {
+                                const studentData = {
+                                    nombre: student.nombre,
+                                    curso: student.curso,
+                                    documentos: {}
+                                };
+                                studentData.documentos[docType] = {
+                                    ...student,
+                                    actividad: activity
+                                };
+                                const existingStudentIndex = allStudents.findIndex(s => s.nombre === student.nombre);
+                                if (existingStudentIndex !== -1) {
+                                    if (!allStudents[existingStudentIndex].documentos[docType]) {
+                                        allStudents[existingStudentIndex].documentos[docType] = [];
+                                    }
+                                    allStudents[existingStudentIndex].documentos[docType].push(studentData.documentos[docType]);
+                                } else {
+                                    studentData.documentos[docType] = [studentData.documentos[docType]];
+                                    allStudents.push(studentData);
+                                }
+                            });
                         });
-                    });
+                    } else {
+                        Object.keys(documentsData[docType]).forEach(course => {
+                            documentsData[docType][course].forEach(student => {
+                                const studentData = {
+                                    nombre: student.nombre,
+                                    curso: course,
+                                    documentos: {}
+                                };
+                                studentData.documentos[docType] = student;
+                                const existingStudentIndex = allStudents.findIndex(s => s.nombre === student.nombre);
+                                if (existingStudentIndex !== -1) {
+                                    allStudents[existingStudentIndex].documentos[docType] = student;
+                                } else {
+                                    allStudents.push(studentData);
+                                }
+                            });
+                        });
+                    }
                 }
             });
-            
+            // Procesar no autorizados
+            Object.keys(documentsData.noAutorizados).forEach(restrictionType => {
+                Object.keys(documentsData.noAutorizados[restrictionType]).forEach(course => {
+                    documentsData.noAutorizados[restrictionType][course].forEach(studentName => {
+                        const studentIndex = allStudents.findIndex(s => s.nombre === studentName);
+                        if (studentIndex !== -1) {
+                            if (!allStudents[studentIndex].documentos.noAutorizados) {
+                                allStudents[studentIndex].documentos.noAutorizados = [];
+                            }
+                            allStudents[studentIndex].documentos.noAutorizados.push({
+                                tipo: restrictionType,
+                                curso: course
+                            });
+                        } else {
+                            allStudents.push({
+                                nombre: studentName,
+                                curso: course,
+                                documentos: {
+                                    noAutorizados: [{
+                                        tipo: restrictionType,
+                                        curso: course
+                                    }]
+                                }
+                            });
+                        }
+                    });
+                });
+            });
             Object.keys(documentsData.alergias).forEach(course => {
                 documentsData.alergias[course].forEach(allergy => {
                     const studentIndex = allStudents.findIndex(s => s.nombre === allergy.nombre);
-                    
                     if (studentIndex !== -1) {
                         if (!allStudents[studentIndex].documentos.alergias) {
                             allStudents[studentIndex].documentos.alergias = [];
@@ -1376,73 +2209,220 @@
                 });
             });
         }
-        
         function formatPhoneLinks(phoneString) {
             if (!phoneString) return '';
-            
             const phones = phoneString.split('//');
             const links = phones.map(phone => {
                 const cleanPhone = phone.replace(/\s+/g, '').replace(/-/g, '');
-                return `<a href="tel:${cleanPhone}" style="color: #3B82F6; text-decoration: none; font-weight: 500;">${phone}</a>`;
+                return `<a href="tel:${cleanPhone}" style="color: var(--primary-light); text-decoration: none; font-weight: 500;">${phone}</a>`;
             });
-            
             return links.join(' / ');
         }
-        
         function loadCourses(documentType, addToHistory = true) {
             const coursesContainer = document.getElementById('courses-container');
             coursesContainer.innerHTML = '';
             currentDocument = documentType;
-            
-            const courses = Object.keys(documentsData[documentType]);
-            
+            if (documentType === 'extraescolares') {
+                const activities = Object.keys(documentsData[documentType]);
+                if (activities.length === 0) {
+                    coursesContainer.innerHTML = '<div class="no-data">No hay actividades extraescolares disponibles</div>';
+                    return;
+                }
+                activities.forEach(activity => {
+                    const button = document.createElement('button');
+                    button.className = 'course-btn';
+                    button.textContent = activity;
+                    button.addEventListener('click', () => {
+                        playTapSound();
+                        currentCourse = activity;
+                        loadExtraescolares(activity);
+                    });
+                    coursesContainer.appendChild(button);
+                });
+                navigationHistory.push('home-screen');
+                showScreen('course-screen', addToHistory);
+            } else if (documentType === 'noAutorizados') {
+                const restrictions = Object.keys(documentsData.noAutorizados);
+                if (restrictions.length === 0) {
+                    coursesContainer.innerHTML = '<div class="no-data">No hay restricciones disponibles</div>';
+                    return;
+                }
+                restrictions.forEach(restrictionType => {
+                    const button = document.createElement('button');
+                    button.className = 'course-btn';
+                    let restrictionTitle = restrictionType;
+                    switch(restrictionType) {
+                        case 'irseSolo': restrictionTitle = 'No puede irse solo a casa'; break;
+                        case 'cuentaGSuite': restrictionTitle = 'No tiene cuenta GSuite'; break;
+                        case 'salidasLocalidad': restrictionTitle = 'No puede salir de la localidad'; break;
+                        case 'tomaTemperatura': restrictionTitle = 'No se le puede tomar la temperatura'; break;
+                        case 'trabajosConcursos': restrictionTitle = 'No puede participar en concursos'; break;
+                    }
+                    button.textContent = restrictionTitle;
+                    button.addEventListener('click', () => {
+                        playTapSound();
+                        currentCourse = restrictionType;
+                        loadNoAutorizadosByRestriction(restrictionType);
+                    });
+                    coursesContainer.appendChild(button);
+                });
+                navigationHistory.push('home-screen');
+                showScreen('course-screen', addToHistory);
+            } else {
+                const courses = Object.keys(documentsData[documentType]);
+                if (courses.length === 0) {
+                    coursesContainer.innerHTML = '<div class="no-data">No hay cursos disponibles para este documento</div>';
+                    return;
+                }
+                courses.forEach(course => {
+                    const button = document.createElement('button');
+                    button.className = 'course-btn';
+                    button.textContent = course;
+                    button.addEventListener('click', () => {
+                        playTapSound();
+                        currentCourse = course;
+                        if (documentType === 'alergias') {
+                            loadAllergiesCourse(course);
+                        } else {
+                            loadStudents(documentType, course);
+                        }
+                    });
+                    coursesContainer.appendChild(button);
+                });
+                navigationHistory.push('home-screen');
+                showScreen('course-screen', addToHistory);
+            }
+        }
+        function loadNoAutorizadosByRestriction(restrictionType) {
+            const coursesContainer = document.getElementById('courses-container');
+            coursesContainer.innerHTML = '';
+            const courses = Object.keys(documentsData.noAutorizados[restrictionType]);
             if (courses.length === 0) {
-                coursesContainer.innerHTML = '<div class="no-data">No hay cursos disponibles para este documento</div>';
+                coursesContainer.innerHTML = '<div class="no-data">No hay cursos disponibles para esta restricción</div>';
+                navigationHistory.push('course-screen');
+                showScreen('course-screen');
                 return;
             }
-            
             courses.forEach(course => {
                 const button = document.createElement('button');
                 button.className = 'course-btn';
                 button.textContent = course;
                 button.addEventListener('click', () => {
                     playTapSound();
-                    currentCourse = course;
-                    if (documentType === 'alergias') {
-                        loadAllergiesCourse(course);
-                    } else {
-                        loadStudents(documentType, course);
-                    }
+                    loadStudentsForNoAutorizados(restrictionType, course);
                 });
                 coursesContainer.appendChild(button);
             });
-            
-            navigationHistory.push('home-screen');
-            showScreen('course-screen', addToHistory);
+            navigationHistory.push('course-screen');
+            showScreen('course-screen');
         }
-        
+        function loadStudentsForNoAutorizados(restrictionType, course) {
+            const studentsList = document.getElementById('student-list');
+            studentsList.innerHTML = '';
+            const students = documentsData.noAutorizados[restrictionType][course] || [];
+            let restrictionTitle = restrictionType;
+            switch(restrictionType) {
+                case 'irseSolo': restrictionTitle = 'No puede irse solo a casa'; break;
+                case 'cuentaGSuite': restrictionTitle = 'No tiene cuenta GSuite'; break;
+                case 'salidasLocalidad': restrictionTitle = 'No puede salir de la localidad'; break;
+                case 'tomaTemperatura': restrictionTitle = 'No se le puede tomar la temperatura'; break;
+                case 'trabajosConcursos': restrictionTitle = 'No puede participar en concursos'; break;
+            }
+            document.getElementById('details-title').textContent = `${course} - ${restrictionTitle}`;
+            document.getElementById('students-count').textContent = `${students.length} alumnos`;
+            if (students.length === 0) {
+                studentsList.innerHTML = '<div class="no-data">No hay alumnos con esta restricción en este curso</div>';
+                navigationHistory.push('course-screen');
+                showScreen('details-screen');
+                return;
+            }
+            students.forEach(studentName => {
+                const studentCard = document.createElement('div');
+                studentCard.className = 'student-card';
+                studentCard.innerHTML = `<div class="student-name">${studentName}</div>`;
+                studentCard.addEventListener('click', () => {
+                    playTapSound();
+                    showStudentProfile(studentName);
+                });
+                studentsList.appendChild(studentCard);
+            });
+            navigationHistory.push('course-screen');
+            showScreen('details-screen');
+        }
+        function loadExtraescolares(activity) {
+            const coursesContainer = document.getElementById('courses-container');
+            coursesContainer.innerHTML = '';
+            const courses = {};
+            (documentsData.extraescolares[activity] || []).forEach(student => {
+                if (!courses[student.curso]) {
+                    courses[student.curso] = [];
+                }
+                courses[student.curso].push(student);
+            });
+            const courseList = Object.keys(courses);
+            if (courseList.length === 0) {
+                coursesContainer.innerHTML = '<div class="no-data">No hay cursos disponibles para esta actividad</div>';
+                navigationHistory.push('course-screen');
+                showScreen('course-screen');
+                return;
+            }
+            courseList.forEach(course => {
+                const button = document.createElement('button');
+                button.className = 'course-btn';
+                button.textContent = course;
+                button.addEventListener('click', () => {
+                    playTapSound();
+                    loadStudentsForExtraescolares(activity, course, courses[course]);
+                });
+                coursesContainer.appendChild(button);
+            });
+            navigationHistory.push('course-screen');
+            showScreen('course-screen');
+        }
+        function loadStudentsForExtraescolares(activity, course, students) {
+            const studentsList = document.getElementById('student-list');
+            studentsList.innerHTML = '';
+            document.getElementById('details-title').textContent = `${course} - ${activity}`;
+            document.getElementById('students-count').textContent = `${students.length} alumnos`;
+            if (students.length === 0) {
+                studentsList.innerHTML = '<div class="no-data">No hay alumnos apuntados a esta actividad en este curso</div>';
+                navigationHistory.push('course-screen');
+                showScreen('details-screen');
+                return;
+            }
+            students.forEach(student => {
+                const studentCard = document.createElement('div');
+                studentCard.className = 'student-card';
+                let studentInfo = `<div class="student-name">${student.nombre}</div>`;
+                if (student.telefonos) {
+                    studentInfo += `<div class="student-info"><strong>Teléfonos:</strong> ${formatPhoneLinks(student.telefonos)}</div>`;
+                }
+                studentCard.innerHTML = studentInfo;
+                studentCard.addEventListener('click', () => {
+                    playTapSound();
+                    showStudentProfile(student.nombre);
+                });
+                studentsList.appendChild(studentCard);
+            });
+            navigationHistory.push('course-screen');
+            showScreen('details-screen');
+        }
         function loadStudents(documentType, course, addToHistory = true) {
             const studentsList = document.getElementById('student-list');
             studentsList.innerHTML = '';
-            
             const students = documentsData[documentType][course] || [];
-            
             document.getElementById('details-title').textContent = `${course} - ${getDocumentTitle(documentType)}`;
             document.getElementById('students-count').textContent = `${students.length} alumnos`;
-            
             if (students.length === 0) {
                 studentsList.innerHTML = '<div class="no-data">No hay información disponible para este curso</div>';
                 navigationHistory.push('course-screen');
                 showScreen('details-screen', addToHistory);
                 return;
             }
-            
             students.forEach(student => {
                 const studentCard = document.createElement('div');
                 studentCard.className = 'student-card';
-                
                 let studentInfo = `<div class="student-name">${student.nombre}</div>`;
-                
                 if (documentType === 'imagenes') {
                     let autorizacionText = '';
                     switch(student.autorizacion) {
@@ -1459,82 +2439,92 @@
                 } else if (documentType === 'matinal' || documentType === 'comedor') {
                     studentInfo += `<div class="student-info"><strong>Teléfonos:</strong> ${formatPhoneLinks(student.telefonos)}</div>`;
                 }
-                
                 studentCard.innerHTML = studentInfo;
-                
                 studentCard.addEventListener('click', () => {
                     playTapSound();
                     showStudentProfile(student.nombre);
                 });
-                
                 studentsList.appendChild(studentCard);
             });
-            
             navigationHistory.push('course-screen');
             showScreen('details-screen', addToHistory);
         }
-        
+        function showNoAutorizados() {
+            const noAutorizadosList = document.getElementById('no-autorizados-list');
+            noAutorizadosList.innerHTML = '';
+            let totalRestrictions = 0;
+            // Función para crear una sección de restricciones
+            function createRestrictionSection(title, restrictionType) {
+                const section = document.createElement('div');
+                section.className = 'restriction-item';
+                let restrictionHtml = `<div class="restriction-title">${title}</div>`;
+                let studentsHtml = '<div class="restriction-students">';
+                Object.keys(documentsData.noAutorizados[restrictionType]).forEach(course => {
+                    const students = documentsData.noAutorizados[restrictionType][course];
+                    if (students.length > 0) {
+                        studentsHtml += `<div><strong>${course}:</strong> `;
+                        studentsHtml += students.map(name => `<span>${name}</span>`).join('');
+                        studentsHtml += '</div>';
+                        totalRestrictions += students.length;
+                    }
+                });
+                studentsHtml += '</div>';
+                restrictionHtml += studentsHtml;
+                section.innerHTML = restrictionHtml;
+                return section;
+            }
+            // Añadir todas las secciones de restricciones
+            noAutorizadosList.appendChild(createRestrictionSection('No pueden irse solos a casa', 'irseSolo'));
+            noAutorizadosList.appendChild(createRestrictionSection('No se les puede tomar la temperatura', 'tomaTemperatura'));
+            document.getElementById('no-autorizados-count').textContent = `${totalRestrictions} restricciones`;
+            navigationHistory.push('home-screen');
+            showScreen('no-autorizados-screen');
+        }
         function loadAllergiesCourse(course, addToHistory = true) {
             const allergiesList = document.getElementById('allergies-course-list');
             allergiesList.innerHTML = '';
-            
             const allergies = documentsData.alergias[course] || [];
-            
             document.getElementById('allergies-course-title').textContent = `${course} - Alergias y enfermedades`;
             document.getElementById('allergies-course-count').textContent = `${allergies.length} alumnos`;
-            
             if (allergies.length === 0) {
                 allergiesList.innerHTML = '<div class="no-data">No hay información de alergias disponible para este curso</div>';
                 navigationHistory.push('course-screen');
                 showScreen('allergies-course-screen', addToHistory);
                 return;
             }
-            
             allergies.forEach(allergy => {
                 const allergyCard = document.createElement('div');
                 allergyCard.className = 'student-card';
-                
                 let allergyInfo = `
                     <div class="student-name">${allergy.nombre}</div>
                     <div class="student-info"><strong>Tipo:</strong> ${allergy.tipo}</div>
                     <div class="student-info"><strong>Detalle:</strong> ${allergy.detalle}</div>
                 `;
-                
                 if (allergy.telefono) {
                     allergyInfo += `<div class="student-info"><strong>Teléfono:</strong> ${formatPhoneLinks(allergy.telefono)}</div>`;
                 }
-                
                 allergyCard.innerHTML = allergyInfo;
-                
                 allergyCard.addEventListener('click', () => {
                     playTapSound();
                     showStudentProfile(allergy.nombre);
                 });
-                
                 allergiesList.appendChild(allergyCard);
             });
-            
             navigationHistory.push('course-screen');
             showScreen('allergies-course-screen', addToHistory);
         }
-        
         function showStudentProfile(studentName) {
             const student = allStudents.find(s => s.nombre === studentName);
-            
             if (!student) {
                 alert('No se encontró información del estudiante');
                 return;
             }
-            
             document.getElementById('profile-name').textContent = student.nombre;
             document.getElementById('profile-course').textContent = student.curso || 'No especificado';
-            
             const firstLetter = student.nombre.charAt(0);
             document.getElementById('profile-avatar').textContent = firstLetter;
-            
             const profileSections = document.getElementById('profile-sections');
             profileSections.innerHTML = '';
-            
             const personalSection = document.createElement('div');
             personalSection.className = 'profile-section';
             personalSection.innerHTML = `
@@ -1545,11 +2535,9 @@
                 </div>
             `;
             profileSections.appendChild(personalSection);
-            
             if (student.documentos.imagenes) {
                 const imagenesSection = document.createElement('div');
                 imagenesSection.className = 'profile-section';
-                
                 let autorizacionText = '';
                 switch(student.documentos.imagenes.autorizacion) {
                     case '1': autorizacionText = 'Difusión total'; break;
@@ -1557,7 +2545,6 @@
                     case 'TODO NO': autorizacionText = 'No autoriza'; break;
                     default: autorizacionText = student.documentos.imagenes.autorizacion;
                 }
-                
                 imagenesSection.innerHTML = `
                     <h3><span class="icon">📸</span> Autorizaciones de imagen</h3>
                     <div class="profile-section-content">
@@ -1566,7 +2553,6 @@
                 `;
                 profileSections.appendChild(imagenesSection);
             }
-            
             if (student.documentos.religion) {
                 const religionSection = document.createElement('div');
                 religionSection.className = 'profile-section';
@@ -1578,7 +2564,6 @@
                 `;
                 profileSections.appendChild(religionSection);
             }
-            
             if (student.documentos.separados) {
                 const separadosSection = document.createElement('div');
                 separadosSection.className = 'profile-section';
@@ -1590,13 +2575,44 @@
                 `;
                 profileSections.appendChild(separadosSection);
             }
-            
+            if (student.documentos.extraescolares && student.documentos.extraescolares.length > 0) {
+                const extraescolaresSection = document.createElement('div');
+                extraescolaresSection.className = 'profile-section';
+                let extraescolaresContent = '<h3><span class="icon">🎨</span> Actividades extraescolares</h3><div class="profile-section-content">';
+                student.documentos.extraescolares.forEach(activity => {
+                    extraescolaresContent += `
+                        <p><span class="tag success">${activity.actividad}</span></p>
+                        ${activity.telefonos ? `<p><strong>Teléfonos:</strong> ${formatPhoneLinks(activity.telefonos)}</p>` : ''}
+                    `;
+                });
+                extraescolaresContent += '</div>';
+                extraescolaresSection.innerHTML = extraescolaresContent;
+                profileSections.appendChild(extraescolaresSection);
+            }
+            if (student.documentos.noAutorizados && student.documentos.noAutorizados.length > 0) {
+                const noAutorizadosSection = document.createElement('div');
+                noAutorizadosSection.className = 'profile-section';
+                let noAutorizadosContent = '<h3><span class="icon">🚫</span> Restricciones</h3><div class="profile-section-content">';
+                student.documentos.noAutorizados.forEach(restriction => {
+                    let restrictionText = '';
+                    switch(restriction.tipo) {
+                        case 'irseSolo': restrictionText = 'No puede irse solo a casa'; break;
+                        case 'tomaTemperatura': restrictionText = 'No se le puede tomar la temperatura'; break;
+                        case 'cuentaGSuite': restrictionText = 'No tiene cuenta GSuite'; break;
+                        case 'salidasLocalidad': restrictionText = 'No puede salir de la localidad'; break;
+                        case 'trabajosConcursos': restrictionText = 'No puede participar en concursos'; break;
+                        default: restrictionText = restriction.tipo;
+                    }
+                    noAutorizadosContent += `<p><span class="tag danger">${restrictionText}</span></p>`;
+                });
+                noAutorizadosContent += '</div>';
+                noAutorizadosSection.innerHTML = noAutorizadosContent;
+                profileSections.appendChild(noAutorizadosSection);
+            }
             if (student.documentos.alergias && student.documentos.alergias.length > 0) {
                 const alergiasSection = document.createElement('div');
                 alergiasSection.className = 'profile-section';
-                
                 let alergiasContent = '<h3><span class="icon">⚠️</span> Alergias y enfermedades</h3><div class="profile-section-content">';
-                
                 student.documentos.alergias.forEach(alergia => {
                     alergiasContent += `
                         <p><span class="tag danger">${alergia.tipo}</span> ${alergia.detalle}</p>
@@ -1604,12 +2620,10 @@
                         ${alergia.curso && alergia.curso !== student.curso ? `<p><small>Registrado en: ${alergia.curso}</small></p>` : ''}
                     `;
                 });
-                
                 alergiasContent += '</div>';
                 alergiasSection.innerHTML = alergiasContent;
                 profileSections.appendChild(alergiasSection);
             }
-            
             if (student.documentos.matinal) {
                 const matinalSection = document.createElement('div');
                 matinalSection.className = 'profile-section';
@@ -1622,7 +2636,6 @@
                 `;
                 profileSections.appendChild(matinalSection);
             }
-            
             if (student.documentos.comedor) {
                 const comedorSection = document.createElement('div');
                 comedorSection.className = 'profile-section';
@@ -1635,12 +2648,10 @@
                 `;
                 profileSections.appendChild(comedorSection);
             }
-            
             const currentScreen = document.querySelector('.screen.active').id;
             navigationHistory.push(currentScreen);
             showScreen('profile-screen');
         }
-        
         function getDocumentTitle(documentType) {
             const titles = {
                 'imagenes': 'Autorizaciones de imagen',
@@ -1651,25 +2662,19 @@
             };
             return titles[documentType] || documentType;
         }
-        
         function setupGlobalSearch() {
             const searchInput = document.getElementById('global-search');
             const searchResults = document.getElementById('search-results');
-            
             searchInput.addEventListener('input', function() {
                 const query = this.value.toLowerCase().trim();
-                
                 if (query.length < 2) {
                     searchResults.style.display = 'none';
                     return;
                 }
-                
                 const filteredStudents = allStudents.filter(student => 
                     student.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(query.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
                 );
-                
                 searchResults.innerHTML = '';
-                
                 if (filteredStudents.length === 0) {
                     searchResults.innerHTML = '<div class="search-result-item">No se encontraron resultados</div>';
                 } else {
@@ -1686,29 +2691,25 @@
                         searchResults.appendChild(resultItem);
                     });
                 }
-                
                 searchResults.style.display = 'block';
             });
-            
             document.addEventListener('click', function(e) {
                 if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
                     searchResults.style.display = 'none';
                 }
             });
         }
-        
-        document.addEventListener('DOMContentLoaded', () => {
+        // Inicializar la aplicación después del desbloqueo
+        function initializeApp() {
             loadAllStudents();
             initAudio();
             setupGlobalSearch();
-            
             const initialState = {
                 screen: 'home-screen',
                 document: null,
                 course: null
             };
             history.replaceState(initialState, '', '#home-screen');
-            
             window.addEventListener('popstate', (event) => {
                 playTapSound();
                 if (event.state) {
@@ -1717,7 +2718,6 @@
                     showScreen('home-screen', false);
                 }
             });
-            
             document.querySelectorAll('.card').forEach(card => {
                 card.addEventListener('click', () => {
                     playTapSound();
@@ -1725,14 +2725,12 @@
                     loadCourses(documentType);
                 });
             });
-            
             document.querySelectorAll('.back-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     playTapSound();
                     history.back();
                 });
             });
-            
             document.querySelectorAll('.home-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     playTapSound();
@@ -1742,16 +2740,27 @@
                     showScreen('home-screen');
                 });
             });
-            
             const enableAudio = () => {
                 if (!userInteracted) {
                     userInteracted = true;
                     initAudio();
                 }
             };
-            
             document.addEventListener('touchstart', enableAudio, { once: true });
             document.addEventListener('click', enableAudio, { once: true });
+        }
+        // Iniciar la aplicación
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            // Enfocar el campo de contraseña inicial
+            initialPasswordInput.focus();
+            // Event listeners para el bloqueo inicial
+            initialUnlockBtn.addEventListener('click', initialUnlock);
+            initialPasswordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    initialUnlock();
+                }
+            });
         });
     </script>
 </body>
