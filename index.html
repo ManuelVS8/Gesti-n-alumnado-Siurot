@@ -286,60 +286,48 @@
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
-        .password-wrapper {
-            position: relative;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-        .password-input {
-            width: 100%;
-            padding: 15px 45px 15px 15px;
+        /* Visor de contraseña */
+        .password-display {
+            background: var(--bg-section);
             border: 2px solid var(--border-color);
             border-radius: 10px;
-            font-size: 1.1rem;
-            background: var(--bg-section);
-            color: var(--text-primary);
+            padding: 15px;
+            font-size: 1.5rem;
+            letter-spacing: 0.3rem;
             text-align: center;
-            transition: border-color 0.3s;
-            box-sizing: border-box;
+            margin-bottom: 20px;
+            min-height: 50px;
+            color: var(--text-primary);
         }
-        .password-input:focus {
-            outline: none;
-            border-color: var(--primary-light);
+        /* Teclado numérico */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            max-width: 280px;
+            margin: 0 auto 25px auto;
         }
-        .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
+        .key {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1.4rem;
+            padding: 18px 0;
             cursor: pointer;
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-            user-select: none;
+            transition: background 0.2s, transform 0.1s;
+            color: var(--text-primary);
         }
-        .unlock-btn {
+        .key:active {
+            transform: scale(0.95);
+        }
+        .key.enter {
             background: var(--primary-light);
             color: white;
             border: none;
-            border-radius: 10px;
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
         }
-        .unlock-btn:hover {
-            background: var(--primary-color);
-            transform: translateY(-2px);
-        }
-        .unlock-btn:active {
-            transform: translateY(0);
-        }
-        .error-message {
-            color: #EF4444;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            min-height: 20px;
+        .key.delete {
+            background: #EF4444;
+            color: white;
         }
         .app-info {
             margin-top: 20px;
@@ -433,6 +421,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
+            margin-bottom: 40px;
         }
         .card {
             background: var(--bg-card);
@@ -850,39 +839,66 @@
             }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
-    <!-- Pantalla de bloqueo inicial -->
-    <div class="lock-screen" id="initial-lock-screen">
-        <div class="lock-container">
-            <div class="lock-icon">🔒</div>
-            <h2>Acceso Seguro</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 20px;">Introduce la contraseña para acceder a la información del alumnado</p>
-            <div class="password-wrapper">
-                <input type="password" class="password-input" id="initial-password-input" placeholder="Contraseña" autocomplete="off">
-                <span class="toggle-password" id="toggle-password-initial">👁️</span>
-            </div>
-            <button class="unlock-btn" id="initial-unlock-btn">Acceder</button>
-            <div class="error-message" id="initial-error-message"></div>
-            <div class="app-info">
-                App de gestión de información del alumnado.<br>
-                CEIP Manuel Siurot
-            </div>
-            <div class="school-logo">
-                <img src="https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/1e2a36cdd1f8bedcb578a30f5ec5cc8f21c287fe/Siurot.png" alt="Logo del Colegio Siurot">
-            </div>
+<!-- Pantalla de bloqueo inicial -->
+<div class="lock-screen" id="initial-lock-screen">
+    <div class="lock-container">
+        <div class="lock-icon">🔒</div>
+        <h2>Acceso Seguro</h2>
+        <!-- Visor de contraseña -->
+        <div class="password-display" id="password-display"></div>
+        <!-- Teclado numérico -->
+        <div class="keypad">
+            <button class="key" data-key="1">1</button>
+            <button class="key" data-key="2">2</button>
+            <button class="key" data-key="3">3</button>
+            <button class="key" data-key="4">4</button>
+            <button class="key" data-key="5">5</button>
+            <button class="key" data-key="6">6</button>
+            <button class="key" data-key="7">7</button>
+            <button class="key" data-key="8">8</button>
+            <button class="key" data-key="9">9</button>
+            <button class="key delete" data-key="backspace">⌫</button>
+            <button class="key" data-key="0">0</button>
+            <button class="key enter" data-key="enter">✓</button>
+        </div>
+        <!-- Texto y logo -->
+        <div class="app-info">
+            App de gestión de información del alumnado<br>
+            CEIP Manuel Siurot
+        </div>
+        <div class="school-logo">
+            <img src="https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/1e2a36cdd1f8bedcb578a30f5ec5cc8f21c287fe/Siurot.png" alt="Logo del Colegio Siurot">
         </div>
     </div>
-    <!-- Pantalla de bloqueo por inactividad -->
-    <div class="lock-screen hidden" id="inactivity-lock-screen">
-        <div class="lock-container">
-            <div class="lock-icon">🔒</div>
-            <h2>Desbloquear aplicación</h2>
-            <input type="password" class="password-input" id="inactivity-password-input" placeholder="Introduce la contraseña">
-            <button class="unlock-btn" id="inactivity-unlock-btn">Desbloquear</button>
-            <div class="error-message" id="inactivity-error-message"></div>
+</div>
+<!-- Pantalla de bloqueo por inactividad -->
+<div class="lock-screen hidden" id="inactivity-lock-screen">
+    <div class="lock-container">
+        <div class="lock-icon">🔒</div>
+        <h2>Desbloquear aplicación</h2>
+        <!-- Visor de contraseña -->
+        <div class="password-display" id="inactivity-password-display"></div>
+        <!-- Teclado numérico -->
+        <div class="keypad" id="inactivity-keypad">
+            <button class="key" data-key="1">1</button>
+            <button class="key" data-key="2">2</button>
+            <button class="key" data-key="3">3</button>
+            <button class="key" data-key="4">4</button>
+            <button class="key" data-key="5">5</button>
+            <button class="key" data-key="6">6</button>
+            <button class="key" data-key="7">7</button>
+            <button class="key" data-key="8">8</button>
+            <button class="key" data-key="9">9</button>
+            <button class="key delete" data-key="backspace">⌫</button>
+            <button class="key" data-key="0">0</button>
+            <button class="key enter" data-key="enter">✓</button>
         </div>
+        <div class="error-message" id="inactivity-error-message"></div>
     </div>
+</div>
     <div class="container" id="main-container">
         <audio id="tap-sound" preload="auto"></audio>
         <!-- Barra de configuración -->
@@ -893,7 +909,7 @@
         <div class="settings-panel" id="settings-panel">
             <h3>Configuración</h3>
             <div class="setting-item">
-                <label>Modo oscuro</label>
+                <label> oscuro</label>
                 <label class="toggle-switch">
                     <input type="checkbox" id="dark-mode-toggle">
                     <span class="slider"></span>
@@ -915,7 +931,7 @@
                 </div>
             </div>
             <div class="version-info">
-                Versión 13.11.2025
+                Versión 10.11.2025
             </div>
         </div>
         <!-- Temporizador de inactividad -->
@@ -980,7 +996,7 @@
                 <button class="home-btn">Inicio</button>
                 <button class="back-btn">Atrás</button>
             </div>
-            <h2 style="color: var(--header-text); margin-bottom: 25px; font-size: 1.8rem;">Selecciona una opción</h2>
+            <h2 style="color: var(--header-text); margin-bottom: 25px; font-size: 1.8rem;">Selecciona un curso</h2>
             <div id="courses-container" class="courses-container">
             </div>
         </div>
@@ -1026,6 +1042,26 @@
                 </div>
             </div>
         </div>
+        <!-- Pantalla de categorías (extraescolares o no autorizados) -->
+        <div id="category-screen" class="screen">
+            <div class="navigation-buttons">
+                <button class="home-btn">Inicio</button>
+                <button class="back-btn">Atrás</button>
+            </div>
+            <h2 style="color: var(--header-text); margin-bottom: 25px; font-size: 1.8rem;">Selecciona una categoría</h2>
+            <div id="category-container" class="courses-container">
+            </div>
+        </div>
+        <!-- Pantalla de cursos por categoría -->
+        <div id="category-course-screen" class="screen">
+            <div class="navigation-buttons">
+                <button class="home-btn">Inicio</button>
+                <button class="back-btn">Atrás</button>
+            </div>
+            <h2 style="color: var(--header-text); margin-bottom: 25px; font-size: 1.8rem;">Selecciona un curso</h2>
+            <div id="category-courses-container" class="courses-container">
+            </div>
+        </div>
         <div id="profile-screen" class="screen">
             <div class="navigation-buttons">
                 <button class="home-btn">Inicio</button>
@@ -1045,7 +1081,7 @@
         </div>
     </div>
     <script>
-        // Variables globales
+                // Variables globales
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         const documentsData = {
@@ -1229,7 +1265,7 @@
                 "6º B": [
                     { nombre: "ADAM, ISRAE" },
                     { nombre: "BEHDAOUI, YASMINE" },
-                    { nombre: "MARTÍN HERNÁDEZ, ÁLVARO" },
+                    { nombre: "MARTÍN HERNÁNDEZ, ÁLVARO" },
                     { nombre: "REBOLLO PRADES, HUGO" },
                     { nombre: "VEGA SÁNCHEZ, FABIOLA" }
                 ]
@@ -1309,7 +1345,7 @@
                     { nombre: "DELGADO PAVON, DAVID", observacion: "NO ENTREGA NADA" },
                     { nombre: "FLORES COLLADO, VIOLETA", observacion: "Sin información" },
                     { nombre: "GIL ROLDÁN, ÁNGEL", observacion: "SENTENCIA EN EXPEDIENTE" },
-                    { nombre: "JÉREZ HERNÁDEZ, DAVID", observacion: "NO ENTREGA NADA" },
+                    { nombre: "JÉREZ HERNÁNDEZ, DAVID", observacion: "NO ENTREGA NADA" },
                     { nombre: "TEBA DÍAZ, CARLA", observacion: "NO ENTREGA NADA" }
                 ],
                 "6º B": []
@@ -1378,8 +1414,8 @@
                 ],
                 "4º A": [
                     { nombre: "DÍAZ MARTÍNEZ, ALEJANDRA", telefonos: "647177753//661226755" },
-                    { nombre: "DÍAZ RUIZ, PATRICIA", telefonos: "677993945//677993914" },
-                    { nombre: "DÍAZ RUIZ, RUBÉN", telefonos: "628569387//636828596" },
+                    { nombre: "DÍAZ RUÍZ, PATRICIA", telefonos: "677993945//677993914" },
+                    { nombre: "DÍAZ RUÍZ, RUBÉN", telefonos: "628569387//636828596" },
                     { nombre: "LOPEZ MORALES, ALBERTO", telefonos: "655767673//625168808" }
                 ],
                 "4º B": [],
@@ -1498,7 +1534,7 @@
                 ],
                 "6º B": [
                     { nombre: "ADRIANA DÍAZ RUÍZ", telefonos: "605622002" },
-                    { nombre: "ÁLVARO MARTÍN HERNÁDEZ", telefonos: "656468571" },
+                    { nombre: "ÁLVARO MARTÍN HERNÁNDEZ", telefonos: "656468571" },
                     { nombre: "FRANCISCO J MILLAN ÁLVAREZ", telefonos: "685200698" },
                     { nombre: "NOA RODRIGUEZ MILLÁN", telefonos: "600700353" }
                 ]
@@ -1549,7 +1585,7 @@
                     { nombre: "CORONEL DELGADO, LUCÍA", tipo: "Alergia", detalle: "Amoxicilina", telefono: "654-125826" },
                     { nombre: "CORONEL LOBO, HUGO", tipo: "Alergia", detalle: "Amoxicilina", telefono: "654-866474" },
                     { nombre: "DIAZ CARO, DAMIAN", tipo: "Alergia", detalle: "Alergia inespecífica (Inhaladores y cremas piel)", telefono: "605-955245" },
-                    { nombre: "ESCUDERO CÁRDENAS, GONZALO", tipo: "Alergia", detalle: "Alergia (vacuna)", telefono: "691-542901" },
+                    { nombre: "ESCUDERO CÁRDENAS, GONZALO", tipo: "Alergia", detalle: "Alergía (vacuna)", telefono: "691-542901" },
                     { nombre: "LEPE MARTÍNEZ, JAVIER", tipo: "Enfermedad", detalle: "ENFERMEDAD NEUROMUSCULAR. DISTROFIA MUSCULAR ALFADISTROGLICANOPATIA", telefono: "615-990195" },
                     { nombre: "MILLÁN ÁLVAREZ, ROCÍO", tipo: "Alergia", detalle: "Amoxicilina/ Operada trato más inmaduro ovárico, seguimiento periódico", telefono: "685-200698" }
                 ],
@@ -1592,212 +1628,384 @@
                     { nombre: "GANDULO PALACIO, ENZO", tipo: "Alergia", detalle: "Alergia Abispas y Abejas (Tratamiento Adrenalina)", telefono: "619-966390" }
                 ],
                 "6º A": [
-                    { nombre: "JEREZ HERNÁDEZ, DAVID", tipo: "Enfermedad", detalle: "Síndrome de Tourette(Terapias específicas)", telefono: "652-105292" },
+                    { nombre: "JEREZ HERNÁNDEZ, DAVID", tipo: "Enfermedad", detalle: "Síndrome de Tourette(Terapias específicas)", telefono: "652-105292" },
                     { nombre: "RAMÍREZ PINTO, SERGIO", tipo: "Alergia", detalle: "Clara de Huevo", telefono: "647-719477" },
                     { nombre: "VERDE LIMÓN, DAVID", tipo: "Alergia", detalle: "Intolerancia a la lactosa", telefono: "641-455738" }
                 ],
                 "6º B": [
                     { nombre: "DÍAZ RUÍZ, ADRIANA", tipo: "Enfermedad", detalle: "Hormonas del crecimiento", telefono: "605-622002" },
-                    { nombre: "MARTÍN HERNÁDEZ, ÁLVARO", tipo: "Alergia", detalle: "Alergia al olivo Y Fotofobia y tralación metamérica espalda", telefono: "656-468571" },
+                    { nombre: "MARTÍN HERNÁNDEZ, ÁLVARO", tipo: "Alergia", detalle: "Alergia al olivo Y Fotofobia y tralación metamérica espalda", telefono: "656-468571" },
                     { nombre: "MILLAN ÁLVAREZ, FRANCISCO J", tipo: "Alergia", detalle: "Intolerante a la lactosa, cacahuetes, anisakis, clara huevo, Amoxicilina Penicil y Asma (Aerosol, montelukasy vacunamensual)", telefono: "685-200698" },
                     { nombre: "RODRIGUEZ MILLÁN, NOA", tipo: "Alergia", detalle: "Alergia y Asma (Aerosoles)", telefono: "600-700353" }
                 ]
             },
             extraescolares: {
-                "PSICOMOTRICIDAD": [
-                    { nombre: "Bahou, Fatima Ezzahra", curso: "Inf. 4 años B", telefonos: "632363294//642384784" },
-                    { nombre: "Díaz del Toro, Mateo", curso: "Inf. 4 años A", telefonos: "655260083//685147838" },
-                    { nombre: "Domínguez Ramírez, Sofía", curso: "Inf. 4 años", telefonos: "9162//605129162" },
-                    { nombre: "Durán Valqui, Mathias Gabriel", curso: "Inf. 3 años B", telefonos: "641028876//610241108" },
-                    { nombre: "Lepe Pineda, Valentina", curso: "Inf. 4 años A", telefonos: "611004229//663940809" },
-                    { nombre: "Limón Miranda, Alberto", curso: "Inf. 3 años A", telefonos: "664504367//603674748" },
-                    { nombre: "Rodríguez Suárez, Jesús", curso: "Inf. 4 años B", telefonos: "685166118//658369150" },
-                    { nombre: "Soriano Suárez, Alberto", curso: "Inf. 3 años A", telefonos: "653266033//652280169" },
-                    { nombre: "Yactayo Casabona, Logan Derek", curso: "Inf. 3 años A", telefonos: "614171335//647808746" },
-                    { nombre: "García Acuña, Camila", curso: "infantil 5 años", telefonos: "643108373" },
-                    { nombre: "Cobzariu, Eric", curso: "infantil 5 años", telefonos: "642796659" },
-                    { nombre: "Cobzariu, Anais", curso: "infantil 4 años", telefonos: "642796659" },
-                    { nombre: "Delgado Moreno, Carmen", curso: "infantil 3 años", telefonos: "668562523" },
-                    { nombre: "Lagares Medrano, Thiago", curso: "Infantil 3 años", telefonos: "651721178" },
-                    { nombre: "Rasgado Montes, Ángela", curso: "infnatil 3 años", telefonos: "662457736" },
-                    { nombre: "Pichardo Ruíz, Julia", curso: "Inf. 3 años A", telefonos: "670302786//661710459" },
-                    { nombre: "Cruces Rodríguez, Hugo", curso: "Inf. 4 años B", telefonos: "643496590//624868519" },
-                    { nombre: "Delgado Pichardo, Julia", curso: "Inf. 3 años B", telefonos: "693655616//608613110" },
-                    { nombre: "Díaz Espina, Daniel", curso: "Inf. 3 años B", telefonos: "617286084//662009507" },
-                    { nombre: "González Barroso, Julia", curso: "Inf. 3 años B", telefonos: "635272237//659356639" },
-                    { nombre: "Jarillo Cortés, Manuel", curso: "Inf. 3 años A", telefonos: "722736370//639248122" },
-                    { nombre: "Lepe Huelva, Valeria", curso: "Inf. 3 años B", telefonos: "645637046//671934340" },
-                    { nombre: "Medrano Garrido, Manuel", curso: "Inf. 3 años B", telefonos: "620767232//619434078" },
-                    { nombre: "Moreno Garrido, Isabel", curso: "Inf. 3 años B", telefonos: "622701922//626291794" },
-                    { nombre: "Pavón Vicente, Héctor", curso: "Inf. 5 años A", telefonos: "649750124//690952361" },
-                    { nombre: "Reyes García, Bruno", curso: "Inf. 3 años A", telefonos: "647035761//677808316" },
-                    { nombre: "Rodríguez Lagares, Martina", curso: "Inf. 3 años A", telefonos: "617552870//610795961" },
-                    { nombre: "Roldán Cárdenas, Manuel", curso: "Inf. 3 años B", telefonos: "610999684//618438016" },
-                    { nombre: "Álvarez Domínguez, Pablo", curso: "Inf. 4 años B", telefonos: "695596456//656559611" },
-                    { nombre: "Calvo Baldán, Jimena", curso: "Inf. 4 años A", telefonos: "636455139//603832998" },
-                    { nombre: "González Torres, Irene", curso: "Inf. 4 años B", telefonos: "699236834//625809388" },
-                    { nombre: "Lepe Delgado, Marta", curso: "Inf. 4 años A", telefonos: "672341437//635553074" },
-                    { nombre: "Martínez Ramírez, Jorge", curso: "Inf. 5 años B", telefonos: "675356589//692947065" },
-                    { nombre: "Martínez Suárez, Lola", curso: "Inf. 4 años B", telefonos: "699821500//663418246" },
-                    { nombre: "Medrano Garrido, Manuel", curso: "Inf. 3 años B", telefonos: "620767232//619434078" },
-                    { nombre: "Moreno Garrido, Blanca", curso: "Inf. 5 años A", telefonos: "622701922//626291794" },
-                    { nombre: "Moreno Garrido, Isabel", curso: "Inf. 3 años B", telefonos: "622701922//626291794" },
-                    { nombre: "Yactayo Casabona, Logan Derek", curso: "Inf. 3 años A", telefonos: "614171335//647808746" },
-                    { nombre: "García Acuña, Camila", curso: "infantil 5 años", telefonos: "643108373" },
-                    { nombre: "Verano Quiñones, Martín", curso: "infantil 4 años", telefonos: "618170726" },
-                    { nombre: "Cobzariu, Anais-Nerea", curso: "Inf. 4 años A", telefonos: "642796659//642739386" },
-                    { nombre: "Cobzariu, Eric", curso: "Inf. 5 años A", telefonos: "642796659//642739386" },
-                    { nombre: "González Barroso, Julia", curso: "Inf. 3 años B", telefonos: "635272237//659356639" },
-                    { nombre: "González Barroso, Lucas", curso: "Inf. 5 años B", telefonos: "635272237//659356639" },
-                    { nombre: "Delgado Pichardo, Julia", curso: "Inf. 3 años B", telefonos: "693655616//608613110" },
-                    { nombre: "Medrano Cascales, Marina", curso: "infantil 3 años", telefonos: "605216647" },
-                    { nombre: "Ávila Moreno, Alejandro", curso: "Inf. 4 años A", telefonos: "675723259//616422508" },
-                    { nombre: "Soriano Suárez, Alberto", curso: "Inf. 3 años A", telefonos: "653266033//652280169" },
-                    { nombre: "Rodríguez Lagares, Martina", curso: "Inf. 3 años A", telefonos: "617552870//610795961" },
-                    { nombre: "Durán Valqui, Mathias Gabriel", curso: "Inf. 3 años B", telefonos: "641028876//610241108" }
-                ],
-                "MANUALIDADES": [
-                    { nombre: "Álvarez Domínguez, Pablo", curso: "Inf. 4 años B", telefonos: "695596456//656559611" },
-                    { nombre: "Bahou, Fatima Ezzahra", curso: "Inf. 4 años B", telefonos: "632363294//642384784" },
-                    { nombre: "Calvo Baldán, Jimena", curso: "Inf. 4 años A", telefonos: "636455139//603832998" },
-                    { nombre: "Díaz Espina, Daniel", curso: "Inf. 3 años B", telefonos: "617286084//662009507" },
-                    { nombre: "Domínguez Ramírez, Sofía", curso: "Inf. 4 años B", telefonos: "605129162//605129162" },
-                    { nombre: "González Torres, Irene", curso: "Inf. 4 años B", telefonos: "699236834//625809388" },
-                    { nombre: "Lepe Delgado, Marta", curso: "Inf. 4 años A", telefonos: "672341437//635553074" },
-                    { nombre: "Martínez Ramírez, Jorge", curso: "Inf. 5 años B", telefonos: "675356589//692947065" },
-                    { nombre: "Martínez Suárez, Lola", curso: "Inf. 4 años B", telefonos: "699821500//663418246" },
-                    { nombre: "Medrano Garrido, Manuel", curso: "Inf. 3 años B", telefonos: "620767232//619434078" },
-                    { nombre: "Moreno Garrido, Blanca", curso: "Inf. 5 años A", telefonos: "622701922//626291794" },
-                    { nombre: "Moreno Garrido, Isabel", curso: "Inf. 3 años B", telefonos: "622701922//626291794" },
-                    { nombre: "Yactayo Casabona, Logan Derek", curso: "Inf. 3 años A", telefonos: "614171335//647808746" },
-                    { nombre: "García Acuña, Camila", curso: "infantil 5 años", telefonos: "643108373" },
-                    { nombre: "Verano Quiñones, Martín", curso: "infantil 4 años", telefonos: "618170726" },
-                    { nombre: "Cobzariu, Anais-Nerea", curso: "Inf. 4 años A", telefonos: "642796659//642739386" },
-                    { nombre: "Cobzariu, Eric", curso: "Inf. 5 años A", telefonos: "642796659//642739386" },
-                    { nombre: "González Barroso, Julia", curso: "Inf. 3 años B", telefonos: "635272237//659356639" },
-                    { nombre: "González Barroso, Lucas", curso: "Inf. 5 años B", telefonos: "635272237//659356639" },
-                    { nombre: "Delgado Pichardo, Julia", curso: "Inf. 3 años B", telefonos: "693655616//608613110" },
-                    { nombre: "Medrano Cascales, Marina", curso: "infantil 3 años", telefonos: "605216647" },
-                    { nombre: "Ávila Moreno, Alejandro", curso: "Inf. 4 años A", telefonos: "675723259//616422508" },
-                    { nombre: "Soriano Suárez, Alberto", curso: "Inf. 3 años A", telefonos: "653266033//652280169" },
-                    { nombre: "Rodríguez Lagares, Martina", curso: "Inf. 3 años A", telefonos: "617552870//610795961" },
-                    { nombre: "Durán Valqui, Mathias Gabriel", curso: "Inf. 3 años B", telefonos: "641028876//610241108" }
-                ],
-                "ARTES PLÁSTICAS": [
-                    { nombre: "Gil Gil, Natalia", curso: "1ºA", telefonos: "605248986" },
-                    { nombre: "Limón Infante, Alicia", curso: "6ºA", telefonos: "628596280//660118650" },
-                    { nombre: "Sánchez Caro, Claudia", curso: "2ºB", telefonos: "635805887//657985655" },
-                    { nombre: "Pavon Arance, Martina", curso: "1ºB", telefonos: "600068787//653066917" },
-                    { nombre: "Coronel Lobo, Hugo", curso: "2ºB", telefonos: "654866474" },
-                    { nombre: "Millan Álvarez, Cayetano", curso: "4º B", telefonos: "627936028" },
-                    { nombre: "Cobzariu, Stefanía María", curso: "4ºA", telefonos: "642796659//642739386" },
-                    { nombre: "García Verdugo, Mateo", curso: "1ºA", telefonos: "675626011//616478826" }
-                ],
-                "TENIS": [
-                    { nombre: "Arteaga Mirkovic, Nicole Alison", curso: "3ºB", telefonos: "611396073" },
-                    { nombre: "Díaz Ávila, Tristán", curso: "4ºB", telefonos: "687270866" },
-                    { nombre: "Jerez Hernández, David", curso: "6ºA", telefonos: "652105292//615173869" },
-                    { nombre: "Jordan Suárez, Rubén", curso: "4ºA", telefonos: "680375050//655777187" },
-                    { nombre: "Radu Rodríguez, Hugo Nicolás", curso: "3ºA", telefonos: "643166608//642628053" },
-                    { nombre: "Verde Limón, David", curso: "6ºA", telefonos: "641455738" },
-                    { nombre: "Zayadi Boubkeur, Abdulah", curso: "5ºB", telefonos: "671861497" },
-                    { nombre: "García Acuña, Adrián", curso: "4ºA", telefonos: "643108373" },
-                    { nombre: "Nazaret Casado", curso: "", telefonos: "" },
-                    { nombre: "Enzo Gandullo", curso: "", telefonos: "" }
-                ],
-                "INGLÉS (1º-2º-3ºprimaria)": [
-                    { nombre: "Alonso Hurtado, Alexander", curso: "2ºB", telefonos: "608849381//653773246" },
-                    { nombre: "Coronel Delgado, Laura", curso: "1ºB", telefonos: "654125826//661249223" },
-                    { nombre: "Coronel Delgado, Lucía", curso: "2ºA", telefonos: "654125826//661249223" },
-                    { nombre: "Domínguez Soriano, Alba", curso: "2ºB", telefonos: "616886824//627170470" },
-                    { nombre: "El Gouche, Louay", curso: "1ºA", telefonos: "641420653" },
-                    { nombre: "García Verdugo, Mateo", curso: "1ºA", telefonos: "675626011//616478826" },
-                    { nombre: "Leal Delgado, Julia", curso: "1ºB", telefonos: "654518886//607839501" },
-                    { nombre: "Pérez Dorado, Alba del Rocío", curso: "3ºB", telefonos: "629276536//652106552" },
-                    { nombre: "Pérez Dorado, Elsa María", curso: "1ºA", telefonos: "629276536//652106552" },
-                    { nombre: "Rosales Van Essche, Lucas", curso: "1ºB", telefonos: "659336587//676446527" },
-                    { nombre: "El Gouche, Shoaid", curso: "5ºA", telefonos: "641420653" },
-                    { nombre: "García Acuña, Adrián", curso: "4ºA", telefonos: "643108373" }
-                ],
-                "INGLÉS (4º-5º-6ºprimaria)": [
-                    { nombre: "Díaz Ruíz, Patricia", curso: "4ºA", telefonos: "648715818//74740" },
-                    { nombre: "Zayadi Boubkeur, Abdulah", curso: "5ºB", telefonos: "6718614" },
-                    { nombre: "López Morales, Isidro José", curso: "5ºA", telefonos: "625168808//65576" },
-                    { nombre: "Domínguez Suárez, Daniel", curso: "5ºB", telefonos: "679-710310//661-" },
-                    { nombre: "Becerra Ávila, Nacho", curso: "5ºA", telefonos: "658694235//65869" },
-                    { nombre: "Adam, Israe", curso: "6ºB", telefonos: "642287054//64203" },
-                    { nombre: "Cobzariu, Stefanía María", curso: "4ºA", telefonos: "642796659//64273" },
-                    { nombre: "García Verdugo, Lucía", curso: "", telefonos: "675626011//616478826" },
-                    { nombre: "Lepe Martínez, Salvador", curso: "", telefonos: "615-990195//615-990192" }
-                ],
-                "INFORMÁTICA (1º-2º-3ºprimaria)": [
-                    { nombre: "López Morales, Isabel", curso: "3ºB", telefonos: "625168808//65576" },
-                    { nombre: "infante López, Martín", curso: "2ºB", telefonos: "676144162//63599" },
-                    { nombre: "Calvo Baldán, Cayetano", curso: "1ºB", telefonos: "636455139//60383" },
-                    { nombre: "Moreno Camacho, Luís", curso: "3ºB", telefonos: "615103408//65788" },
-                    { nombre: "Pérez Dorado, Elsa María", curso: "1ºA", telefonos: "629276536//65210" },
-                    { nombre: "Sánchez Caro, Claudia", curso: "2ºB", telefonos: "5887//657985655" }
-                ],
-                "INFORMÁTICA (4º-5º-6ºprimaria)": [
-                    { nombre: "Cobzariu, Stefania María", curso: "4ºA", telefonos: "642796659//642739386" },
-                    { nombre: "Gil Roldán, Ángel", curso: "6ºA", telefonos: "688709540//959097532" },
-                    { nombre: "Jerez Hernández, David", curso: "6ºA", telefonos: "652105292//615173869" },
-                    { nombre: "Jordan Suárez, Rubén", curso: "4ºA", telefonos: "680375050//655777187" },
-                    { nombre: "Lepe Martínez, Salvador", curso: "4ºA", telefonos: "615990195//615990192" },
-                    { nombre: "Molina Díaz, Lucas", curso: "4º", telefonos: "617416742" },
-                    { nombre: "Cardenas Macarro, Marta", curso: "5º", telefonos: "661249231" },
-                    { nombre: "Cárdenas Macarro, Félix", curso: "6º", telefonos: "661249231" },
-                    { nombre: "Millan Álvarez, Francisco José", curso: "6º", telefonos: "627936028" },
-                    { nombre: "Pérez Dorado, Alba del Rocío", curso: "3ºB", telefonos: "629276536//652106552" },
-                    { nombre: "Israe", curso: "", telefonos: "" }
-                ],
-                "FAME DANCE": [
-                    { nombre: "Cobzariu, Stefanía María", curso: "4ºA", telefonos: "642796659//642739386" },
-                    { nombre: "Correa Verdugo, Carlota", curso: "1ºB", telefonos: "693758795//666779588" },
-                    { nombre: "Domínguez Pérez, Malena", curso: "1ºB", telefonos: "617241091//651755916" },
-                    { nombre: "Gil Gil, Natalia", curso: "1ºA", telefonos: "605248986" },
-                    { nombre: "Lepe Martínez, María", curso: "3ºB", telefonos: "615-990195//615-990192" },
-                    { nombre: "Moreno Garrido, María", curso: "1ºA", telefonos: "622701922//626291794" },
-                    { nombre: "Pavón Arance, Martina", curso: "1ºB", telefonos: "600068787//653066917" },
-                    { nombre: "Paula Díaz", curso: "", telefonos: "" },
-                    { nombre: "Adriana Díaz", curso: "", telefonos: "" },
-                    { nombre: "Rosa Casado", curso: "", telefonos: "" }
-                ],
-                "PATINAJE (primaria) AMPA": [
-                    { nombre: "Alcántara Ramos, Paula", curso: "5ºA", telefonos: "620-242034//666-461903" },
-                    { nombre: "Alfaro Suárez, Greta", curso: "2ºB", telefonos: "651-330278//630-815594" },
-                    { nombre: "Ávila Moreno, Alba", curso: "5ºB", telefonos: "675-723259//616-422508" },
-                    { nombre: "Becerra Ávila, Nacho", curso: "4ºB", telefonos: "658-694235//658-694236" },
-                    { nombre: "Calvo Medrano, Belén", curso: "4ºB", telefonos: "678-282781//616-719629" },
-                    { nombre: "Casado Godoy, Nazaret", curso: "2ºB", telefonos: "685-848351//656-973302" },
-                    { nombre: "Casado Godoy, Rosa", curso: "4ºB", telefonos: "685-848351//656-973303" },
-                    { nombre: "Cristo Pacheco, Abril", curso: "2ºB", telefonos: "687-570111//639-980518" },
-                    { nombre: "Díaz Díaz, Gloria", curso: "4ºA", telefonos: "625-858052//676-844267" },
-                    { nombre: "Díaz Ruíz, Adriana", curso: "5ºB", telefonos: "605-622002//654-153711" },
-                    { nombre: "Díaz Ruíz, Paula", curso: "1ºB", telefonos: "605-622002//654-153711" },
-                    { nombre: "Gómez Domínguez, Laura", curso: "2ºB", telefonos: "684-010984//660-424297" },
-                    { nombre: "González Torres, Carmen", curso: "1ºA", telefonos: "699-236834//625-809388" },
-                    { nombre: "Guirado Medrano, Alicia", curso: "6ºA", telefonos: "667-499363//677-491978" },
-                    { nombre: "Lepe Villarán, Carlota", curso: "2ºB", telefonos: "620-313846//600-860026" },
-                    { nombre: "Limón Infante, Alicia", curso: "5ºA", telefonos: "628-596280//660-118650" },
-                    { nombre: "López Barroso, Sara", curso: "6ºA", telefonos: "646-104125//653-267457" },
-                    { nombre: "Medina Lepe, Abril", curso: "4ºB", telefonos: "651-833603//635-819025" },
-                    { nombre: "Millán Álvarez, Rocío", curso: "2ºB", telefonos: "685-200698//627-936028" },
-                    { nombre: "Millán García, Marina", curso: "5ºA", telefonos: "645-389742//627-956556" },
-                    { nombre: "Moreno López, Ángela", curso: "2ºA", telefonos: "637-211939//627-269461" },
-                    { nombre: "Orillán Grande, Abril", curso: "4ºB", telefonos: "677-079591//667-825356" },
-                    { nombre: "Pichardo López, Nuria", curso: "3ºB", telefonos: "653-137718" },
-                    { nombre: "Ramos Rubio, Manuel", curso: "2ºA", telefonos: "615-438018//673-204915" },
-                    { nombre: "Rivera Jiménez-Verdier, Martín", curso: "2ºB", telefonos: "664-663535//627-604659" },
-                    { nombre: "Rodríguez Caro, Lola", curso: "1ºA", telefonos: "695-631166//662-909675" },
-                    { nombre: "Salas Rubio, Carmen", curso: "1ºA", telefonos: "635-011003//686-982370" },
-                    { nombre: "Sánchez Caro, Claudia", curso: "1ºB", telefonos: "635-805887//657-985655" },
-                    { nombre: "Vega Sánchez, Fabiola", curso: "5ºB", telefonos: "627-464297//625-721945" },
-                    { nombre: "Vega Sánchez, Leo", curso: "3ºA", telefonos: "627-464297//625721945" }
-                ]
+                "PSICOMOTRICIDAD": {
+                    "INFANTIL 3 AÑOS A": [
+                        { nombre: "Soriano Suárez, Alberto", curso: "Inf. 3 años A", telefonos: "653266033//652280169" },
+                        { nombre: "Yactayo Casabona, Logan Derek", curso: "Inf. 3 años A", telefonos: "614171335//647808746" },
+                        { nombre: "Limón Miranda, Alberto", curso: "Inf. 3 años A", telefonos: "664504367//603674748" },
+                        { nombre: "Reyes García, Bruno", curso: "Inf. 3 años A", telefonos: "647035761//677808316" },
+                        { nombre: "Rodríguez Lagares, Martina", curso: "Inf. 3 años A", telefonos: "617552870//610795961" }
+                    ],
+                    "INFANTIL 3 AÑOS B": [
+                        { nombre: "Durán Valqui, Mathias Gabriel", curso: "Inf. 3 años B", telefonos: "641028876//610241108" },
+                        { nombre: "Lepe Huelva, Valeria", curso: "Inf. 3 años B", telefonos: "645637046//671934340" },
+                        { nombre: "Medrano Garrido, Manuel", curso: "Inf. 3 años B", telefonos: "620767232//619434078" },
+                        { nombre: "Moreno Garrido, Isabel", curso: "Inf. 3 años B", telefonos: "622701922//626291794" },
+                        { nombre: "Pavón Vicente, Héctor", curso: "Inf. 5 años A", telefonos: "649750124//690952361" },
+                        { nombre: "Roldán Cárdenas, Manuel", curso: "Inf. 3 años B", telefonos: "610999684//618438016" },
+                        { nombre: "González Barroso, Julia", curso: "Inf. 3 años B", telefonos: "635272237//659356639" },
+                        { nombre: "Delgado Pichardo, Julia", curso: "Inf. 3 años B", telefonos: "693655616//608613110" },
+                        { nombre: "Díaz Espina, Daniel", curso: "Inf. 3 años B", telefonos: "617286084//662009507" },
+                        { nombre: "Lepe Villarán, Nazaret", curso: "Inf. 3 años B", telefonos: "620313846//600860026" },
+                        { nombre: "Jarillo Cortés, Manuel", curso: "Inf. 3 años B", telefonos: "722736370//639248122" }
+                    ],
+                    "INFANTIL 4 AÑOS A": [
+                        { nombre: "Díaz del Toro, Mateo", curso: "Inf. 4 años A", telefonos: "655260083//685147838" },
+                        { nombre: "Lepe Pineda, Valentina", curso: "Inf. 4 años A", telefonos: "611004229//663940809" },
+                        { nombre: "Calvo Baldán, Jimena", curso: "Inf. 4 años A", telefonos: "636455139//603832998" },
+                        { nombre: "Pavón Rubio, Candela", curso: "Inf. 4 años A", telefonos: "663380383//625914502" },
+                        { nombre: "Lepe Delgado, Marta", curso: "Inf. 4 años A", telefonos: "672341437//635553074" },
+                        { nombre: "Ávila Moreno, Alejandro", curso: "Inf. 4 años A", telefonos: "675723259//616422508" },
+                        { nombre: "Domínguez Ramírez, Sofía", curso: "Inf. 4 años", telefonos: "9162//605129162" },
+                        { nombre: "Chirino Pavón, Jorge", curso: "Inf. 4 años A", telefonos: "617278967//687743162" },
+                        { nombre: "Caro Montes, Julia", curso: "Inf. 4 años A", telefonos: "692251989//647433849" },
+                        { nombre: "Bellerín Millán, Jimena", curso: "Inf. 4 años A", telefonos: "656408276//603769779" },
+                        { nombre: "Infante López, Clara", curso: "Inf. 5 años A", telefonos: "676144162//635999038" },
+                        { nombre: "Cobzariu, Anais-Nerea", curso: "Inf. 4 años A", telefonos: "642796659//642739386" }
+                    ],
+                    "INFANTIL 4 AÑOS B": [
+                        { nombre: "Bahou, Fatima Ezzahra", curso: "Inf. 4 años B", telefonos: "632363294//642384784" },
+                        { nombre: "Rodríguez Suárez, Jesús", curso: "Inf. 4 años B", telefonos: "685166118//658369150" },
+                        { nombre: "Cruces Rodríguez, Hugo", curso: "Inf. 4 años B", telefonos: "643496590//624868519" },
+                        { nombre: "González Torres, Irene", curso: "Inf. 4 años B", telefonos: "699236834//625809388" },
+                        { nombre: "Martínez Suárez, Lola", curso: "Inf. 4 años B", telefonos: "699821500//663418246" },
+                        { nombre: "Álvarez Domínguez, Pablo", curso: "Inf. 4 años B", telefonos: "695596456//656559611" }
+                    ],
+                    "INFANTIL 5 AÑOS A": [
+                        { nombre: "García Acuña, Camila", curso: "infantil 5 años", telefonos: "643108373" },
+                        { nombre: "Cobzariu, Eric", curso: "infantil 5 años", telefonos: "642796659" },
+                        { nombre: "Pavón Vicente, Héctor", curso: "Inf. 5 años A", telefonos: "649750124//690952361" }
+                    ],
+                    "INFANTIL 5 AÑOS B": [
+                        { nombre: "Martínez Ramírez, Jorge", curso: "Inf. 5 años B", telefonos: "675356589//692947065" },
+                        { nombre: "González Barroso, Lucas", curso: "Inf. 5 años B", telefonos: "635272237//659356639" },
+                        { nombre: "Cobzariu, Eric", curso: "Inf. 5 años A", telefonos: "642796659//642739386" }
+                    ],
+                    "INFANTIL 4 AÑOS": [
+                        { nombre: "Cobzariu, Anais", curso: "infantil 4 años", telefonos: "642796659" },
+                        { nombre: "Verano Quiñones, Martín", curso: "infantil 4 años", telefonos: "618170726" }
+                    ],
+                    "infantil 3 años": [
+                        { nombre: "Delgado Moreno, Carmen", curso: "infantil 3 años", telefonos: "668562523" },
+                        { nombre: "Lagares Medrano, Thiago", curso: "Infantil 3 años", telefonos: "651721178" },
+                        { nombre: "Medrano Cascales, Marina", curso: "infantil 3 años", telefonos: "605216647" }
+                    ],
+                    "infnatil 3 años": [
+                        { nombre: "Rasgado Montes, Ángela", curso: "infnatil 3 años", telefonos: "662457736" }
+                    ],
+                    "Inf. 3 años A": [
+                        { nombre: "Pichardo Ruíz, Julia", curso: "Inf. 3 años A", telefonos: "670302786//661710459" }
+                    ],
+                    "Inf. 5 años A": [
+                        { nombre: "Pavón Vicente, Héctor", curso: "Inf. 5 años A", telefonos: "649750124//690952361" },
+                        { nombre: "Cobzariu, Eric", curso: "Inf. 5 años A", telefonos: "642796659//642739386" }
+                    ],
+                    "Inf. 3 años B": [
+                        { nombre: "Durán Valqui, Mathias Gabriel", curso: "Inf. 3 años B", telefonos: "641028876//610241108" },
+                        { nombre: "González Barroso, Julia", curso: "Inf. 3 años B", telefonos: "635272237//659356639" },
+                        { nombre: "Delgado Pichardo, Julia", curso: "Inf. 3 años B", telefonos: "693655616//608613110" },
+                        { nombre: "Díaz Espina, Daniel", curso: "Inf. 3 años B", telefonos: "617286084//662009507" },
+                        { nombre: "Lepe Villarán, Nazaret", curso: "Inf. 3 años B", telefonos: "620313846//600860026" },
+                        { nombre: "Moreno Garrido, Isabel", curso: "Inf. 3 años B", telefonos: "622701922//626291794" },
+                        { nombre: "Jarillo Cortés, Manuel", curso: "Inf. 3 años B", telefonos: "722736370//639248122" }
+                    ]
+                },
+                "MANUALIDADES": {
+                    "INFANTIL 3 AÑOS A": [
+                        { nombre: "Soriano Suárez, Alberto", curso: "Inf. 3 años A", telefonos: "653266033//652280169" },
+                        { nombre: "Yactayo Casabona, Logan Derek", curso: "Inf. 3 años A", telefonos: "614171335//647808746" },
+                        { nombre: "Limón Miranda, Alberto", curso: "Inf. 3 años A", telefonos: "664504367//603674748" },
+                        { nombre: "Reyes García, Bruno", curso: "Inf. 3 años A", telefonos: "647035761//677808316" },
+                        { nombre: "Rodríguez Lagares, Martina", curso: "Inf. 3 años A", telefonos: "617552870//610795961" }
+                    ],
+                    "INFANTIL 3 AÑOS B": [
+                        { nombre: "Durán Valqui, Mathias Gabriel", curso: "Inf. 3 años B", telefonos: "641028876//610241108" },
+                        { nombre: "Lepe Huelva, Valeria", curso: "Inf. 3 años B", telefonos: "645637046//671934340" },
+                        { nombre: "Medrano Garrido, Manuel", curso: "Inf. 3 años B", telefonos: "620767232//619434078" },
+                        { nombre: "Moreno Garrido, Isabel", curso: "Inf. 3 años B", telefonos: "622701922//626291794" },
+                        { nombre: "Pavón Vicente, Héctor", curso: "Inf. 5 años A", telefonos: "649750124//690952361" },
+                        { nombre: "Roldán Cárdenas, Manuel", curso: "Inf. 3 años B", telefonos: "610999684//618438016" },
+                        { nombre: "González Barroso, Julia", curso: "Inf. 3 años B", telefonos: "635272237//659356639" },
+                        { nombre: "Delgado Pichardo, Julia", curso: "Inf. 3 años B", telefonos: "693655616//608613110" },
+                        { nombre: "Díaz Espina, Daniel", curso: "Inf. 3 años B", telefonos: "617286084//662009507" },
+                        { nombre: "Lepe Villarán, Nazaret", curso: "Inf. 3 años B", telefonos: "620313846//600860026" },
+                        { nombre: "Jarillo Cortés, Manuel", curso: "Inf. 3 años B", telefonos: "722736370//639248122" }
+                    ],
+                    "INFANTIL 4 AÑOS A": [
+                        { nombre: "Díaz del Toro, Mateo", curso: "Inf. 4 años A", telefonos: "655260083//685147838" },
+                        { nombre: "Lepe Pineda, Valentina", curso: "Inf. 4 años A", telefonos: "611004229//663940809" },
+                        { nombre: "Calvo Baldán, Jimena", curso: "Inf. 4 años A", telefonos: "636455139//603832998" },
+                        { nombre: "Pavón Rubio, Candela", curso: "Inf. 4 años A", telefonos: "663380383//625914502" },
+                        { nombre: "Lepe Delgado, Marta", curso: "Inf. 4 años A", telefonos: "672341437//635553074" },
+                        { nombre: "Ávila Moreno, Alejandro", curso: "Inf. 4 años A", telefonos: "675723259//616422508" },
+                        { nombre: "Domínguez Ramírez, Sofía", curso: "Inf. 4 años", telefonos: "9162//605129162" },
+                        { nombre: "Chirino Pavón, Jorge", curso: "Inf. 4 años A", telefonos: "617278967//687743162" },
+                        { nombre: "Caro Montes, Julia", curso: "Inf. 4 años A", telefonos: "692251989//647433849" },
+                        { nombre: "Bellerín Millán, Jimena", curso: "Inf. 4 años A", telefonos: "656408276//603769779" },
+                        { nombre: "Infante López, Clara", curso: "Inf. 5 años A", telefonos: "676144162//635999038" },
+                        { nombre: "Cobzariu, Anais-Nerea", curso: "Inf. 4 años A", telefonos: "642796659//642739386" }
+                    ],
+                    "INFANTIL 4 AÑOS B": [
+                        { nombre: "Bahou, Fatima Ezzahra", curso: "Inf. 4 años B", telefonos: "632363294//642384784" },
+                        { nombre: "Rodríguez Suárez, Jesús", curso: "Inf. 4 años B", telefonos: "685166118//658369150" },
+                        { nombre: "Cruces Rodríguez, Hugo", curso: "Inf. 4 años B", telefonos: "643496590//624868519" },
+                        { nombre: "González Torres, Irene", curso: "Inf. 4 años B", telefonos: "699236834//625809388" },
+                        { nombre: "Martínez Suárez, Lola", curso: "Inf. 4 años B", telefonos: "699821500//663418246" },
+                        { nombre: "Álvarez Domínguez, Pablo", curso: "Inf. 4 años B", telefonos: "695596456//656559611" }
+                    ],
+                    "INFANTIL 5 AÑOS A": [
+                        { nombre: "García Acuña, Camila", curso: "infantil 5 años", telefonos: "643108373" },
+                        { nombre: "Cobzariu, Eric", curso: "infantil 5 años", telefonos: "642796659" },
+                        { nombre: "Pavón Vicente, Héctor", curso: "Inf. 5 años A", telefonos: "649750124//690952361" }
+                    ],
+                    "INFANTIL 5 AÑOS B": [
+                        { nombre: "Martínez Ramírez, Jorge", curso: "Inf. 5 años B", telefonos: "675356589//692947065" },
+                        { nombre: "González Barroso, Lucas", curso: "Inf. 5 años B", telefonos: "635272237//659356639" },
+                        { nombre: "Cobzariu, Eric", curso: "Inf. 5 años A", telefonos: "642796659//642739386" }
+                    ],
+                    "INFANTIL 4 AÑOS": [
+                        { nombre: "Cobzariu, Anais", curso: "infantil 4 años", telefonos: "642796659" },
+                        { nombre: "Verano Quiñones, Martín", curso: "infantil 4 años", telefonos: "618170726" }
+                    ],
+                    "infantil 3 años": [
+                        { nombre: "Delgado Moreno, Carmen", curso: "infantil 3 años", telefonos: "668562523" },
+                        { nombre: "Lagares Medrano, Thiago", curso: "Infantil 3 años", telefonos: "651721178" },
+                        { nombre: "Medrano Cascales, Marina", curso: "infantil 3 años", telefonos: "605216647" }
+                    ],
+                    "infnatil 3 años": [
+                        { nombre: "Rasgado Montes, Ángela", curso: "infnatil 3 años", telefonos: "662457736" }
+                    ],
+                    "Inf. 3 años A": [
+                        { nombre: "Pichardo Ruíz, Julia", curso: "Inf. 3 años A", telefonos: "670302786//661710459" }
+                    ],
+                    "Inf. 5 años A": [
+                        { nombre: "Pavón Vicente, Héctor", curso: "Inf. 5 años A", telefonos: "649750124//690952361" },
+                        { nombre: "Cobzariu, Eric", curso: "Inf. 5 años A", telefonos: "642796659//642739386" }
+                    ],
+                    "Inf. 3 años B": [
+                        { nombre: "Durán Valqui, Mathias Gabriel", curso: "Inf. 3 años B", telefonos: "641028876//610241108" },
+                        { nombre: "González Barroso, Julia", curso: "Inf. 3 años B", telefonos: "635272237//659356639" },
+                        { nombre: "Delgado Pichardo, Julia", curso: "Inf. 3 años B", telefonos: "693655616//608613110" },
+                        { nombre: "Díaz Espina, Daniel", curso: "Inf. 3 años B", telefonos: "617286084//662009507" },
+                        { nombre: "Lepe Villarán, Nazaret", curso: "Inf. 3 años B", telefonos: "620313846//600860026" },
+                        { nombre: "Moreno Garrido, Isabel", curso: "Inf. 3 años B", telefonos: "622701922//626291794" },
+                        { nombre: "Jarillo Cortés, Manuel", curso: "Inf. 3 años B", telefonos: "722736370//639248122" }
+                    ]
+                },
+                "ARTES PLÁSTICAS": {
+                    "1º A": [
+                        { nombre: "Gil Gil, Natalia", curso: "1ºA", telefonos: "605248986" },
+                        { nombre: "Pavon Arance, Martina", curso: "1ºB", telefonos: "600068787//653066917" },
+                        { nombre: "García Verdugo, Mateo", curso: "1ºA", telefonos: "675626011//616478826" }
+                    ],
+                    "2º B": [
+                        { nombre: "Sánchez Caro, Claudia", curso: "2ºB", telefonos: "635805887//657985655" },
+                        { nombre: "Coronel Lobo, Hugo", curso: "2ºB", telefonos: "654866474" }
+                    ],
+                    "4º A": [
+                        { nombre: "Cobzariu, Stefanía María", curso: "4ºA", telefonos: "642796659//642739386" }
+                    ],
+                    "4º B": [
+                        { nombre: "Millan Álvarez, Cayetano", curso: "4º B", telefonos: "627936028" }
+                    ],
+                    "6º A": [
+                        { nombre: "Limón Infante, Alicia", curso: "6ºA", telefonos: "628596280//660118650" }
+                    ]
+                },
+                "TENIS": {
+                    "3º B": [
+                        { nombre: "Arteaga Mirkovic, Nicole Alison", curso: "3ºB", telefonos: "611396073" }
+                    ],
+                    "4º B": [
+                        { nombre: "Díaz Ávila, Tristán", curso: "4ºB", telefonos: "687270866" }
+                    ],
+                    "6º A": [
+                        { nombre: "Jerez Hernández, David", curso: "6ºA", telefonos: "652105292//615173869" },
+                        { nombre: "Verde Limón, David", curso: "6ºA", telefonos: "641455738" }
+                    ],
+                    "4º A": [
+                        { nombre: "Jordan Suárez, Rubén", curso: "4ºA", telefonos: "680375050//655777187" },
+                        { nombre: "García Acuña, Adrián", curso: "4ºA", telefonos: "643108373" }
+                    ],
+                    "3º A": [
+                        { nombre: "Radu Rodríguez, Hugo Nicolás", curso: "3ºA", telefonos: "643166608//642628053" }
+                    ],
+                    "5º B": [
+                        { nombre: "Zayadi Boubkeur, Abdulah", curso: "5ºB", telefonos: "671861497" }
+                    ]
+                },
+                "INGLÉS (1º-2º-3ºprimaria)": {
+                    "1º B": [
+                        { nombre: "Coronel Delgado, Laura", curso: "1ºB", telefonos: "654125826//661249223" },
+                        { nombre: "Leal Delgado, Julia", curso: "1ºB", telefonos: "654518886//607839501" },
+                        { nombre: "Rosales Van Essche, Lucas", curso: "1ºB", telefonos: "659336587//676446527" },
+                        { nombre: "Calvo Baldán, Cayetano", curso: "1ºB", telefonos: "636455139//60383" }
+                    ],
+                    "2º A": [
+                        { nombre: "Coronel Delgado, Lucía", curso: "2ºA", telefonos: "654125826//661249223" }
+                    ],
+                    "2º B": [
+                        { nombre: "Alonso Hurtado, Alexander", curso: "2ºB", telefonos: "608849381//653773246" },
+                        { nombre: "Domínguez Soriano, Alba", curso: "2ºB", telefonos: "616886824//627170470" },
+                        { nombre: "infante López, Martín", curso: "2ºB", telefonos: "676144162//63599" }
+                    ],
+                    "3º B": [
+                        { nombre: "Pérez Dorado, Alba del Rocío", curso: "3ºB", telefonos: "629276536//652106552" },
+                        { nombre: "López Morales, Isabel", curso: "3ºB", telefonos: "625168808//65576" },
+                        { nombre: "Moreno Camacho, Luís", curso: "3ºB", telefonos: "615103408//65788" }
+                    ],
+                    "4º A": [
+                        { nombre: "García Acuña, Adrián", curso: "4ºA", telefonos: "643108373" }
+                    ],
+                    "5º A": [
+                        { nombre: "El Gouche, Shoaid", curso: "5ºA", telefonos: "641420653" }
+                    ]
+                },
+                "INGLÉS (4º-5º-6ºprimaria)": {
+                    "4º A": [
+                        { nombre: "Díaz Ruíz, Patricia", curso: "4ºA", telefonos: "648715818//74740" },
+                        { nombre: "Cobzariu, Stefanía María", curso: "4ºA", telefonos: "642796659//64273" },
+                        { nombre: "Jordan Suárez, Rubén", curso: "4ºA", telefonos: "680375050//655777187" },
+                        { nombre: "Lepe Martínez, Salvador", curso: "4ºA", telefonos: "615990195//615990192" },
+                        { nombre: "Molina Díaz, Lucas", curso: "4º", telefonos: "617416742" }
+                    ],
+                    "5º A": [
+                        { nombre: "López Morales, Isidro José", curso: "5ºA", telefonos: "625168808//65576" },
+                        { nombre: "Becerra Ávila, Nacho", curso: "5ºA", telefonos: "658694235//65869" }
+                    ],
+                    "5º B": [
+                        { nombre: "Domínguez Suárez, Daniel", curso: "5ºB", telefonos: "679-710310//661-" },
+                        { nombre: "Zayadi Boubkeur, Abdulah", curso: "5ºB", telefonos: "6718614" }
+                    ],
+                    "6º B": [
+                        { nombre: "Adam, Israe", curso: "6ºB", telefonos: "642287054//64203" }
+                    ]
+                },
+                "INFORMÁTICA (1º-2º-3ºprimaria)": {
+                    "3º B": [
+                        { nombre: "López Morales, Isabel", curso: "3ºB", telefonos: "625168808//65576" },
+                        { nombre: "Moreno Camacho, Luís", curso: "3ºB", telefonos: "615103408//65788" },
+                        { nombre: "Pérez Dorado, Alba del Rocío", curso: "3ºB", telefonos: "629276536//652106552" }
+                    ],
+                    "2º B": [
+                        { nombre: "infante López, Martín", curso: "2ºB", telefonos: "676144162//63599" },
+                        { nombre: "Sánchez Caro, Claudia", curso: "2ºB", telefonos: "5887//657985655" }
+                    ],
+                    "1º B": [
+                        { nombre: "Calvo Baldán, Cayetano", curso: "1ºB", telefonos: "636455139//60383" }
+                    ],
+                    "1º A": [
+                        { nombre: "Pérez Dorado, Elsa María", curso: "1ºA", telefonos: "629276536//65210" }
+                    ]
+                },
+                "INFORMÁTICA (4º-5º-6ºprimaria)": {
+                    "4º A": [
+                        { nombre: "Cobzariu, Stefania María", curso: "4ºA", telefonos: "642796659//642739386" },
+                        { nombre: "Jordan Suárez, Rubén", curso: "4ºA", telefonos: "680375050//655777187" },
+                        { nombre: "Lepe Martínez, Salvador", curso: "4ºA", telefonos: "615990195//615990192" },
+                        { nombre: "Molina Díaz, Lucas", curso: "4º", telefonos: "617416742" }
+                    ],
+                    "5º A": [
+                        { nombre: "López Morales, Isidro José", curso: "5ºA", telefonos: "625168808//65576" },
+                        { nombre: "Becerra Ávila, Nacho", curso: "5ºA", telefonos: "658694235//65869" }
+                    ],
+                    "5º B": [
+                        { nombre: "Domínguez Suárez, Daniel", curso: "5ºB", telefonos: "679-710310//661-" },
+                        { nombre: "Zayadi Boubkeur, Abdulah", curso: "5ºB", telefonos: "6718614" }
+                    ],
+                    "6º A": [
+                        { nombre: "Gil Roldán, Ángel", curso: "6ºA", telefonos: "688709540//959097532" },
+                        { nombre: "Jerez Hernández, David", curso: "6ºA", telefonos: "652105292//615173869" }
+                    ],
+                    "6º B": [
+                        { nombre: "Adam, Israe", curso: "6ºB", telefonos: "642287054//64203" }
+                    ]
+                },
+                "FAME DANCE": {
+                    "4º A": [
+                        { nombre: "Cobzariu, Stefanía María", curso: "4ºA", telefonos: "642796659//642739386" }
+                    ],
+                    "1º B": [
+                        { nombre: "Correa Verdugo, Carlota", curso: "1ºB", telefonos: "693758795//666779588" },
+                        { nombre: "Domínguez Pérez, Malena", curso: "1ºB", telefonos: "617241091//651755916" },
+                        { nombre: "Pavón Arance, Martina", curso: "1ºB", telefonos: "600068787//653066917" }
+                    ],
+                    "1º A": [
+                        { nombre: "Gil Gil, Natalia", curso: "1ºA", telefonos: "605248986" },
+                        { nombre: "Moreno Garrido, María", curso: "1ºA", telefonos: "622701922//626291794" }
+                    ],
+                    "3º B": [
+                        { nombre: "Lepe Martínez, María", curso: "3ºB", telefonos: "615-990195//615-990192" }
+                    ]
+                },
+                "PATINAJE (primaria) AMPA": {
+                    "1º A": [
+                        { nombre: "González Torres, Carmen", curso: "1ºA", telefonos: "699-236834//625-809388" },
+                        { nombre: "Rodríguez Caro, Lola", curso: "1ºA", telefonos: "695-631166//662-909675" },
+                        { nombre: "Salas Rubio, Carmen", curso: "1ºA", telefonos: "635-011003//686-982370" }
+                    ],
+                    "1º B": [
+                        { nombre: "Díaz Ruíz, Paula", curso: "1ºB", telefonos: "605-622002//654-153711" }
+                    ],
+                    "2º A": [
+                        { nombre: "Ramos Rubio, Manuel", curso: "2ºA", telefonos: "615-438018//673-204915" },
+                        { nombre: "Moreno López, Ángela", curso: "2ºA", telefonos: "637-211939//627-269461" }
+                    ],
+                    "2º B": [
+                        { nombre: "Alfaro Suárez, Greta", curso: "2ºB", telefonos: "651-330278//630-815594" },
+                        { nombre: "Casado Godoy, Nazaret", curso: "2ºB", telefonos: "685-848351//656-973302" },
+                        { nombre: "Gómez Domínguez, Laura", curso: "2ºB", telefonos: "684-010984//660-424297" },
+                        { nombre: "Lepe Villarán, Carlota", curso: "2ºB", telefonos: "620-313846//600-860026" },
+                        { nombre: "Millán Álvarez, Rocío", curso: "2ºB", telefonos: "685-200698//627-936028" },
+                        { nombre: "Rivera Jiménez-Verdier, Martín", curso: "2ºB", telefonos: "664-663535//627-604659" }
+                    ],
+                    "3º A": [
+                        { nombre: "Vega Sánchez, Leo", curso: "3ºA", telefonos: "627-464297//625721945" }
+                    ],
+                    "4º A": [
+                        { nombre: "Díaz Díaz, Gloria", curso: "4ºA", telefonos: "625-858052//676-844267" },
+                        { nombre: "Pichardo López, Nuria", curso: "3ºB", telefonos: "653-137718" }
+                    ],
+                    "4º B": [
+                        { nombre: "Becerra Ávila, Nacho", curso: "4ºB", telefonos: "658-694235//658-694236" },
+                        { nombre: "Calvo Medrano, Belén", curso: "4ºB", telefonos: "678-282781//616-719629" },
+                        { nombre: "Orillán Grande, Abril", curso: "4ºB", telefonos: "677-079591//667-825356" },
+                        { nombre: "Casado Godoy, Rosa", curso: "4ºB", telefonos: "685-848351//656-973303" },
+                        { nombre: "Medina Lepe, Abril", curso: "4ºB", telefonos: "651-833603//635-819025" }
+                    ],
+                    "5º A": [
+                        { nombre: "Alcántara Ramos, Paula", curso: "5ºA", telefonos: "620-242034//666-461903" },
+                        { nombre: "López Morales, Isidro José", curso: "5ºA", telefonos: "625-168808//655-767673" },
+                        { nombre: "Millán García, Marina", curso: "5ºA", telefonos: "645-389742//627-956556" },
+                        { nombre: "Limón Infante, Alicia", curso: "5ºA", telefonos: "628-596280//660-118650" }
+                    ],
+                    "5º B": [
+                        { nombre: "Ávila Moreno, Alba", curso: "5ºB", telefonos: "675-723259//616-422508" },
+                        { nombre: "Casado Godoy, Rosa", curso: "4ºB", telefonos: "685-848351//656-973303" },
+                        { nombre: "Medina Lepe, Abril", curso: "4ºB", telefonos: "651-833603//635-819025" },
+                        { nombre: "Vega Sánchez, Fabiola", curso: "5ºB", telefonos: "627-464297//625-721945" }
+                    ],
+                    "6º A": [
+                        { nombre: "Guirado Medrano, Alicia", curso: "6ºA", telefonos: "667-499363//677-491978" },
+                        { nombre: "López Barroso, Sara", curso: "6ºA", telefonos: "646-104125//653-267457" }
+                    ],
+                    "6º B": []
+                }
             },
             noAutorizados: {
-                "irseSolo": {
+                irseSolo: {
                     "4º A": ["COBZARIU, STEFANÍA Mª", "DÍAZ RUIZ, PATRICIA", "DÍAZ RUIZ, RUBÉN", "DUQUE SALAS, ALICIA", "JORDAN SUÁREZ, RUBÉN", "MESBAHI, AWATEF", "MOLINA DÍAZ, LUCAS", "ROSADO CASTIZO, ALBA", "TAHIRI, ANASS", "VALENCIANO BELLERÍN, VERÓNICA"],
                     "4º B": ["BENJUMEA DOMÍNGUEZ, LUCÍA", "DE LA ROSA CEPEDA, ÁLVARO", "DÍAZ MARTÍNEZ, IZAN", "FLORES DELGADO, PABLO", "MILLÁN ÁLVAREZ, CAYETANO", "RODRÍGUEZ RAMOS, DAVID", "TALIDI, NOUR"],
                     "5º A": ["DÍAZ PARRA, ÁNGELA", "LARIOS SUERO, PABLO", "ORILLÁN GRANDE, ABRIL", "RÍOS MARTÍN, MATEO"],
@@ -1805,40 +2013,15 @@
                     "6º A": ["DE LARA LÓPEZ, ÁNGEL", "DÍAZ RUIZ, ADRIANA", "ESCOBAR BAENA, GUILLERMO", "HERNÁNDEZ GALVÁN, LOGAN", "MARTÍN HERNÁNDEZ, ÁLVARO", "MILLÁN ÁLVAREZ, FCO JOSÉ", "RODRÍGUEZ ALBARRÁN, AINHOA"],
                     "6º B": []
                 },
-                "cuentaGSuite": {
-                    "4º A": ["TAHIRI, ANASS"],
-                    "4º B": ["CHOULKHA, IMANE"]
-                },
-                "salidasLocalidad": {
-                    "4 AÑOS B": ["BRICHA, AMIR"],
-                    "5 AÑOS A": ["BRICHA, NERMINE", "CHOULKHA, HAMZA"],
-                    "2º B": ["CHOULKHA, HAMZA", "HAYBOUL, KHADIJA"],
-                    "4º A": ["TAHIRI, ANASS"],
-                    "5º B": ["CHOULKHA, IMANE"]
-                },
-                "tomaTemperatura": {
-                    "4 AÑOS B": ["BRICHA, AMIR"],
-                    "5 AÑOS A": ["BRICHA, NERMINE", "ROLDÁN SVETOSLAVOVA, ALEJANDRO"],
-                    "1º B": ["EL GOUCHE, LOUAY"],
+                cuentaGSuite: ["TAHIRI, ANASS", "CHOULKHA, IMANE"],
+                salidasLocalidad: ["BRICHA, AMIR", "BRICHA, NERMINE", "CHOULKHA, HAMZA", "HAYBOUL, KHADIJA", "TAHIRI, ANASS", "DÍAZ MARTÍNEZ, IZAN", "CHOULKHA, IMANE"],
+                tomaTemperatura: {
                     "2º A": ["ROLDÁN SVETOSLAVOVA, VERÓNICA"],
-                    "2º B": ["CHOULKHA, HAMZA", "HAYBOUL, KHADIJA"],
-                    "3º B": ["DÍAZ MARTÍNEZ, MAURO"],
-                    "4º A": ["TAHIRI, ANASS"],
-                    "4ºB": ["DÍAZ MARTÍNEZ, IZAN"],
-                    "5º B": ["CHOULKHA, IMANE"],
+                    "5º A": ["ROLDÁN SVETOSLAVOVA, ALEJANDRO"],
                     "6º A": ["DAVID JEREZ HERNÁNDEZ"],
                     "6º B": ["VAZ LAGARES, DANIELA"]
                 },
-                "trabajosConcursos": {
-                    "4 AÑOS B": ["BRICHA, AMIR"],
-                    "5 AÑOS A": ["BRICHA, NERMINE", "CHOULKHA, HAMZA"],
-                    "1º B": ["EL GOUCHE, LOUAY"],
-                    "2º B": ["CHOULKHA, HAMZA", "HAYBOUL, KHADIJA"],
-                    "3º B": ["DÍAZ MARTÍNEZ, MAURO"],
-                    "4º A": ["TAHIRI, ANASS"],
-                    "4ºB": ["DÍAZ MARTÍNEZ, IZAN"],
-                    "5º B": ["CHOULKHA, IMANE"]
-                }
+                trabajosConcursos: ["BRICHA, AMIR", "BRICHA, NERMINE", "EL GOUCHE, LOUAY", "CHOULKHA, HAMZA", "HAYBOUL, KHADIJA", "DÍAZ MARTÍNEZ, MAURO", "TAHIRI, ANASS", "DÍAZ MARTÍNEZ, IZAN", "CHOULKHA, IMANE"]
             }
         };
         // Variables de estado
@@ -1857,6 +2040,7 @@
         let isInactivityLocked = false;
         let autoLockEnabled = true;
         let soundEnabled = true;
+        let currentPassword = '';
         // Configuración de tema
         const darkModeToggle = document.getElementById('dark-mode-toggle');
         const soundToggle = document.getElementById('sound-toggle');
@@ -1869,28 +2053,27 @@
         const initialLockScreen = document.getElementById('initial-lock-screen');
         const inactivityLockScreen = document.getElementById('inactivity-lock-screen');
         const mainContainer = document.getElementById('main-container');
-        // Inputs de bloqueo
-        const initialPasswordInput = document.getElementById('initial-password-input');
-        const initialUnlockBtn = document.getElementById('initial-unlock-btn');
-        const initialErrorMessage = document.getElementById('initial-error-message');
-        const togglePasswordInitial = document.getElementById('toggle-password-initial');
-        const inactivityPasswordInput = document.getElementById('inactivity-password-input');
-        const inactivityUnlockBtn = document.getElementById('inactivity-unlock-btn');
-        const inactivityErrorMessage = document.getElementById('inactivity-error-message');
+        // Elementos de la pantalla de bloqueo
+        const passwordDisplay = document.getElementById('password-display');
+        const keypad = document.querySelector('.keypad');
+        const inactivityPasswordDisplay = document.getElementById('inactivity-password-display');
+        const inactivityKeypad = document.getElementById('inactivity-keypad');
         const inactivityTimerDisplay = document.getElementById('inactivity-timer');
         const countdownDisplay = document.getElementById('countdown');
+        const inactivityErrorMessage = document.getElementById('inactivity-error-message');
         // Cargar configuración guardada
-        function loadSettings() {
-            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
-            const savedFontSize = localStorage.getItem('fontSize') || '100';
-            const savedSound = localStorage.getItem('soundEnabled') !== 'false';
-            darkModeToggle.checked = savedDarkMode;
-            document.documentElement.setAttribute('data-theme', savedDarkMode ? 'dark' : 'light');
-            document.documentElement.style.fontSize = `${savedFontSize}%`;
-            fontSizeValue.textContent = `${savedFontSize}%`;
-            soundToggle.checked = savedSound;
-            soundEnabled = savedSound;
-        }
+function loadSettings() {
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    const savedFontSize = localStorage.getItem('fontSize') || '100';
+    const savedSound = localStorage.getItem('soundEnabled') !== 'false';
+    darkModeToggle.checked = savedDarkMode;
+    // Corrección: Aplicar 'dark' si está guardado como 'true', 'light' si es 'false' o no existe
+    document.documentElement.setAttribute('data-theme', savedDarkMode ? 'dark' : 'light');
+    document.documentElement.style.fontSize = `${savedFontSize}%`;
+    fontSizeValue.textContent = `${savedFontSize}%`;
+    soundToggle.checked = savedSound;
+    soundEnabled = savedSound;
+}
         // Guardar configuración
         function saveSettings() {
             localStorage.setItem('darkMode', darkModeToggle.checked);
@@ -1899,13 +2082,11 @@
         }
         // Sistema de bloqueo inicial
         function initialUnlock() {
-            const password = initialPasswordInput.value;
-            if (password === 'siurot112') {
+            if (currentPassword === '112') {
                 isInitiallyLocked = false;
                 initialLockScreen.classList.add('hidden');
                 mainContainer.classList.add('unlocked');
-                initialPasswordInput.value = '';
-                initialErrorMessage.textContent = '';
+                resetPasswordState();
                 // Inicializar la aplicación después del desbloqueo
                 initializeApp();
                 // Iniciar temporizador de inactividad si está habilitado
@@ -1913,9 +2094,8 @@
                     resetInactivityTimer();
                 }
             } else {
-                initialErrorMessage.textContent = 'Contraseña incorrecta';
-                initialPasswordInput.value = '';
-                initialPasswordInput.focus();
+                inactivityErrorMessage.textContent = 'Contraseña incorrecta';
+                resetPasswordState();
                 // Añadir vibración si está disponible
                 if (navigator.vibrate) {
                     navigator.vibrate(200);
@@ -1927,27 +2107,58 @@
             if (!autoLockEnabled || isInitiallyLocked || isInactivityLocked) return;
             isInactivityLocked = true;
             inactivityLockScreen.classList.remove('hidden');
-            inactivityPasswordInput.value = '';
+            resetInactivityPasswordState();
             inactivityErrorMessage.textContent = '';
             clearInterval(inactivityTimer);
             clearInterval(countdownTimer);
         }
         function unlockFromInactivity() {
-            const password = inactivityPasswordInput.value;
-            if (password === 'siurot112') {
+            if (currentPassword === '112') {
                 isInactivityLocked = false;
                 inactivityLockScreen.classList.add('hidden');
+                resetInactivityPasswordState();
                 resetInactivityTimer();
                 inactivityErrorMessage.textContent = '';
             } else {
                 inactivityErrorMessage.textContent = 'Contraseña incorrecta';
-                inactivityPasswordInput.value = '';
-                inactivityPasswordInput.focus();
+                resetInactivityPasswordState();
                 // Añadir vibración si está disponible
                 if (navigator.vibrate) {
                     navigator.vibrate(200);
                 }
             }
+        }
+        // Funciones para manejar la contraseña en la pantalla de bloqueo
+        function resetPasswordState() {
+            currentPassword = '';
+            updatePasswordDisplay();
+        }
+        function resetInactivityPasswordState() {
+            currentPassword = '';
+            updatePasswordDisplay();
+        }
+        function updatePasswordDisplay() {
+            const displayText = '•'.repeat(currentPassword.length);
+            passwordDisplay.textContent = displayText;
+            inactivityPasswordDisplay.textContent = displayText;
+        }
+        function handleKeyPress(key) {
+            playTapSound();
+            if (key === 'backspace') {
+                currentPassword = currentPassword.slice(0, -1);
+            } else if (key === 'enter') {
+                if (initialLockScreen.classList.contains('hidden')) {
+                    unlockFromInactivity();
+                } else {
+                    initialUnlock();
+                }
+                return;
+            } else {
+                if (currentPassword.length < 3) { // Limitar a 3 dígitos
+                    currentPassword += key;
+                }
+            }
+            updatePasswordDisplay();
         }
         // Temporizador de inactividad
         function resetInactivityTimer() {
@@ -1978,60 +2189,20 @@
                 }
             }, 1000);
         }
-        // Event listeners para configuración
-        darkModeToggle.addEventListener('change', () => {
-            document.documentElement.setAttribute('data-theme', darkModeToggle.checked ? 'dark' : 'light');
-            saveSettings();
-        });
-        soundToggle.addEventListener('change', () => {
-            soundEnabled = soundToggle.checked;
-            saveSettings();
-        });
-        fontDecreaseBtn.addEventListener('click', () => {
-            const currentSize = parseInt(fontSizeValue.textContent);
-            if (currentSize > 80) {
-                const newSize = currentSize - 10;
-                document.documentElement.style.fontSize = `${newSize}%`;
-                fontSizeValue.textContent = `${newSize}%`;
-                saveSettings();
+        // Event listeners para teclado de bloqueo inicial
+        keypad.addEventListener('click', (e) => {
+            const key = e.target.closest('.key');
+            if (key) {
+                const keyValue = key.getAttribute('data-key');
+                handleKeyPress(keyValue);
             }
         });
-        fontIncreaseBtn.addEventListener('click', () => {
-            const currentSize = parseInt(fontSizeValue.textContent);
-            if (currentSize < 150) {
-                const newSize = currentSize + 10;
-                document.documentElement.style.fontSize = `${newSize}%`;
-                fontSizeValue.textContent = `${newSize}%`;
-                saveSettings();
-            }
-        });
-        settingsToggle.addEventListener('click', () => {
-            settingsPanel.classList.toggle('active');
-        });
-        // Cerrar panel de configuración al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!settingsToggle.contains(e.target) && !settingsPanel.contains(e.target)) {
-                settingsPanel.classList.remove('active');
-            }
-        });
-        // Event listeners para bloqueo inicial
-        initialUnlockBtn.addEventListener('click', initialUnlock);
-        initialPasswordInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                initialUnlock();
-            }
-        });
-        // Event listener para mostrar/ocultar contraseña inicial
-        togglePasswordInitial.addEventListener('click', () => {
-            const type = initialPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            initialPasswordInput.setAttribute('type', type);
-            togglePasswordInitial.textContent = type === 'password' ? '👁️' : '🙈';
-        });
-        // Event listeners para bloqueo por inactividad
-        inactivityUnlockBtn.addEventListener('click', unlockFromInactivity);
-        inactivityPasswordInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                unlockFromInactivity();
+        // Event listeners para teclado de inactividad
+        inactivityKeypad.addEventListener('click', (e) => {
+            const key = e.target.closest('.key');
+            if (key) {
+                const keyValue = key.getAttribute('data-key');
+                handleKeyPress(keyValue);
             }
         });
         // Monitorear actividad del usuario
@@ -2043,662 +2214,6 @@
                 }
             });
         });
-        // Funciones principales
-        function showScreen(screenId, addToHistory = true) {
-            if (isInitiallyLocked || isInactivityLocked) return;
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.getElementById(screenId).classList.add('active');
-            if (addToHistory && !isNavigatingBack) {
-                const state = {
-                    screen: screenId,
-                    document: currentDocument,
-                    course: currentCourse
-                };
-                history.pushState(state, '', `#${screenId}`);
-            }
-        }
-        function restoreState(state) {
-            isNavigatingBack = true;
-            if (!state || state.screen === 'home-screen') {
-                showScreen('home-screen', false);
-            } else if (state.screen === 'course-screen') {
-                currentDocument = state.document;
-                loadCourses(currentDocument, false);
-            } else if (state.screen === 'details-screen') {
-                currentDocument = state.document;
-                currentCourse = state.course;
-                loadStudents(currentDocument, currentCourse, false);
-            } else if (state.screen === 'allergies-course-screen') {
-                currentDocument = state.document;
-                currentCourse = state.course;
-                loadAllergiesCourse(currentCourse, false);
-            } else if (state.screen === 'no-autorizados-screen') {
-                showScreen('no-autorizados-screen', false);
-            } else if (state.screen === 'profile-screen') {
-                showScreen('profile-screen', false);
-            }
-            isNavigatingBack = false;
-        }
-        function initAudio() {
-            if (!audioContext && soundEnabled) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                fetch('https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/37b3eb2da9c15c04dfb71dfe1be60f088ea3cdfc/Tap.mp3')
-                    .then(response => response.arrayBuffer())
-                    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-                    .then(buffer => {
-                        audioBuffer = buffer;
-                    })
-                    .catch(e => console.log("Error al cargar el audio:", e));
-            }
-        }
-        function playTapSound() {
-            if (!userInteracted || !soundEnabled) return;
-            if (audioContext && audioBuffer) {
-                const source = audioContext.createBufferSource();
-                source.buffer = audioBuffer;
-                source.connect(audioContext.destination);
-                source.start(0);
-            } else if (!isIOS) {
-                const tapSound = document.getElementById('tap-sound');
-                tapSound.currentTime = 0;
-                tapSound.play().catch(e => console.log("Error al reproducir el sonido:", e));
-            }
-        }
-        function loadAllStudents() {
-            allStudents = [];
-            Object.keys(documentsData).forEach(docType => {
-                if (docType !== 'alergias' && docType !== 'noAutorizados') {
-                    if (docType === 'extraescolares') {
-                        // Procesar extraescolares de forma especial
-                        Object.keys(documentsData[docType]).forEach(activity => {
-                            documentsData[docType][activity].forEach(student => {
-                                const studentData = {
-                                    nombre: student.nombre,
-                                    curso: student.curso,
-                                    documentos: {}
-                                };
-                                studentData.documentos[docType] = {
-                                    ...student,
-                                    actividad: activity
-                                };
-                                const existingStudentIndex = allStudents.findIndex(s => s.nombre === student.nombre);
-                                if (existingStudentIndex !== -1) {
-                                    if (!allStudents[existingStudentIndex].documentos[docType]) {
-                                        allStudents[existingStudentIndex].documentos[docType] = [];
-                                    }
-                                    allStudents[existingStudentIndex].documentos[docType].push(studentData.documentos[docType]);
-                                } else {
-                                    studentData.documentos[docType] = [studentData.documentos[docType]];
-                                    allStudents.push(studentData);
-                                }
-                            });
-                        });
-                    } else {
-                        Object.keys(documentsData[docType]).forEach(course => {
-                            documentsData[docType][course].forEach(student => {
-                                const studentData = {
-                                    nombre: student.nombre,
-                                    curso: course,
-                                    documentos: {}
-                                };
-                                studentData.documentos[docType] = student;
-                                const existingStudentIndex = allStudents.findIndex(s => s.nombre === student.nombre);
-                                if (existingStudentIndex !== -1) {
-                                    allStudents[existingStudentIndex].documentos[docType] = student;
-                                } else {
-                                    allStudents.push(studentData);
-                                }
-                            });
-                        });
-                    }
-                }
-            });
-            // Procesar no autorizados
-            Object.keys(documentsData.noAutorizados).forEach(restrictionType => {
-                Object.keys(documentsData.noAutorizados[restrictionType]).forEach(course => {
-                    documentsData.noAutorizados[restrictionType][course].forEach(studentName => {
-                        const studentIndex = allStudents.findIndex(s => s.nombre === studentName);
-                        if (studentIndex !== -1) {
-                            if (!allStudents[studentIndex].documentos.noAutorizados) {
-                                allStudents[studentIndex].documentos.noAutorizados = [];
-                            }
-                            allStudents[studentIndex].documentos.noAutorizados.push({
-                                tipo: restrictionType,
-                                curso: course
-                            });
-                        } else {
-                            allStudents.push({
-                                nombre: studentName,
-                                curso: course,
-                                documentos: {
-                                    noAutorizados: [{
-                                        tipo: restrictionType,
-                                        curso: course
-                                    }]
-                                }
-                            });
-                        }
-                    });
-                });
-            });
-            Object.keys(documentsData.alergias).forEach(course => {
-                documentsData.alergias[course].forEach(allergy => {
-                    const studentIndex = allStudents.findIndex(s => s.nombre === allergy.nombre);
-                    if (studentIndex !== -1) {
-                        if (!allStudents[studentIndex].documentos.alergias) {
-                            allStudents[studentIndex].documentos.alergias = [];
-                        }
-                        allStudents[studentIndex].documentos.alergias.push({
-                            ...allergy,
-                            curso: course
-                        });
-                    } else {
-                        allStudents.push({
-                            nombre: allergy.nombre,
-                            curso: course,
-                            documentos: {
-                                alergias: [{
-                                    ...allergy,
-                                    curso: course
-                                }]
-                            }
-                        });
-                    }
-                });
-            });
-        }
-        function formatPhoneLinks(phoneString) {
-            if (!phoneString) return '';
-            const phones = phoneString.split('//');
-            const links = phones.map(phone => {
-                const cleanPhone = phone.replace(/\s+/g, '').replace(/-/g, '');
-                return `<a href="tel:${cleanPhone}" style="color: var(--primary-light); text-decoration: none; font-weight: 500;">${phone}</a>`;
-            });
-            return links.join(' / ');
-        }
-        function loadCourses(documentType, addToHistory = true) {
-            const coursesContainer = document.getElementById('courses-container');
-            coursesContainer.innerHTML = '';
-            currentDocument = documentType;
-            if (documentType === 'extraescolares') {
-                const activities = Object.keys(documentsData[documentType]);
-                if (activities.length === 0) {
-                    coursesContainer.innerHTML = '<div class="no-data">No hay actividades extraescolares disponibles</div>';
-                    return;
-                }
-                activities.forEach(activity => {
-                    const button = document.createElement('button');
-                    button.className = 'course-btn';
-                    button.textContent = activity;
-                    button.addEventListener('click', () => {
-                        playTapSound();
-                        currentCourse = activity;
-                        loadExtraescolares(activity);
-                    });
-                    coursesContainer.appendChild(button);
-                });
-                navigationHistory.push('home-screen');
-                showScreen('course-screen', addToHistory);
-            } else if (documentType === 'noAutorizados') {
-                const restrictions = Object.keys(documentsData.noAutorizados);
-                if (restrictions.length === 0) {
-                    coursesContainer.innerHTML = '<div class="no-data">No hay restricciones disponibles</div>';
-                    return;
-                }
-                restrictions.forEach(restrictionType => {
-                    const button = document.createElement('button');
-                    button.className = 'course-btn';
-                    let restrictionTitle = restrictionType;
-                    switch(restrictionType) {
-                        case 'irseSolo': restrictionTitle = 'No puede irse solo a casa'; break;
-                        case 'cuentaGSuite': restrictionTitle = 'No tiene cuenta GSuite'; break;
-                        case 'salidasLocalidad': restrictionTitle = 'No puede salir de la localidad'; break;
-                        case 'tomaTemperatura': restrictionTitle = 'No se le puede tomar la temperatura'; break;
-                        case 'trabajosConcursos': restrictionTitle = 'No puede participar en concursos'; break;
-                    }
-                    button.textContent = restrictionTitle;
-                    button.addEventListener('click', () => {
-                        playTapSound();
-                        currentCourse = restrictionType;
-                        loadNoAutorizadosByRestriction(restrictionType);
-                    });
-                    coursesContainer.appendChild(button);
-                });
-                navigationHistory.push('home-screen');
-                showScreen('course-screen', addToHistory);
-            } else {
-                const courses = Object.keys(documentsData[documentType]);
-                if (courses.length === 0) {
-                    coursesContainer.innerHTML = '<div class="no-data">No hay cursos disponibles para este documento</div>';
-                    return;
-                }
-                courses.forEach(course => {
-                    const button = document.createElement('button');
-                    button.className = 'course-btn';
-                    button.textContent = course;
-                    button.addEventListener('click', () => {
-                        playTapSound();
-                        currentCourse = course;
-                        if (documentType === 'alergias') {
-                            loadAllergiesCourse(course);
-                        } else {
-                            loadStudents(documentType, course);
-                        }
-                    });
-                    coursesContainer.appendChild(button);
-                });
-                navigationHistory.push('home-screen');
-                showScreen('course-screen', addToHistory);
-            }
-        }
-        function loadNoAutorizadosByRestriction(restrictionType) {
-            const coursesContainer = document.getElementById('courses-container');
-            coursesContainer.innerHTML = '';
-            const courses = Object.keys(documentsData.noAutorizados[restrictionType]);
-            if (courses.length === 0) {
-                coursesContainer.innerHTML = '<div class="no-data">No hay cursos disponibles para esta restricción</div>';
-                navigationHistory.push('course-screen');
-                showScreen('course-screen');
-                return;
-            }
-            courses.forEach(course => {
-                const button = document.createElement('button');
-                button.className = 'course-btn';
-                button.textContent = course;
-                button.addEventListener('click', () => {
-                    playTapSound();
-                    loadStudentsForNoAutorizados(restrictionType, course);
-                });
-                coursesContainer.appendChild(button);
-            });
-            navigationHistory.push('course-screen');
-            showScreen('course-screen');
-        }
-        function loadStudentsForNoAutorizados(restrictionType, course) {
-            const studentsList = document.getElementById('student-list');
-            studentsList.innerHTML = '';
-            const students = documentsData.noAutorizados[restrictionType][course] || [];
-            let restrictionTitle = restrictionType;
-            switch(restrictionType) {
-                case 'irseSolo': restrictionTitle = 'No puede irse solo a casa'; break;
-                case 'cuentaGSuite': restrictionTitle = 'No tiene cuenta GSuite'; break;
-                case 'salidasLocalidad': restrictionTitle = 'No puede salir de la localidad'; break;
-                case 'tomaTemperatura': restrictionTitle = 'No se le puede tomar la temperatura'; break;
-                case 'trabajosConcursos': restrictionTitle = 'No puede participar en concursos'; break;
-            }
-            document.getElementById('details-title').textContent = `${course} - ${restrictionTitle}`;
-            document.getElementById('students-count').textContent = `${students.length} alumnos`;
-            if (students.length === 0) {
-                studentsList.innerHTML = '<div class="no-data">No hay alumnos con esta restricción en este curso</div>';
-                navigationHistory.push('course-screen');
-                showScreen('details-screen');
-                return;
-            }
-            students.forEach(studentName => {
-                const studentCard = document.createElement('div');
-                studentCard.className = 'student-card';
-                studentCard.innerHTML = `<div class="student-name">${studentName}</div>`;
-                studentCard.addEventListener('click', () => {
-                    playTapSound();
-                    showStudentProfile(studentName);
-                });
-                studentsList.appendChild(studentCard);
-            });
-            navigationHistory.push('course-screen');
-            showScreen('details-screen');
-        }
-        function loadExtraescolares(activity) {
-            const coursesContainer = document.getElementById('courses-container');
-            coursesContainer.innerHTML = '';
-            const courses = {};
-            (documentsData.extraescolares[activity] || []).forEach(student => {
-                if (!courses[student.curso]) {
-                    courses[student.curso] = [];
-                }
-                courses[student.curso].push(student);
-            });
-            const courseList = Object.keys(courses);
-            if (courseList.length === 0) {
-                coursesContainer.innerHTML = '<div class="no-data">No hay cursos disponibles para esta actividad</div>';
-                navigationHistory.push('course-screen');
-                showScreen('course-screen');
-                return;
-            }
-            courseList.forEach(course => {
-                const button = document.createElement('button');
-                button.className = 'course-btn';
-                button.textContent = course;
-                button.addEventListener('click', () => {
-                    playTapSound();
-                    loadStudentsForExtraescolares(activity, course, courses[course]);
-                });
-                coursesContainer.appendChild(button);
-            });
-            navigationHistory.push('course-screen');
-            showScreen('course-screen');
-        }
-        function loadStudentsForExtraescolares(activity, course, students) {
-            const studentsList = document.getElementById('student-list');
-            studentsList.innerHTML = '';
-            document.getElementById('details-title').textContent = `${course} - ${activity}`;
-            document.getElementById('students-count').textContent = `${students.length} alumnos`;
-            if (students.length === 0) {
-                studentsList.innerHTML = '<div class="no-data">No hay alumnos apuntados a esta actividad en este curso</div>';
-                navigationHistory.push('course-screen');
-                showScreen('details-screen');
-                return;
-            }
-            students.forEach(student => {
-                const studentCard = document.createElement('div');
-                studentCard.className = 'student-card';
-                let studentInfo = `<div class="student-name">${student.nombre}</div>`;
-                if (student.telefonos) {
-                    studentInfo += `<div class="student-info"><strong>Teléfonos:</strong> ${formatPhoneLinks(student.telefonos)}</div>`;
-                }
-                studentCard.innerHTML = studentInfo;
-                studentCard.addEventListener('click', () => {
-                    playTapSound();
-                    showStudentProfile(student.nombre);
-                });
-                studentsList.appendChild(studentCard);
-            });
-            navigationHistory.push('course-screen');
-            showScreen('details-screen');
-        }
-        function loadStudents(documentType, course, addToHistory = true) {
-            const studentsList = document.getElementById('student-list');
-            studentsList.innerHTML = '';
-            const students = documentsData[documentType][course] || [];
-            document.getElementById('details-title').textContent = `${course} - ${getDocumentTitle(documentType)}`;
-            document.getElementById('students-count').textContent = `${students.length} alumnos`;
-            if (students.length === 0) {
-                studentsList.innerHTML = '<div class="no-data">No hay información disponible para este curso</div>';
-                navigationHistory.push('course-screen');
-                showScreen('details-screen', addToHistory);
-                return;
-            }
-            students.forEach(student => {
-                const studentCard = document.createElement('div');
-                studentCard.className = 'student-card';
-                let studentInfo = `<div class="student-name">${student.nombre}</div>`;
-                if (documentType === 'imagenes') {
-                    let autorizacionText = '';
-                    switch(student.autorizacion) {
-                        case '1': autorizacionText = 'Difusión total'; break;
-                        case '2': autorizacionText = 'No difusión comunidad educativa'; break;
-                        case 'TODO NO': autorizacionText = 'No autoriza'; break;
-                        default: autorizacionText = student.autorizacion;
-                    }
-                    studentInfo += `<div class="student-info"><strong>Autorización:</strong> ${autorizacionText}</div>`;
-                } else if (documentType === 'religion') {
-                    studentInfo += `<div class="student-info"><strong>Estado:</strong> No recibe clase de religión</div>`;
-                } else if (documentType === 'separados') {
-                    studentInfo += `<div class="student-info"><strong>Observación:</strong> ${student.observacion}</div>`;
-                } else if (documentType === 'matinal' || documentType === 'comedor') {
-                    studentInfo += `<div class="student-info"><strong>Teléfonos:</strong> ${formatPhoneLinks(student.telefonos)}</div>`;
-                }
-                studentCard.innerHTML = studentInfo;
-                studentCard.addEventListener('click', () => {
-                    playTapSound();
-                    showStudentProfile(student.nombre);
-                });
-                studentsList.appendChild(studentCard);
-            });
-            navigationHistory.push('course-screen');
-            showScreen('details-screen', addToHistory);
-        }
-        function showNoAutorizados() {
-            const noAutorizadosList = document.getElementById('no-autorizados-list');
-            noAutorizadosList.innerHTML = '';
-            let totalRestrictions = 0;
-            // Función para crear una sección de restricciones
-            function createRestrictionSection(title, restrictionType) {
-                const section = document.createElement('div');
-                section.className = 'restriction-item';
-                let restrictionHtml = `<div class="restriction-title">${title}</div>`;
-                let studentsHtml = '<div class="restriction-students">';
-                Object.keys(documentsData.noAutorizados[restrictionType]).forEach(course => {
-                    const students = documentsData.noAutorizados[restrictionType][course];
-                    if (students.length > 0) {
-                        studentsHtml += `<div><strong>${course}:</strong> `;
-                        studentsHtml += students.map(name => `<span>${name}</span>`).join('');
-                        studentsHtml += '</div>';
-                        totalRestrictions += students.length;
-                    }
-                });
-                studentsHtml += '</div>';
-                restrictionHtml += studentsHtml;
-                section.innerHTML = restrictionHtml;
-                return section;
-            }
-            // Añadir todas las secciones de restricciones
-            noAutorizadosList.appendChild(createRestrictionSection('No pueden irse solos a casa', 'irseSolo'));
-            noAutorizadosList.appendChild(createRestrictionSection('No se les puede tomar la temperatura', 'tomaTemperatura'));
-            document.getElementById('no-autorizados-count').textContent = `${totalRestrictions} restricciones`;
-            navigationHistory.push('home-screen');
-            showScreen('no-autorizados-screen');
-        }
-        function loadAllergiesCourse(course, addToHistory = true) {
-            const allergiesList = document.getElementById('allergies-course-list');
-            allergiesList.innerHTML = '';
-            const allergies = documentsData.alergias[course] || [];
-            document.getElementById('allergies-course-title').textContent = `${course} - Alergias y enfermedades`;
-            document.getElementById('allergies-course-count').textContent = `${allergies.length} alumnos`;
-            if (allergies.length === 0) {
-                allergiesList.innerHTML = '<div class="no-data">No hay información de alergias disponible para este curso</div>';
-                navigationHistory.push('course-screen');
-                showScreen('allergies-course-screen', addToHistory);
-                return;
-            }
-            allergies.forEach(allergy => {
-                const allergyCard = document.createElement('div');
-                allergyCard.className = 'student-card';
-                let allergyInfo = `
-                    <div class="student-name">${allergy.nombre}</div>
-                    <div class="student-info"><strong>Tipo:</strong> ${allergy.tipo}</div>
-                    <div class="student-info"><strong>Detalle:</strong> ${allergy.detalle}</div>
-                `;
-                if (allergy.telefono) {
-                    allergyInfo += `<div class="student-info"><strong>Teléfono:</strong> ${formatPhoneLinks(allergy.telefono)}</div>`;
-                }
-                allergyCard.innerHTML = allergyInfo;
-                allergyCard.addEventListener('click', () => {
-                    playTapSound();
-                    showStudentProfile(allergy.nombre);
-                });
-                allergiesList.appendChild(allergyCard);
-            });
-            navigationHistory.push('course-screen');
-            showScreen('allergies-course-screen', addToHistory);
-        }
-        function showStudentProfile(studentName) {
-            const student = allStudents.find(s => s.nombre === studentName);
-            if (!student) {
-                alert('No se encontró información del estudiante');
-                return;
-            }
-            document.getElementById('profile-name').textContent = student.nombre;
-            document.getElementById('profile-course').textContent = student.curso || 'No especificado';
-            const firstLetter = student.nombre.charAt(0);
-            document.getElementById('profile-avatar').textContent = firstLetter;
-            const profileSections = document.getElementById('profile-sections');
-            profileSections.innerHTML = '';
-            const personalSection = document.createElement('div');
-            personalSection.className = 'profile-section';
-            personalSection.innerHTML = `
-                <h3><span class="icon">👤</span> Datos personales</h3>
-                <div class="profile-section-content">
-                    <p><strong>Nombre:</strong> ${student.nombre}</p>
-                    <p><strong>Curso:</strong> ${student.curso || 'No especificado'}</p>
-                </div>
-            `;
-            profileSections.appendChild(personalSection);
-            if (student.documentos.imagenes) {
-                const imagenesSection = document.createElement('div');
-                imagenesSection.className = 'profile-section';
-                let autorizacionText = '';
-                switch(student.documentos.imagenes.autorizacion) {
-                    case '1': autorizacionText = 'Difusión total'; break;
-                    case '2': autorizacionText = 'No difusión comunidad educativa'; break;
-                    case 'TODO NO': autorizacionText = 'No autoriza'; break;
-                    default: autorizacionText = student.documentos.imagenes.autorizacion;
-                }
-                imagenesSection.innerHTML = `
-                    <h3><span class="icon">📸</span> Autorizaciones de imagen</h3>
-                    <div class="profile-section-content">
-                        <p><span class="tag">${autorizacionText}</span></p>
-                    </div>
-                `;
-                profileSections.appendChild(imagenesSection);
-            }
-            if (student.documentos.religion) {
-                const religionSection = document.createElement('div');
-                religionSection.className = 'profile-section';
-                religionSection.innerHTML = `
-                    <h3><span class="icon">⛪</span> Clase de religión</h3>
-                    <div class="profile-section-content">
-                        <p><span class="tag warning">No recibe clase de religión</span></p>
-                    </div>
-                `;
-                profileSections.appendChild(religionSection);
-            }
-            if (student.documentos.separados) {
-                const separadosSection = document.createElement('div');
-                separadosSection.className = 'profile-section';
-                separadosSection.innerHTML = `
-                    <h3><span class="icon">👨‍👩‍👧‍👦</span> Situación familiar</h3>
-                    <div class="profile-section-content">
-                        <p><strong>Observación:</strong> ${student.documentos.separados.observacion}</p>
-                    </div>
-                `;
-                profileSections.appendChild(separadosSection);
-            }
-            if (student.documentos.extraescolares && student.documentos.extraescolares.length > 0) {
-                const extraescolaresSection = document.createElement('div');
-                extraescolaresSection.className = 'profile-section';
-                let extraescolaresContent = '<h3><span class="icon">🎨</span> Actividades extraescolares</h3><div class="profile-section-content">';
-                student.documentos.extraescolares.forEach(activity => {
-                    extraescolaresContent += `
-                        <p><span class="tag success">${activity.actividad}</span></p>
-                        ${activity.telefonos ? `<p><strong>Teléfonos:</strong> ${formatPhoneLinks(activity.telefonos)}</p>` : ''}
-                    `;
-                });
-                extraescolaresContent += '</div>';
-                extraescolaresSection.innerHTML = extraescolaresContent;
-                profileSections.appendChild(extraescolaresSection);
-            }
-            if (student.documentos.noAutorizados && student.documentos.noAutorizados.length > 0) {
-                const noAutorizadosSection = document.createElement('div');
-                noAutorizadosSection.className = 'profile-section';
-                let noAutorizadosContent = '<h3><span class="icon">🚫</span> Restricciones</h3><div class="profile-section-content">';
-                student.documentos.noAutorizados.forEach(restriction => {
-                    let restrictionText = '';
-                    switch(restriction.tipo) {
-                        case 'irseSolo': restrictionText = 'No puede irse solo a casa'; break;
-                        case 'tomaTemperatura': restrictionText = 'No se le puede tomar la temperatura'; break;
-                        case 'cuentaGSuite': restrictionText = 'No tiene cuenta GSuite'; break;
-                        case 'salidasLocalidad': restrictionText = 'No puede salir de la localidad'; break;
-                        case 'trabajosConcursos': restrictionText = 'No puede participar en concursos'; break;
-                        default: restrictionText = restriction.tipo;
-                    }
-                    noAutorizadosContent += `<p><span class="tag danger">${restrictionText}</span></p>`;
-                });
-                noAutorizadosContent += '</div>';
-                noAutorizadosSection.innerHTML = noAutorizadosContent;
-                profileSections.appendChild(noAutorizadosSection);
-            }
-            if (student.documentos.alergias && student.documentos.alergias.length > 0) {
-                const alergiasSection = document.createElement('div');
-                alergiasSection.className = 'profile-section';
-                let alergiasContent = '<h3><span class="icon">⚠️</span> Alergias y enfermedades</h3><div class="profile-section-content">';
-                student.documentos.alergias.forEach(alergia => {
-                    alergiasContent += `
-                        <p><span class="tag danger">${alergia.tipo}</span> ${alergia.detalle}</p>
-                        ${alergia.telefono ? `<p><strong>Teléfono:</strong> ${formatPhoneLinks(alergia.telefono)}</p>` : ''}
-                        ${alergia.curso && alergia.curso !== student.curso ? `<p><small>Registrado en: ${alergia.curso}</small></p>` : ''}
-                    `;
-                });
-                alergiasContent += '</div>';
-                alergiasSection.innerHTML = alergiasContent;
-                profileSections.appendChild(alergiasSection);
-            }
-            if (student.documentos.matinal) {
-                const matinalSection = document.createElement('div');
-                matinalSection.className = 'profile-section';
-                matinalSection.innerHTML = `
-                    <h3><span class="icon">🌅</span> Aula matinal</h3>
-                    <div class="profile-section-content">
-                        <p><span class="tag success">Asiste al aula matinal</span></p>
-                        <p><strong>Teléfonos de contacto:</strong> ${formatPhoneLinks(student.documentos.matinal.telefonos)}</p>
-                    </div>
-                `;
-                profileSections.appendChild(matinalSection);
-            }
-            if (student.documentos.comedor) {
-                const comedorSection = document.createElement('div');
-                comedorSection.className = 'profile-section';
-                comedorSection.innerHTML = `
-                    <h3><span class="icon">🍽️</span> Comedor</h3>
-                    <div class="profile-section-content">
-                        <p><span class="tag success">Utiliza el servicio de comedor</span></p>
-                        <p><strong>Teléfonos de contacto:</strong> ${formatPhoneLinks(student.documentos.comedor.telefonos)}</p>
-                    </div>
-                `;
-                profileSections.appendChild(comedorSection);
-            }
-            const currentScreen = document.querySelector('.screen.active').id;
-            navigationHistory.push(currentScreen);
-            showScreen('profile-screen');
-        }
-        function getDocumentTitle(documentType) {
-            const titles = {
-                'imagenes': 'Autorizaciones de imagen',
-                'religion': 'Clase de religión',
-                'separados': 'Padres separados',
-                'matinal': 'Aula matinal',
-                'comedor': 'Comedor'
-            };
-            return titles[documentType] || documentType;
-        }
-        function setupGlobalSearch() {
-            const searchInput = document.getElementById('global-search');
-            const searchResults = document.getElementById('search-results');
-            searchInput.addEventListener('input', function() {
-                const query = this.value.toLowerCase().trim();
-                if (query.length < 2) {
-                    searchResults.style.display = 'none';
-                    return;
-                }
-                const filteredStudents = allStudents.filter(student => 
-                    student.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(query.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
-                );
-                searchResults.innerHTML = '';
-                if (filteredStudents.length === 0) {
-                    searchResults.innerHTML = '<div class="search-result-item">No se encontraron resultados</div>';
-                } else {
-                    filteredStudents.forEach(student => {
-                        const resultItem = document.createElement('div');
-                        resultItem.className = 'search-result-item';
-                        resultItem.textContent = student.nombre;
-                        resultItem.addEventListener('click', () => {
-                            playTapSound();
-                            showStudentProfile(student.nombre);
-                            searchResults.style.display = 'none';
-                            searchInput.value = '';
-                        });
-                        searchResults.appendChild(resultItem);
-                    });
-                }
-                searchResults.style.display = 'block';
-            });
-            document.addEventListener('click', function(e) {
-                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-                    searchResults.style.display = 'none';
-                }
-            });
-        }
         // Inicializar la aplicación después del desbloqueo
         function initializeApp() {
             loadAllStudents();
@@ -2749,19 +2264,928 @@
             document.addEventListener('touchstart', enableAudio, { once: true });
             document.addEventListener('click', enableAudio, { once: true });
         }
+        // Funciones de audio
+        function initAudio() {
+            if (!audioContext && soundEnabled) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                fetch('https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/37b3eb2da9c15c04dfb71dfe1be60f088ea3cdfc/Tap.mp3')
+                    .then(response => response.arrayBuffer())
+                    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+                    .then(buffer => {
+                        audioBuffer = buffer;
+                    })
+                    .catch(e => console.log("Error al cargar el audio:", e));
+            }
+        }
+        function playTapSound() {
+            if (!userInteracted || !soundEnabled) return;
+            if (audioContext && audioBuffer) {
+                const source = audioContext.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(audioContext.destination);
+                source.start(0);
+            } else {
+                const tapSound = document.getElementById('tap-sound');
+                tapSound.currentTime = 0;
+                tapSound.play().catch(e => console.log("Error al reproducir el sonido:", e));
+            }
+        }
+
+        // Funciones principales de la app
+        function showScreen(screenId, addToHistory = true) {
+            if (isInitiallyLocked || isInactivityLocked) return;
+
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+
+            if (addToHistory && !isNavigatingBack) {
+                const state = {
+                    screen: screenId,
+                    document: currentDocument,
+                    course: currentCourse
+                };
+                history.pushState(state, '', `#${screenId}`);
+            }
+        }
+
+        function restoreState(state) {
+            isNavigatingBack = true;
+
+            if (!state || state.screen === 'home-screen') {
+                showScreen('home-screen', false);
+            } else if (state.screen === 'course-screen') {
+                currentDocument = state.document;
+                loadCourses(currentDocument, false);
+            } else if (state.screen === 'details-screen') {
+                currentDocument = state.document;
+                currentCourse = state.course;
+                loadStudents(currentDocument, currentCourse, false);
+            } else if (state.screen === 'allergies-course-screen') {
+                currentDocument = state.document;
+                currentCourse = state.course;
+                loadAllergiesCourse(currentCourse, false);
+            } else if (state.screen === 'no-autorizados-screen') {
+                showNoAutorizados();
+            } else if (state.screen === 'profile-screen') {
+                showScreen('profile-screen', false);
+            } else if (state.screen === 'category-screen') {
+                showCategoryScreen(currentDocument, false);
+            } else if (state.screen === 'category-course-screen') {
+                showCategoryCourseScreen(currentDocument, currentCourse, false);
+            }
+
+            isNavigatingBack = false;
+        }
+
+        function loadAllStudents() {
+            allStudents = [];
+            Object.keys(documentsData).forEach(docType => {
+                if (docType !== 'alergias' && docType !== 'noAutorizados') {
+                    if (docType === 'extraescolares') {
+                        // Procesar extraescolares de forma especial
+                        Object.keys(documentsData[docType]).forEach(activity => {
+                            const activityData = documentsData[docType][activity];
+                            if (typeof activityData === 'object' && activityData !== null) {
+                                Object.keys(activityData).forEach(course => {
+                                    activityData[course].forEach(student => {
+                                        const studentData = {
+                                            nombre: student.nombre,
+                                            curso: student.curso,
+                                            documentos: {}
+                                        };
+                                        studentData.documentos[docType] = {
+                                            ...student,
+                                            actividad: activity
+                                        };
+                                        const existingStudentIndex = allStudents.findIndex(s => s.nombre === student.nombre);
+                                        if (existingStudentIndex !== -1) {
+                                            if (!allStudents[existingStudentIndex].documentos[docType]) {
+                                                allStudents[existingStudentIndex].documentos[docType] = [];
+                                            }
+                                            allStudents[existingStudentIndex].documentos[docType].push(studentData.documentos[docType]);
+                                        } else {
+                                            studentData.documentos[docType] = [studentData.documentos[docType]];
+                                            allStudents.push(studentData);
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    } else {
+                        Object.keys(documentsData[docType]).forEach(course => {
+                            documentsData[docType][course].forEach(student => {
+                                const studentData = {
+                                    nombre: student.nombre,
+                                    curso: course,
+                                    documentos: {}
+                                };
+                                studentData.documentos[docType] = student;
+                                const existingStudentIndex = allStudents.findIndex(s => s.nombre === student.nombre);
+                                if (existingStudentIndex !== -1) {
+                                    allStudents[existingStudentIndex].documentos[docType] = student;
+                                } else {
+                                    allStudents.push(studentData);
+                                }
+                            });
+                        });
+                    }
+                }
+            });
+
+            // Procesar no autorizados
+            Object.keys(documentsData.noAutorizados).forEach(restrictionType => {
+                if (restrictionType === 'tomaTemperatura') {
+                    if (typeof documentsData.noAutorizados[restrictionType] === 'object' && documentsData.noAutorizados[restrictionType] !== null) {
+                        Object.keys(documentsData.noAutorizados[restrictionType]).forEach(course => {
+                            documentsData.noAutorizados[restrictionType][course].forEach(studentName => {
+                                const studentIndex = allStudents.findIndex(s => s.nombre === studentName);
+                                if (studentIndex !== -1) {
+                                    if (!allStudents[studentIndex].documentos.noAutorizados) {
+                                        allStudents[studentIndex].documentos.noAutorizados = [];
+                                    }
+                                    allStudents[studentIndex].documentos.noAutorizados.push({
+                                        tipo: restrictionType,
+                                        curso: course
+                                    });
+                                } else {
+                                    allStudents.push({
+                                        nombre: studentName,
+                                        curso: course,
+                                        documentos: {
+                                            noAutorizados: [{
+                                                tipo: restrictionType,
+                                                curso: course
+                                            }]
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    }
+                } else if (Array.isArray(documentsData.noAutorizados[restrictionType])) {
+                    documentsData.noAutorizados[restrictionType].forEach(studentName => {
+                        const studentIndex = allStudents.findIndex(s => s.nombre === studentName);
+                        if (studentIndex !== -1) {
+                            if (!allStudents[studentIndex].documentos.noAutorizados) {
+                                allStudents[studentIndex].documentos.noAutorizados = [];
+                            }
+                            allStudents[studentIndex].documentos.noAutorizados.push({
+                                tipo: restrictionType,
+                                curso: 'General'
+                            });
+                        } else {
+                            allStudents.push({
+                                nombre: studentName,
+                                curso: 'General',
+                                documentos: {
+                                    noAutorizados: [{
+                                        tipo: restrictionType,
+                                        curso: 'General'
+                                    }]
+                                }
+                            });
+                        }
+                    });
+                } else if (typeof documentsData.noAutorizados[restrictionType] === 'object' && documentsData.noAutorizados[restrictionType] !== null) {
+                    // Para estructuras como irseSolo
+                    Object.keys(documentsData.noAutorizados[restrictionType]).forEach(course => {
+                        documentsData.noAutorizados[restrictionType][course].forEach(studentName => {
+                            const studentIndex = allStudents.findIndex(s => s.nombre === studentName);
+                            if (studentIndex !== -1) {
+                                if (!allStudents[studentIndex].documentos.noAutorizados) {
+                                    allStudents[studentIndex].documentos.noAutorizados = [];
+                                }
+                                allStudents[studentIndex].documentos.noAutorizados.push({
+                                    tipo: restrictionType,
+                                    curso: course
+                                });
+                            } else {
+                                allStudents.push({
+                                    nombre: studentName,
+                                    curso: course,
+                                    documentos: {
+                                        noAutorizados: [{
+                                            tipo: restrictionType,
+                                            curso: course
+                                        }]
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
+            });
+
+            Object.keys(documentsData.alergias).forEach(course => {
+                documentsData.alergias[course].forEach(allergy => {
+                    const studentIndex = allStudents.findIndex(s => s.nombre === allergy.nombre);
+                    if (studentIndex !== -1) {
+                        if (!allStudents[studentIndex].documentos.alergias) {
+                            allStudents[studentIndex].documentos.alergias = [];
+                        }
+                        allStudents[studentIndex].documentos.alergias.push({
+                            ...allergy,
+                            curso: course
+                        });
+                    } else {
+                        allStudents.push({
+                            nombre: allergy.nombre,
+                            curso: course,
+                            documentos: {
+                                alergias: [{
+                                    ...allergy,
+                                    curso: course
+                                }]
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        function formatPhoneLinks(phoneString) {
+            if (!phoneString) return '';
+            const phones = phoneString.split('//');
+            const links = phones.map(phone => {
+                const cleanPhone = phone.replace(/\s+/g, '').replace(/-/g, '');
+                return `<a href="tel:${cleanPhone}" style="color: var(--primary-light); text-decoration: none; font-weight: 500;">${phone}</a>`;
+            });
+            return links.join(' / ');
+        }
+
+        function loadCourses(documentType, addToHistory = true) {
+            const coursesContainer = document.getElementById('courses-container');
+            coursesContainer.innerHTML = '';
+            currentDocument = documentType;
+
+            if (documentType === 'extraescolares') {
+                // Mostrar categorías (actividades) en lugar de cursos directamente
+                const activities = Object.keys(documentsData[documentType]);
+                if (activities.length === 0) {
+                    coursesContainer.innerHTML = '<div class="no-data">No hay actividades extraescolares disponibles</div>';
+                    navigationHistory.push('home-screen');
+                    showScreen('course-screen', addToHistory);
+                    return;
+                }
+
+                activities.forEach(activity => {
+                    const button = document.createElement('button');
+                    button.className = 'course-btn';
+                    button.textContent = activity;
+                    button.addEventListener('click', () => {
+                        playTapSound();
+                        currentCourse = activity;
+                        loadExtraescolaresByCourse(activity); // Nueva función para mostrar cursos por actividad
+                    });
+                    coursesContainer.appendChild(button);
+                });
+
+                navigationHistory.push('home-screen');
+                showScreen('course-screen', addToHistory);
+            } else if (documentType === 'noAutorizados') {
+                // Nueva navegación para "No autorizados"
+                showCategoryScreen(documentType, addToHistory);
+            } else {
+                const courses = Object.keys(documentsData[documentType]);
+                if (courses.length === 0) {
+                    coursesContainer.innerHTML = '<div class="no-data">No hay cursos disponibles para este documento</div>';
+                    navigationHistory.push('home-screen');
+                    showScreen('course-screen', addToHistory);
+                    return;
+                }
+
+                courses.forEach(course => {
+                    const button = document.createElement('button');
+                    button.className = 'course-btn';
+                    button.textContent = course;
+                    button.addEventListener('click', () => {
+                        playTapSound();
+                        currentCourse = course;
+                        if (documentType === 'alergias') {
+                            loadAllergiesCourse(course);
+                        } else {
+                            loadStudents(documentType, course);
+                        }
+                    });
+                    coursesContainer.appendChild(button);
+                });
+
+                navigationHistory.push('home-screen');
+                showScreen('course-screen', addToHistory);
+            }
+        }
+
+        function showCategoryScreen(documentType, addToHistory = true) {
+            const categoryContainer = document.getElementById('category-container');
+            categoryContainer.innerHTML = '';
+            currentDocument = documentType;
+
+            const categories = [
+                { id: 'irseSolo', name: 'No pueden irse solos a casa' },
+                { id: 'cuentaGSuite', name: 'Sin cuenta GSuite' },
+                { id: 'salidasLocalidad', name: 'No pueden salir de la localidad' },
+                { id: 'tomaTemperatura', name: 'No se les puede tomar la temperatura' },
+                { id: 'trabajosConcursos', name: 'No pueden participar en concursos' }
+            ];
+
+            categories.forEach(cat => {
+                const button = document.createElement('button');
+                button.className = 'course-btn';
+                button.textContent = cat.name;
+                button.addEventListener('click', () => {
+                    playTapSound();
+                    currentCourse = cat.id;
+                    showCategoryCourseScreen(documentType, cat.id);
+                });
+                categoryContainer.appendChild(button);
+            });
+
+            navigationHistory.push('home-screen');
+            showScreen('category-screen', addToHistory);
+        }
+
+        function showCategoryCourseScreen(documentType, categoryId, addToHistory = true) {
+            const container = document.getElementById('category-courses-container');
+            container.innerHTML = '';
+            currentDocument = documentType;
+            currentCourse = categoryId;
+
+            const data = documentsData.noAutorizados[categoryId];
+
+            if (Array.isArray(data)) {
+                // Caso de listado plano (cuentaGSuite, salidasLocalidad, trabajosConcursos)
+                const students = data;
+                document.getElementById('details-title').textContent = `Alumnos - ${getRestrictionTitle(categoryId)}`;
+                document.getElementById('students-count').textContent = `${students.length} alumnos`;
+
+                const studentsList = document.getElementById('student-list');
+                studentsList.innerHTML = '';
+
+                students.forEach(name => {
+                    const card = document.createElement('div');
+                    card.className = 'student-card';
+                    card.innerHTML = `<div class="student-name">${name}</div>`;
+                    card.addEventListener('click', () => {
+                        playTapSound();
+                        showStudentProfile(name);
+                    });
+                    studentsList.appendChild(card);
+                });
+
+                navigationHistory.push('category-screen');
+                showScreen('details-screen', addToHistory);
+            } else {
+                // Caso de listado por curso (irseSolo, tomaTemperatura)
+                const courses = Object.keys(data);
+                if (courses.length === 0) {
+                    container.innerHTML = '<div class="no-data">No hay cursos disponibles para esta categoría</div>';
+                    navigationHistory.push('category-screen');
+                    showScreen('category-course-screen', addToHistory);
+                    return;
+                }
+
+                courses.forEach(course => {
+                    const button = document.createElement('button');
+                    button.className = 'course-btn';
+                    button.textContent = course;
+                    button.addEventListener('click', () => {
+                        playTapSound();
+                        currentCourse = course;
+                        loadNoAutorizadosByCourse(categoryId, course);
+                    });
+                    container.appendChild(button);
+                });
+
+                navigationHistory.push('category-screen');
+                showScreen('category-course-screen', addToHistory);
+            }
+        }
+
+        function loadNoAutorizadosByCourse(categoryId, course) {
+            const studentsList = document.getElementById('student-list');
+            studentsList.innerHTML = '';
+            const students = documentsData.noAutorizados[categoryId][course] || [];
+
+            document.getElementById('details-title').textContent = `${course} - ${getRestrictionTitle(categoryId)}`;
+            document.getElementById('students-count').textContent = `${students.length} alumnos`;
+
+            if (students.length === 0) {
+                studentsList.innerHTML = '<div class="no-data">No hay alumnos en esta categoría y curso</div>';
+                navigationHistory.push('category-course-screen');
+                showScreen('details-screen');
+                return;
+            }
+
+            students.forEach(name => {
+                const card = document.createElement('div');
+                card.className = 'student-card';
+                card.innerHTML = `<div class="student-name">${name}</div>`;
+                card.addEventListener('click', () => {
+                    playTapSound();
+                    showStudentProfile(name);
+                });
+                studentsList.appendChild(card);
+            });
+
+            navigationHistory.push('category-course-screen');
+            showScreen('details-screen');
+        }
+
+        function getRestrictionTitle(categoryId) {
+            const titles = {
+                irseSolo: 'No pueden irse solos a casa',
+                cuentaGSuite: 'Sin cuenta GSuite',
+                salidasLocalidad: 'No pueden salir de la localidad',
+                tomaTemperatura: 'No se les puede tomar la temperatura',
+                trabajosConcursos: 'No pueden participar en concursos'
+            };
+            return titles[categoryId] || categoryId;
+        }
+
+        function loadExtraescolaresByCourse(activity) {
+            const coursesContainer = document.getElementById('courses-container');
+            coursesContainer.innerHTML = '';
+
+            const activityData = documentsData.extraescolares[activity];
+            if (!activityData || typeof activityData !== 'object') {
+                coursesContainer.innerHTML = '<div class="no-data">No hay cursos disponibles para esta actividad</div>';
+                navigationHistory.push('course-screen');
+                showScreen('course-screen');
+                return;
+            }
+
+            const courses = Object.keys(activityData);
+            if (courses.length === 0) {
+                coursesContainer.innerHTML = '<div class="no-data">No hay cursos disponibles para esta actividad</div>';
+                navigationHistory.push('course-screen');
+                showScreen('course-screen');
+                return;
+            }
+
+            courses.forEach(course => {
+                const button = document.createElement('button');
+                button.className = 'course-btn';
+                button.textContent = course;
+                button.addEventListener('click', () => {
+                    playTapSound();
+                    currentCourse = course;
+                    loadExtraescolares(activity, course);
+                });
+                coursesContainer.appendChild(button);
+            });
+
+            navigationHistory.push('course-screen');
+            showScreen('course-screen');
+        }
+
+        function loadExtraescolares(activity, course) {
+            const studentsList = document.getElementById('student-list');
+            studentsList.innerHTML = '';
+
+            const activityData = documentsData.extraescolares[activity];
+            const students = activityData && activityData[course] ? activityData[course] : [];
+
+            document.getElementById('details-title').textContent = `${course} - ${activity}`;
+            document.getElementById('students-count').textContent = `${students.length} alumnos`;
+
+            if (students.length === 0) {
+                studentsList.innerHTML = '<div class="no-data">No hay alumnos apuntados a esta actividad en este curso</div>';
+                navigationHistory.push('course-screen');
+                showScreen('details-screen');
+                return;
+            }
+
+            students.forEach(student => {
+                const studentCard = document.createElement('div');
+                studentCard.className = 'student-card';
+
+                let studentInfo = `<div class="student-name">${student.nombre}</div>`;
+                studentInfo += `<div class="student-info"><strong>Curso:</strong> ${student.curso}</div>`;
+                if (student.telefonos) {
+                    studentInfo += `<div class="student-info"><strong>Teléfonos:</strong> ${formatPhoneLinks(student.telefonos)}</div>`;
+                }
+
+                studentCard.innerHTML = studentInfo;
+                studentCard.addEventListener('click', () => {
+                    playTapSound();
+                    showStudentProfile(student.nombre);
+                });
+                studentsList.appendChild(studentCard);
+            });
+
+            navigationHistory.push('course-screen');
+            showScreen('details-screen');
+        }
+
+        function loadStudents(documentType, course, addToHistory = true) {
+            const studentsList = document.getElementById('student-list');
+            studentsList.innerHTML = '';
+
+            const students = documentsData[documentType][course] || [];
+
+            document.getElementById('details-title').textContent = `${course} - ${getDocumentTitle(documentType)}`;
+            document.getElementById('students-count').textContent = `${students.length} alumnos`;
+
+            if (students.length === 0) {
+                studentsList.innerHTML = '<div class="no-data">No hay información disponible para este curso</div>';
+                navigationHistory.push('course-screen');
+                showScreen('details-screen', addToHistory);
+                return;
+            }
+
+            students.forEach(student => {
+                const studentCard = document.createElement('div');
+                studentCard.className = 'student-card';
+
+                let studentInfo = `<div class="student-name">${student.nombre}</div>`;
+
+                if (documentType === 'imagenes') {
+                    let autorizacionText = '';
+                    switch(student.autorizacion) {
+                        case '1': autorizacionText = 'Difusión total'; break;
+                        case '2': autorizacionText = 'No difusión comunidad educativa'; break;
+                        case 'TODO NO': autorizacionText = 'No autoriza'; break;
+                        default: autorizacionText = student.autorizacion;
+                    }
+                    studentInfo += `<div class="student-info"><strong>Autorización:</strong> ${autorizacionText}</div>`;
+                } else if (documentType === 'religion') {
+                    studentInfo += `<div class="student-info"><strong>Estado:</strong> No recibe clase de religión</div>`;
+                } else if (documentType === 'separados') {
+                    studentInfo += `<div class="student-info"><strong>Observación:</strong> ${student.observacion}</div>`;
+                } else if (documentType === 'matinal' || documentType === 'comedor') {
+                    studentInfo += `<div class="student-info"><strong>Teléfonos:</strong> ${formatPhoneLinks(student.telefonos)}</div>`;
+                }
+
+                studentCard.innerHTML = studentInfo;
+                studentCard.addEventListener('click', () => {
+                    playTapSound();
+                    showStudentProfile(student.nombre);
+                });
+                studentsList.appendChild(studentCard);
+            });
+
+            navigationHistory.push('course-screen');
+            showScreen('details-screen', addToHistory);
+        }
+
+        function showNoAutorizados() {
+            const noAutorizadosList = document.getElementById('no-autorizados-list');
+            noAutorizadosList.innerHTML = '';
+
+            let totalRestrictions = 0;
+
+            // Función para crear una sección de restricciones
+            function createRestrictionSection(title, restrictionType) {
+                const section = document.createElement('div');
+                section.className = 'restriction-item';
+
+                let restrictionHtml = `<div class="restriction-title">${title}</div>`;
+                let studentsHtml = '<div class="restriction-students">';
+
+                if (restrictionType === 'tomaTemperatura') {
+                    Object.keys(documentsData.noAutorizados[restrictionType]).forEach(course => {
+                        const students = documentsData.noAutorizados[restrictionType][course];
+                        if (students.length > 0) {
+                            studentsHtml += `<div><strong>${course}:</strong> `;
+                            studentsHtml += students.map(name => `<span>${name}</span>`).join('');
+                            studentsHtml += '</div>';
+                            totalRestrictions += students.length;
+                        }
+                    });
+                } else if (Array.isArray(documentsData.noAutorizados[restrictionType])) {
+                    const students = documentsData.noAutorizados[restrictionType];
+                    if (students.length > 0) {
+                        studentsHtml += `<div>`;
+                        studentsHtml += students.map(name => `<span>${name}</span>`).join('');
+                        studentsHtml += '</div>';
+                        totalRestrictions += students.length;
+                    }
+                } else {
+                    Object.keys(documentsData.noAutorizados[restrictionType]).forEach(course => {
+                        const students = documentsData.noAutorizados[restrictionType][course];
+                        if (students.length > 0) {
+                            studentsHtml += `<div><strong>${course}:</strong> `;
+                            studentsHtml += students.map(name => `<span>${name}</span>`).join('');
+                            studentsHtml += '</div>';
+                            totalRestrictions += students.length;
+                        }
+                    });
+                }
+
+                studentsHtml += '</div>';
+                restrictionHtml += studentsHtml;
+                section.innerHTML = restrictionHtml;
+                return section;
+            }
+
+            // Añadir todas las secciones de restricciones
+            noAutorizadosList.appendChild(createRestrictionSection('No pueden irse solos a casa', 'irseSolo'));
+            noAutorizadosList.appendChild(createRestrictionSection('No se les puede tomar la temperatura', 'tomaTemperatura'));
+
+            document.getElementById('no-autorizados-count').textContent = `${totalRestrictions} restricciones`;
+
+            navigationHistory.push('home-screen');
+            showScreen('no-autorizados-screen');
+        }
+
+        function loadAllergiesCourse(course, addToHistory = true) {
+            const allergiesList = document.getElementById('allergies-course-list');
+            allergiesList.innerHTML = '';
+
+            const allergies = documentsData.alergias[course] || [];
+
+            document.getElementById('allergies-course-title').textContent = `${course} - Alergias y enfermedades`;
+            document.getElementById('allergies-course-count').textContent = `${allergies.length} alumnos`;
+
+            if (allergies.length === 0) {
+                allergiesList.innerHTML = '<div class="no-data">No hay información de alergias disponible para este curso</div>';
+                navigationHistory.push('course-screen');
+                showScreen('allergies-course-screen', addToHistory);
+                return;
+            }
+
+            allergies.forEach(allergy => {
+                const allergyCard = document.createElement('div');
+                allergyCard.className = 'student-card';
+
+                let allergyInfo = `
+                    <div class="student-name">${allergy.nombre}</div>
+                    <div class="student-info"><strong>Tipo:</strong> ${allergy.tipo}</div>
+                    <div class="student-info"><strong>Detalle:</strong> ${allergy.detalle}</div>
+                `;
+
+                if (allergy.telefono) {
+                    allergyInfo += `<div class="student-info"><strong>Teléfono:</strong> ${formatPhoneLinks(allergy.telefono)}</div>`;
+                }
+
+                allergyCard.innerHTML = allergyInfo;
+                allergyCard.addEventListener('click', () => {
+                    playTapSound();
+                    showStudentProfile(allergy.nombre);
+                });
+                allergiesList.appendChild(allergyCard);
+            });
+
+            navigationHistory.push('course-screen');
+            showScreen('allergies-course-screen', addToHistory);
+        }
+
+        function showStudentProfile(studentName) {
+            const student = allStudents.find(s => s.nombre === studentName);
+            if (!student) {
+                alert('No se encontró información del estudiante');
+                return;
+            }
+
+            document.getElementById('profile-name').textContent = student.nombre;
+            document.getElementById('profile-course').textContent = student.curso || 'No especificado';
+
+            const firstLetter = student.nombre.charAt(0);
+            document.getElementById('profile-avatar').textContent = firstLetter;
+
+            const profileSections = document.getElementById('profile-sections');
+            profileSections.innerHTML = '';
+
+            const personalSection = document.createElement('div');
+            personalSection.className = 'profile-section';
+            personalSection.innerHTML = `
+                <h3><span class="icon">👤</span> Datos personales</h3>
+                <div class="profile-section-content">
+                    <p><strong>Nombre:</strong> ${student.nombre}</p>
+                    <p><strong>Curso:</strong> ${student.curso || 'No especificado'}</p>
+                </div>
+            `;
+            profileSections.appendChild(personalSection);
+
+            if (student.documentos.imagenes) {
+                const imagenesSection = document.createElement('div');
+                imagenesSection.className = 'profile-section';
+                let autorizacionText = '';
+                switch(student.documentos.imagenes.autorizacion) {
+                    case '1': autorizacionText = 'Difusión total'; break;
+                    case '2': autorizacionText = 'No difusión comunidad educativa'; break;
+                    case 'TODO NO': autorizacionText = 'No autoriza'; break;
+                    default: autorizacionText = student.documentos.imagenes.autorizacion;
+                }
+                imagenesSection.innerHTML = `
+                    <h3><span class="icon">📸</span> Autorizaciones de imagen</h3>
+                    <div class="profile-section-content">
+                        <p><span class="tag">${autorizacionText}</span></p>
+                    </div>
+                `;
+                profileSections.appendChild(imagenesSection);
+            }
+
+            if (student.documentos.religion) {
+                const religionSection = document.createElement('div');
+                religionSection.className = 'profile-section';
+                religionSection.innerHTML = `
+                    <h3><span class="icon">⛪</span> Clase de religión</h3>
+                    <div class="profile-section-content">
+                        <p><span class="tag warning">No recibe clase de religión</span></p>
+                    </div>
+                `;
+                profileSections.appendChild(religionSection);
+            }
+
+            if (student.documentos.separados) {
+                const separadosSection = document.createElement('div');
+                separadosSection.className = 'profile-section';
+                separadosSection.innerHTML = `
+                    <h3><span class="icon">👨‍👩‍👧‍👦</span> Situación familiar</h3>
+                    <div class="profile-section-content">
+                        <p><strong>Observación:</strong> ${student.documentos.separados.observacion}</p>
+                    </div>
+                `;
+                profileSections.appendChild(separadosSection);
+            }
+
+            if (student.documentos.extraescolares && student.documentos.extraescolares.length > 0) {
+                const extraescolaresSection = document.createElement('div');
+                extraescolaresSection.className = 'profile-section';
+                let extraescolaresContent = '<h3><span class="icon">🎨</span> Actividades extraescolares</h3><div class="profile-section-content">';
+                student.documentos.extraescolares.forEach(activity => {
+                    extraescolaresContent += `
+                        <p><span class="tag success">${activity.actividad}</span> - ${activity.curso}</p>
+                        ${activity.telefonos ? `<p><strong>Teléfonos:</strong> ${formatPhoneLinks(activity.telefonos)}</p>` : ''}
+                    `;
+                });
+                extraescolaresContent += '</div>';
+                extraescolaresSection.innerHTML = extraescolaresContent;
+                profileSections.appendChild(extraescolaresSection);
+            }
+
+            if (student.documentos.noAutorizados && student.documentos.noAutorizados.length > 0) {
+                const noAutorizadosSection = document.createElement('div');
+                noAutorizadosSection.className = 'profile-section';
+                let noAutorizadosContent = '<h3><span class="icon">🚫</span> Restricciones</h3><div class="profile-section-content">';
+                student.documentos.noAutorizados.forEach(restriction => {
+                    let restrictionText = '';
+                    switch(restriction.tipo) {
+                        case 'irseSolo': restrictionText = 'No puede irse solo a casa'; break;
+                        case 'tomaTemperatura': restrictionText = 'No se le puede tomar la temperatura'; break;
+                        case 'cuentaGSuite': restrictionText = 'Sin cuenta GSuite'; break;
+                        case 'salidasLocalidad': restrictionText = 'No puede salir de la localidad'; break;
+                        case 'trabajosConcursos': restrictionText = 'No puede participar en concursos'; break;
+                        default: restrictionText = restriction.tipo;
+                    }
+                    noAutorizadosContent += `<p><span class="tag danger">${restrictionText}</span> - ${restriction.curso}</p>`;
+                });
+                noAutorizadosContent += '</div>';
+                noAutorizadosSection.innerHTML = noAutorizadosContent;
+                profileSections.appendChild(noAutorizadosSection);
+            }
+
+            if (student.documentos.alergias && student.documentos.alergias.length > 0) {
+                const alergiasSection = document.createElement('div');
+                alergiasSection.className = 'profile-section';
+                let alergiasContent = '<h3><span class="icon">⚠️</span> Alergias y enfermedades</h3><div class="profile-section-content">';
+                student.documentos.alergias.forEach(alergia => {
+                    alergiasContent += `
+                        <p><span class="tag danger">${alergia.tipo}</span> ${alergia.detalle}</p>
+                        ${alergia.telefono ? `<p><strong>Teléfono:</strong> ${formatPhoneLinks(alergia.telefono)}</p>` : ''}
+                        ${alergia.curso && alergia.curso !== student.curso ? `<p><small>Registrado en: ${alergia.curso}</small></p>` : ''}
+                    `;
+                });
+                alergiasContent += '</div>';
+                alergiasSection.innerHTML = alergiasContent;
+                profileSections.appendChild(alergiasSection);
+            }
+
+            if (student.documentos.matinal) {
+                const matinalSection = document.createElement('div');
+                matinalSection.className = 'profile-section';
+                matinalSection.innerHTML = `
+                    <h3><span class="icon">🌅</span> Aula matinal</h3>
+                    <div class="profile-section-content">
+                        <p><span class="tag success">Asiste al aula matinal</span></p>
+                        <p><strong>Teléfonos de contacto:</strong> ${formatPhoneLinks(student.documentos.matinal.telefonos)}</p>
+                    </div>
+                `;
+                profileSections.appendChild(matinalSection);
+            }
+
+            if (student.documentos.comedor) {
+                const comedorSection = document.createElement('div');
+                comedorSection.className = 'profile-section';
+                comedorSection.innerHTML = `
+                    <h3><span class="icon">🍽️</span> Comedor</h3>
+                    <div class="profile-section-content">
+                        <p><span class="tag success">Utiliza el servicio de comedor</span></p>
+                        <p><strong>Teléfonos de contacto:</strong> ${formatPhoneLinks(student.documentos.comedor.telefonos)}</p>
+                    </div>
+                `;
+                profileSections.appendChild(comedorSection);
+            }
+
+            const currentScreen = document.querySelector('.screen.active').id;
+            navigationHistory.push(currentScreen);
+            showScreen('profile-screen');
+        }
+
+        function getDocumentTitle(documentType) {
+            const titles = {
+                'imagenes': 'Autorizaciones de imagen',
+                'religion': 'Clase de religión',
+                'separados': 'Padres separados',
+                'matinal': 'Aula matinal',
+                'comedor': 'Comedor'
+            };
+            return titles[documentType] || documentType;
+        }
+
+        function setupGlobalSearch() {
+            const searchInput = document.getElementById('global-search');
+            const searchResults = document.getElementById('search-results');
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                if (query.length < 2) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
+
+                const filteredStudents = allStudents.filter(student =>
+                    student.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(query.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
+                );
+
+                searchResults.innerHTML = '';
+                if (filteredStudents.length === 0) {
+                    searchResults.innerHTML = '<div class="search-result-item">No se encontraron resultados</div>';
+                } else {
+                    filteredStudents.forEach(student => {
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'search-result-item';
+                        resultItem.textContent = student.nombre;
+                        resultItem.addEventListener('click', () => {
+                            playTapSound();
+                            showStudentProfile(student.nombre);
+                            searchResults.style.display = 'none';
+                            searchInput.value = '';
+                        });
+                        searchResults.appendChild(resultItem);
+                    });
+                }
+                searchResults.style.display = 'block';
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.style.display = 'none';
+                }
+            });
+        }
+
+        // Event listeners para configuración
+        darkModeToggle.addEventListener('change', () => {
+            document.documentElement.setAttribute('data-theme', darkModeToggle.checked ? 'dark' : 'light');
+            saveSettings();
+        });
+
+        soundToggle.addEventListener('change', () => {
+            soundEnabled = soundToggle.checked;
+            saveSettings();
+        });
+
+        fontDecreaseBtn.addEventListener('click', () => {
+            const currentSize = parseInt(fontSizeValue.textContent);
+            if (currentSize > 80) {
+                const newSize = currentSize - 10;
+                document.documentElement.style.fontSize = `${newSize}%`;
+                fontSizeValue.textContent = `${newSize}%`;
+                saveSettings();
+            }
+        });
+
+        fontIncreaseBtn.addEventListener('click', () => {
+            const currentSize = parseInt(fontSizeValue.textContent);
+            if (currentSize < 150) {
+                const newSize = currentSize + 10;
+                document.documentElement.style.fontSize = `${newSize}%`;
+                fontSizeValue.textContent = `${newSize}%`;
+                saveSettings();
+            }
+        });
+
+        settingsToggle.addEventListener('click', () => {
+            settingsPanel.classList.toggle('active');
+        });
+
+        // Cerrar panel de configuración al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!settingsToggle.contains(e.target) && !settingsPanel.contains(e.target)) {
+                settingsPanel.classList.remove('active');
+            }
+        });
+
         // Iniciar la aplicación
         document.addEventListener('DOMContentLoaded', () => {
             loadSettings();
-            // Enfocar el campo de contraseña inicial
-            initialPasswordInput.focus();
-            // Event listeners para el bloqueo inicial
-            initialUnlockBtn.addEventListener('click', initialUnlock);
-            initialPasswordInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    initialUnlock();
-                }
-            });
+            resetPasswordState(); // Reinicia el estado de la contraseña al cargar
         });
     </script>
 </body>
 </html>
+```
