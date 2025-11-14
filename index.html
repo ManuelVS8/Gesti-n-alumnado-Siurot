@@ -901,6 +901,8 @@
 </div>
     <div class="container" id="main-container">
         <audio id="tap-sound" preload="auto"></audio>
+        <audio id="correct-sound" preload="auto"></audio>
+        <audio id="error-sound" preload="auto"></audio>
         <!-- Barra de configuración -->
         <div class="settings-bar">
             <button class="settings-btn" id="settings-toggle" title="Configuración">⚙️</button>
@@ -1996,12 +1998,7 @@
                         { nombre: "Casado Godoy, Rosa", curso: "4ºB", telefonos: "685-848351//656-973303" },
                         { nombre: "Medina Lepe, Abril", curso: "4ºB", telefonos: "651-833603//635-819025" },
                         { nombre: "Vega Sánchez, Fabiola", curso: "5ºB", telefonos: "627-464297//625-721945" }
-                    ],
-                    "6º A": [
-                        { nombre: "Guirado Medrano, Alicia", curso: "6ºA", telefonos: "667-499363//677-491978" },
-                        { nombre: "López Barroso, Sara", curso: "6ºA", telefonos: "646-104125//653-267457" }
-                    ],
-                    "6º B": []
+                    ]
                 }
             },
             noAutorizados: {
@@ -2010,8 +2007,7 @@
                     "4º B": ["BENJUMEA DOMÍNGUEZ, LUCÍA", "DE LA ROSA CEPEDA, ÁLVARO", "DÍAZ MARTÍNEZ, IZAN", "FLORES DELGADO, PABLO", "MILLÁN ÁLVAREZ, CAYETANO", "RODRÍGUEZ RAMOS, DAVID", "TALIDI, NOUR"],
                     "5º A": ["DÍAZ PARRA, ÁNGELA", "LARIOS SUERO, PABLO", "ORILLÁN GRANDE, ABRIL", "RÍOS MARTÍN, MATEO"],
                     "5º B": ["CALVO BARRERO, CARMEN", "CASADO GODOY, NAZARET", "CHOULKHA, IMANE", "DE LARA LÓPEZ, FRANCISCO", "DOMÍNGUEZ SUÁREZ, DANIEL", "LÓPEZ GARCÍA, RUBÉN", "RODRÍGUEZ PÉREZ, LUCIA"],
-                    "6º A": ["DE LARA LÓPEZ, ÁNGEL", "DÍAZ RUIZ, ADRIANA", "ESCOBAR BAENA, GUILLERMO", "HERNÁNDEZ GALVÁN, LOGAN", "MARTÍN HERNÁNDEZ, ÁLVARO", "MILLÁN ÁLVAREZ, FCO JOSÉ", "RODRÍGUEZ ALBARRÁN, AINHOA"],
-                    "6º B": []
+                    "6º A": ["DE LARA LÓPEZ, ÁNGEL", "DÍAZ RUIZ, ADRIANA", "ESCOBAR BAENA, GUILLERMO", "HERNÁNDEZ GALVÁN, LOGAN", "MARTÍN HERNÁNDEZ, ÁLVARO", "MILLÁN ÁLVAREZ, FCO JOSÉ", "RODRÍGUEZ ALBARRÁN, AINHOA"]
                 },
                 cuentaGSuite: ["TAHIRI, ANASS", "CHOULKHA, IMANE"],
                 salidasLocalidad: ["BRICHA, AMIR", "BRICHA, NERMINE", "CHOULKHA, HAMZA", "HAYBOUL, KHADIJA", "TAHIRI, ANASS", "DÍAZ MARTÍNEZ, IZAN", "CHOULKHA, IMANE"],
@@ -2030,7 +2026,7 @@
         let allStudents = [];
         let navigationHistory = [];
         let audioContext = null;
-        let audioBuffer = null;
+        let audioBuffers = {};
         let userInteracted = false;
         let isNavigatingBack = false;
         let inactivityTimer = null;
@@ -2041,6 +2037,14 @@
         let autoLockEnabled = true;
         let soundEnabled = true;
         let currentPassword = '';
+        
+        // URLs de los archivos de audio
+        const audioUrls = {
+            tap: 'https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/37b3eb2da9c15c04dfb71dfe1be60f088ea3cdfc/Tap.mp3',
+            correcto: 'https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/7b86808e254100aeaba6285b3e0b82650ae78055/Correcto.mp3',
+            error: 'https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/7b86808e254100aeaba6285b3e0b82650ae78055/Error.mp3'
+        };
+        
         // Configuración de tema
         const darkModeToggle = document.getElementById('dark-mode-toggle');
         const soundToggle = document.getElementById('sound-toggle');
@@ -2061,6 +2065,7 @@
         const inactivityTimerDisplay = document.getElementById('inactivity-timer');
         const countdownDisplay = document.getElementById('countdown');
         const inactivityErrorMessage = document.getElementById('inactivity-error-message');
+        
         // Cargar configuración guardada
 function loadSettings() {
     const savedDarkMode = localStorage.getItem('darkMode') === 'true';
@@ -2080,9 +2085,86 @@ function loadSettings() {
             localStorage.setItem('fontSize', fontSizeValue.textContent.replace('%', ''));
             localStorage.setItem('soundEnabled', soundToggle.checked);
         }
+        
+        // Funciones de audio
+        function initAudio() {
+            if (!audioContext && soundEnabled) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Cargar los tres archivos de audio
+                Object.keys(audioUrls).forEach(key => {
+                    fetch(audioUrls[key])
+                        .then(response => response.arrayBuffer())
+                        .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+                        .then(buffer => {
+                            audioBuffers[key] = buffer;
+                        })
+                        .catch(e => console.log(`Error al cargar el audio ${key}:`, e));
+                });
+            }
+        }
+        
+        // Funciones públicas para reproducir sonidos
+        function reproducirSonidoTap() {
+            if (!soundEnabled) return;
+            
+            if (audioContext && audioBuffers.tap) {
+                const source = audioContext.createBufferSource();
+                source.buffer = audioBuffers.tap;
+                source.connect(audioContext.destination);
+                source.start(0);
+            } else {
+                // Fallback con elemento de audio
+                const tapSound = document.getElementById('tap-sound');
+                tapSound.src = audioUrls.tap;
+                tapSound.currentTime = 0;
+                tapSound.play().catch(e => console.log("Error al reproducir el sonido tap:", e));
+            }
+        }
+        
+        function reproducirSonidoCorrecto() {
+            if (!soundEnabled) return;
+            
+            if (audioContext && audioBuffers.correcto) {
+                const source = audioContext.createBufferSource();
+                source.buffer = audioBuffers.correcto;
+                source.connect(audioContext.destination);
+                source.start(0);
+            } else {
+                // Fallback con elemento de audio
+                const correctSound = document.getElementById('correct-sound');
+                correctSound.src = audioUrls.correcto;
+                correctSound.currentTime = 0;
+                correctSound.play().catch(e => console.log("Error al reproducir el sonido correcto:", e));
+            }
+        }
+        
+        function reproducirSonidoError() {
+            if (!soundEnabled) return;
+            
+            if (audioContext && audioBuffers.error) {
+                const source = audioContext.createBufferSource();
+                source.buffer = audioBuffers.error;
+                source.connect(audioContext.destination);
+                source.start(0);
+            } else {
+                // Fallback con elemento de audio
+                const errorSound = document.getElementById('error-sound');
+                errorSound.src = audioUrls.error;
+                errorSound.currentTime = 0;
+                errorSound.play().catch(e => console.log("Error al reproducir el sonido error:", e));
+            }
+        }
+        
+        // Mantener compatibilidad con la función existente
+        function playTapSound() {
+            reproducirSonidoTap();
+        }
+        
         // Sistema de bloqueo inicial
         function initialUnlock() {
             if (currentPassword === '112') {
+                reproducirSonidoCorrecto();
                 isInitiallyLocked = false;
                 initialLockScreen.classList.add('hidden');
                 mainContainer.classList.add('unlocked');
@@ -2094,14 +2176,16 @@ function loadSettings() {
                     resetInactivityTimer();
                 }
             } else {
+                reproducirSonidoError();
                 inactivityErrorMessage.textContent = 'Contraseña incorrecta';
                 resetPasswordState();
-                // Añadir vibración si está disponible
+                                // Añadir vibración si está disponible
                 if (navigator.vibrate) {
                     navigator.vibrate(200);
                 }
             }
         }
+        
         // Sistema de bloqueo por inactividad
         function lockByInactivity() {
             if (!autoLockEnabled || isInitiallyLocked || isInactivityLocked) return;
@@ -2112,14 +2196,17 @@ function loadSettings() {
             clearInterval(inactivityTimer);
             clearInterval(countdownTimer);
         }
+        
         function unlockFromInactivity() {
             if (currentPassword === '112') {
+                reproducirSonidoCorrecto();
                 isInactivityLocked = false;
                 inactivityLockScreen.classList.add('hidden');
                 resetInactivityPasswordState();
                 resetInactivityTimer();
                 inactivityErrorMessage.textContent = '';
             } else {
+                reproducirSonidoError();
                 inactivityErrorMessage.textContent = 'Contraseña incorrecta';
                 resetInactivityPasswordState();
                 // Añadir vibración si está disponible
@@ -2128,22 +2215,26 @@ function loadSettings() {
                 }
             }
         }
+        
         // Funciones para manejar la contraseña en la pantalla de bloqueo
         function resetPasswordState() {
             currentPassword = '';
             updatePasswordDisplay();
         }
+        
         function resetInactivityPasswordState() {
             currentPassword = '';
             updatePasswordDisplay();
         }
+        
         function updatePasswordDisplay() {
             const displayText = '•'.repeat(currentPassword.length);
             passwordDisplay.textContent = displayText;
             inactivityPasswordDisplay.textContent = displayText;
         }
+        
         function handleKeyPress(key) {
-            playTapSound();
+            reproducirSonidoTap();
             if (key === 'backspace') {
                 currentPassword = currentPassword.slice(0, -1);
             } else if (key === 'enter') {
@@ -2160,6 +2251,7 @@ function loadSettings() {
             }
             updatePasswordDisplay();
         }
+        
         // Temporizador de inactividad
         function resetInactivityTimer() {
             if (!autoLockEnabled || isInitiallyLocked || isInactivityLocked) return;
@@ -2178,6 +2270,7 @@ function loadSettings() {
                 }
             }, 30000); // 30 segundos
         }
+        
         function startCountdown() {
             countdownTimer = setInterval(() => {
                 const minutes = Math.floor(timeRemaining / 60);
@@ -2189,6 +2282,7 @@ function loadSettings() {
                 }
             }, 1000);
         }
+        
         // Event listeners para teclado de bloqueo inicial
         keypad.addEventListener('click', (e) => {
             const key = e.target.closest('.key');
@@ -2197,6 +2291,7 @@ function loadSettings() {
                 handleKeyPress(keyValue);
             }
         });
+        
         // Event listeners para teclado de inactividad
         inactivityKeypad.addEventListener('click', (e) => {
             const key = e.target.closest('.key');
@@ -2205,6 +2300,7 @@ function loadSettings() {
                 handleKeyPress(keyValue);
             }
         });
+        
         // Monitorear actividad del usuario
         const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
         activityEvents.forEach(event => {
@@ -2214,6 +2310,7 @@ function loadSettings() {
                 }
             });
         });
+        
         // Inicializar la aplicación después del desbloqueo
         function initializeApp() {
             loadAllStudents();
@@ -2264,33 +2361,7 @@ function loadSettings() {
             document.addEventListener('touchstart', enableAudio, { once: true });
             document.addEventListener('click', enableAudio, { once: true });
         }
-        // Funciones de audio
-        function initAudio() {
-            if (!audioContext && soundEnabled) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                fetch('https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/37b3eb2da9c15c04dfb71dfe1be60f088ea3cdfc/Tap.mp3')
-                    .then(response => response.arrayBuffer())
-                    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-                    .then(buffer => {
-                        audioBuffer = buffer;
-                    })
-                    .catch(e => console.log("Error al cargar el audio:", e));
-            }
-        }
-        function playTapSound() {
-            if (!userInteracted || !soundEnabled) return;
-            if (audioContext && audioBuffer) {
-                const source = audioContext.createBufferSource();
-                source.buffer = audioBuffer;
-                source.connect(audioContext.destination);
-                source.start(0);
-            } else {
-                const tapSound = document.getElementById('tap-sound');
-                tapSound.currentTime = 0;
-                tapSound.play().catch(e => console.log("Error al reproducir el sonido:", e));
-            }
-        }
-
+        
         // Funciones principales de la app
         function showScreen(screenId, addToHistory = true) {
             if (isInitiallyLocked || isInactivityLocked) return;
@@ -3188,4 +3259,3 @@ function loadSettings() {
     </script>
 </body>
 </html>
-```
