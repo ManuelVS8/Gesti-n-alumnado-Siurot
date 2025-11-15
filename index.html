@@ -3099,7 +3099,7 @@ history.pushState(state, '', `#${screenId}`);
                 const religionSection = document.createElement('div');
                 religionSection.className = 'profile-section';
                 religionSection.innerHTML = `
-                    <h3><span class="icon">⛪</span> Clase de religión</h3>
+                    <h3><span class="icon">🕌</span> Clase de religión</h3>
                     <div class="profile-section-content">
                         <p><span class="tag warning">No recibe clase de religión</span></p>
                     </div>
@@ -3111,7 +3111,7 @@ history.pushState(state, '', `#${screenId}`);
                 const separadosSection = document.createElement('div');
                 separadosSection.className = 'profile-section';
                 separadosSection.innerHTML = `
-                    <h3><span class="icon">👨‍👩‍👧‍👦</span> Situación familiar</h3>
+                    <h3><span class="icon">👩‍👧</span> Situación familiar</h3>
                     <div class="profile-section-content">
                         <p><strong>Observación:</strong> ${student.documentos.separados.observacion}</p>
                     </div>
@@ -3158,7 +3158,7 @@ history.pushState(state, '', `#${screenId}`);
             if (student.documentos.alergias && student.documentos.alergias.length > 0) {
                 const alergiasSection = document.createElement('div');
                 alergiasSection.className = 'profile-section';
-                let alergiasContent = '<h3><span class="icon">⚠️</span> Alergias y enfermedades</h3><div class="profile-section-content">';
+                let alergiasContent = '<h3><span class="icon">🤒</span> Alergias y enfermedades</h3><div class="profile-section-content">';
                 student.documentos.alergias.forEach(alergia => {
                     alergiasContent += `
                         <p><span class="tag danger">${alergia.tipo}</span> ${alergia.detalle}</p>
