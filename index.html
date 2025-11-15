@@ -1985,6 +1985,7 @@
         };
         // Variables de estado
         let currentDocument = null;
+        let currentActivity = null;
         let currentCourse = null;
         let allStudents = [];
         let navigationHistory = [];
@@ -2336,11 +2337,12 @@ function loadSettings() {
 
             if (addToHistory && !isNavigatingBack) {
                 const state = {
-                    screen: screenId,
-                    document: currentDocument,
-                    course: currentCourse
-                };
-                history.pushState(state, '', `#${screenId}`);
+    screen: screenId,
+    document: currentDocument,
+    course: currentCourse,
+    activity: currentActivity   // <-- añadimos la actividad al estado
+};
+history.pushState(state, '', `#${screenId}`);
             }
         }
 
@@ -2353,14 +2355,74 @@ function loadSettings() {
                 currentDocument = state.document;
                 loadCourses(currentDocument, false);
             } else if (state.screen === 'details-screen') {
-                currentDocument = state.document;
-                currentCourse = state.course;
-                loadStudents(currentDocument, currentCourse, false);
-            } else if (state.screen === 'allergies-course-screen') {
-                currentDocument = state.document;
-                currentCourse = state.course;
-                loadAllergiesCourse(currentCourse, false);
-            } else if (state.screen === 'no-autorizados-screen') {
+    currentDocument = state.document;
+    currentCourse = state.course;
+
+    // --- EXTRAESCOLARES ---
+            if (currentDocument === 'extraescolares') {
+                // Corrección: Usar directamente la actividad y el curso guardados en el estado.
+                const activity = state.activity; 
+                const course = state.course;
+                
+                // Restaurar pantalla correcta
+                loadExtraescolares(activity, course, false);
+            }
+
+    // --- NO AUTORIZADOS ---
+    else if (currentDocument === 'noAutorizados') {
+
+        // Caso 1: categorías SIN cursos (arrays planos)
+        const categoryData = documentsData.noAutorizados[currentCourse];
+        if (Array.isArray(categoryData)) {
+            showCategoryCourseScreen('noAutorizados', currentCourse, false);
+        }
+
+        // Caso 2: categorías CON cursos
+        else {
+            loadNoAutorizadosByCourse(currentCourse, state.course, false);
+        }
+    }
+
+    // --- RESTO DE DOCUMENTOS ---
+    else {
+        loadStudents(currentDocument, currentCourse, false);
+    }
+} else if (state.screen === 'details-screen') {
+    currentDocument = state.document;
+    currentCourse = state.course;
+    currentActivity = state.activity || currentActivity;
+
+    // --- EXTRAESCOLARES ---
+    if (currentDocument === 'extraescolares') {
+        // Necesitamos activity + course para reconstruir
+        if (!currentActivity || !currentCourse) {
+            // Si falta info, volvemos a la pantalla de actividades
+            loadCourses('extraescolares', false);
+        } else {
+            loadExtraescolares(currentActivity, currentCourse, false);
+        }
+    }
+
+    // --- NO AUTORIZADOS ---
+    else if (currentDocument === 'noAutorizados') {
+        const categoryData = documentsData.noAutorizados[currentCourse];
+
+        if (Array.isArray(categoryData)) {
+            // Categorías sin cursos (listas planas)
+            showCategoryCourseScreen('noAutorizados', currentCourse, false);
+        } else {
+            // Categorías con cursos
+            loadNoAutorizadosByCourse(currentCourse, state.course, false);
+        }
+    }
+
+    // --- DOCUMENTOS NORMALES ---
+    else {
+        loadStudents(currentDocument, currentCourse, false);
+    }
+}
+
+ else if (state.screen === 'no-autorizados-screen') {
                 showNoAutorizados();
             } else if (state.screen === 'profile-screen') {
                 showScreen('profile-screen', false);
@@ -2569,10 +2631,10 @@ function loadSettings() {
                     button.className = 'course-btn';
                     button.textContent = activity;
                     button.addEventListener('click', () => {
-                        playTapSound();
-                        currentCourse = activity;
-                        loadExtraescolaresByCourse(activity); // Nueva función para mostrar cursos por actividad
-                    });
+    playTapSound();
+    currentActivity = activity;        // <-- guardar la actividad seleccionada
+    loadExtraescolaresByCourse(activity);
+});
                     coursesContainer.appendChild(button);
                 });
 
@@ -2697,35 +2759,53 @@ function loadSettings() {
             }
         }
 
-        function loadNoAutorizadosByCourse(categoryId, course) {
-            const studentsList = document.getElementById('student-list');
-            studentsList.innerHTML = '';
-            const students = documentsData.noAutorizados[categoryId][course] || [];
+        function loadNoAutorizadosByCourse(categoryId, course, addToHistory = true) {
+    const studentsList = document.getElementById('student-list');
+    studentsList.innerHTML = '';
+    const students = (documentsData.noAutorizados[categoryId] && documentsData.noAutorizados[categoryId][course]) ? documentsData.noAutorizados[categoryId][course] : [];
 
-            document.getElementById('details-title').textContent = `${course} - ${getRestrictionTitle(categoryId)}`;
-            document.getElementById('students-count').textContent = `${students.length} alumnos`;
+    document.getElementById('details-title').textContent = `${course} - ${getRestrictionTitle(categoryId)}`;
+    document.getElementById('students-count').textContent = `${students.length} alumnos`;
 
-            if (students.length === 0) {
-                studentsList.innerHTML = '<div class="no-data">No hay alumnos en esta categoría y curso</div>';
-                navigationHistory.push('category-course-screen');
-                showScreen('details-screen');
-                return;
-            }
-
-            students.forEach(name => {
-                const card = document.createElement('div');
-                card.className = 'student-card';
-                card.innerHTML = `<div class="student-name">${name}</div>`;
-                card.addEventListener('click', () => {
-                    playTapSound();
-                    showStudentProfile(name);
-                });
-                studentsList.appendChild(card);
-            });
-
-            navigationHistory.push('category-course-screen');
-            showScreen('details-screen');
+    if (students.length === 0) {
+        studentsList.innerHTML = '<div class="no-data">No hay alumnos en esta categoría y curso</div>';
+        // push a state that includes category so popstate can restore correctly
+        if (addToHistory) {
+            history.pushState({
+                screen: 'details-screen',
+                document: 'noAutorizados',
+                course: course,
+                category: categoryId
+            }, '', '#details-screen');
         }
+        showScreen('details-screen', false);
+        return;
+    }
+
+    students.forEach(name => {
+        const card = document.createElement('div');
+        card.className = 'student-card';
+        card.innerHTML = `<div class="student-name">${name}</div>`;
+        card.addEventListener('click', () => {
+            playTapSound();
+            showStudentProfile(name);
+        });
+        studentsList.appendChild(card);
+    });
+
+    // push a state that includes category so popstate can restore correctly
+    if (addToHistory) {
+        history.pushState({
+            screen: 'details-screen',
+            document: 'noAutorizados',
+            course: course,
+            category: categoryId
+        }, '', '#details-screen');
+    }
+
+    navigationHistory.push('category-course-screen');
+    showScreen('details-screen', false);
+}
 
         function getRestrictionTitle(categoryId) {
             const titles = {
