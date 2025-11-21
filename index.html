@@ -961,9 +961,9 @@
                     <p>Consultar las autorizaciones para publicar imágenes de los alumnos</p>
                 </div>
                 <div class="card" data-document="religion">
-                    <div class="card-icon">🕌</div>
-                    <h3>Clase de religión</h3>
-                    <p>Alumnos que no reciben clase de religión</p>
+                    <div class="card-icon">🏫</div>
+                    <h3>ATEDU</h3>
+                    <p>Alumnado que recibe Atención Educativa</p>
                 </div>
                 <div class="card" data-document="separados">
                     <div class="card-icon">👩‍👧</div>
@@ -1096,18 +1096,13 @@
                     { nombre: "CRISTO PACHECO, AINHOA", autorizacion: "2" },
                     { nombre: "GONZÁLEZ LEPE, THIAGO", autorizacion: "TODO NO" },
                     { nombre: "MARTÍN MARTÍNEZ, GONZALO", autorizacion: "TODO NO" },
-                    { nombre: "PEÑA MARTÍN, PABLO", autorizacion: "NO" },
                     { nombre: "VASILE, LEONOR MARÍA MELISSA", autorizacion: "TODO NO" },
-                    { nombre: "ZAIRI, HAFSA", autorizacion: "TODO NO" }
                 ],
                 "INFANTIL 3 AÑOS B": [],
                 "INFANTIL 4 AÑOS A": [],
                 "INFANTIL 4 AÑOS B": [
                     { nombre: "BAHOU, FATIMA EZZAHRA", autorizacion: "2" },
-                    { nombre: "BELMAMOUN KADRI, NOOR", autorizacion: "2" },
-                    { nombre: "CRUCES RODRÍGUEZ, HUGO", autorizacion: "2" },
-                    { nombre: "MARTÍNEZ SUÁREZ, LOLA", autorizacion: "2" },
-                    { nombre: "CHIMA VARGAS, DANIELA", autorizacion: "NO" }
+                    { nombre: "BELMAMOUN KADRI, NOOR", autorizacion: "2" }
                 ],
                 "INFANTIL 5 AÑOS A": [
                     { nombre: "GARCÍA ACUÑA, CAMILA ALESSANDRA", autorizacion: "2" },
@@ -1122,7 +1117,9 @@
                     { nombre: "HAIDA, IMRAN", autorizacion: "2" },
                     { nombre: "PAVON ARANCE, MARTINA", autorizacion: "2" }
                 ],
-                "1º B": [],
+                "1º B": [
+                    { nombre: "LAMKADEM EL AZRAK, MARWA", autorizacion: "TODO NO" }
+                ],
                 "2º A": [
                     { nombre: "GIL RAMÍREZ, JUAN", autorizacion: "2" },
                     { nombre: "LMADANI, ISRAE", autorizacion: "2" }
@@ -1136,25 +1133,14 @@
                     { nombre: "MARTÍNEZ MORENO, JAIRO", autorizacion: "2" },
                     { nombre: "MIRANDA RUÍZ, ELENA", autorizacion: "TODO NO" },
                     { nombre: "MORENO MEJIAS, ENZO", autorizacion: "2" },
-                    { nombre: "RADU RODRÍGUEZ, HUGO NICOLÁS", autorizacion: "2" },
-                    { nombre: "VILLATORO FIDALGO, LUCIA", autorizacion: "2" }
+                    { nombre: "RADU RODRÍGUEZ, HUGO NICOLÁS", autorizacion: "2" }
                 ],
-                "3º B": [
-                    { nombre: "DOMÍNGUEZ LAGARES, JOSE", autorizacion: "2" },
-                    { nombre: "DOMÍNGUEZ TRIAA, ASIHA", autorizacion: "2" },
-                    { nombre: "SAIZ BERNAL, ADAM", autorizacion: "2" },
-                    { nombre: "TEBA DÍAZ, PEDRO JESÚS", autorizacion: "2" }
-                ],
+                "3º B": [],
                 "4º A": [
-                    { nombre: "EL BOUAICHI, OUMAIMA", autorizacion: "2" },
-                    { nombre: "JORDÁN SUÁREZ, RUBÉN", autorizacion: "2" },
-                    { nombre: "VALENCIANO BELLERÍN, VERÓNICA", autorizacion: "2" }
+                    { nombre: "EL BOUAICHI, OUMAIMA", autorizacion: "2" }
                 ],
                 "4º B": [
-                    { nombre: "MÁRQUEZ CEPEDA, MARTA", autorizacion: "2" },
-                    { nombre: "MESBAHI, YOUSSEF", autorizacion: "2" },
-                    { nombre: "MILLÁN ÁLVAREZ, CAYETANO", autorizacion: "2" },
-                    { nombre: "PICHARDO LÓPEZ, NURIA", autorizacion: "2" }
+                    { nombre: "MESBAHI, YOUSSEF", autorizacion: "2" }
                 ],
                 "5º A": [],
                 "5º B": [],
@@ -1968,7 +1954,7 @@
                     "6º A": ["DE LARA LÓPEZ, ÁNGEL", "DÍAZ RUIZ, ADRIANA", "ESCOBAR BAENA, GUILLERMO", "HERNÁNDEZ GALVÁN, LOGAN", "MARTÍN HERNÁNDEZ, ÁLVARO", "MILLÁN ÁLVAREZ, FCO JOSÉ", "RODRÍGUEZ ALBARRÁN, AINHOA"]
                 },
                 cuentaGSuite: ["TAHIRI, ANASS", "CHOULKHA, IMANE"],
-                salidasLocalidad: ["BRICHA, AMIR", "BRICHA, NERMINE", "HAYBOUL, KHADIJA", "TAHIRI, ANASS", "DÍAZ MARTÍNEZ, IZAN", "CHOULKHA, IMANE"],
+                salidasLocalidad: ["BRICHA, AMIR", "BRICHA, NERMINE", "HAYBOUL, KHADIJA", "TAHIRI, ANASS", "DÍAZ MARTÍNEZ, IZAN"],
                 tomaTemperatura: {
                     "2º A": ["ROLDÁN SVETOSLAVOVA, VERÓNICA"],
                     "5º A": ["ROLDÁN SVETOSLAVOVA, ALEJANDRO"],
@@ -2920,7 +2906,7 @@ history.pushState(state, '', `#${screenId}`);
                     }
                     studentInfo += `<div class="student-info"><strong>Autorización:</strong> ${autorizacionText}</div>`;
                 } else if (documentType === 'religion') {
-                    studentInfo += `<div class="student-info"><strong>Estado:</strong> No recibe clase de religión</div>`;
+                    studentInfo += `<div class="student-info"><strong>Estado:</strong> Recibe Atención Educativa</div>`;
                 } else if (documentType === 'separados') {
                     studentInfo += `<div class="student-info"><strong>Observación:</strong> ${student.observacion}</div>`;
                 } else if (documentType === 'matinal' || documentType === 'comedor') {
@@ -3091,9 +3077,9 @@ history.pushState(state, '', `#${screenId}`);
                 const religionSection = document.createElement('div');
                 religionSection.className = 'profile-section';
                 religionSection.innerHTML = `
-                    <h3><span class="icon">🕌</span> Clase de religión</h3>
+                    <h3><span class="icon">🏫</span> ATEDU</h3>
                     <div class="profile-section-content">
-                        <p><span class="tag warning">No recibe clase de religión</span></p>
+                        <p><span class="tag warning">Alumnado que recibe Atención Educativa</span></p>
                     </div>
                 `;
                 profileSections.appendChild(religionSection);
@@ -3197,7 +3183,7 @@ history.pushState(state, '', `#${screenId}`);
         function getDocumentTitle(documentType) {
             const titles = {
                 'imagenes': 'Autorizaciones de imagen',
-                'religion': 'Clase de religión',
+                'religion': 'ATEDU',
                 'separados': 'Padres separados',
                 'matinal': 'Aula matinal',
                 'comedor': 'Comedor'
